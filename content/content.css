@@ -1,0 +1,69 @@
+/* Yutu Labs - Picture-in-Picture Styles */
+
+/* PiP Button on Video Thumbnails */
+.yutu-pip-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Show button on hover */
+ytd-rich-item-renderer:hover .yutu-pip-btn,
+ytd-grid-video-renderer:hover .yutu-pip-btn,
+ytd-compact-video-renderer:hover .yutu-pip-btn,
+ytd-video-renderer:hover .yutu-pip-btn {
+  opacity: 1;
+}
+
+.yutu-pip-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.yutu-pip-btn:active {
+  transform: scale(0.95);
+}
+
+.yutu-pip-btn svg {
+  flex-shrink: 0;
+}
+
+.yutu-pip-btn span {
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+/* Animation for button appearance */
+@keyframes yutu-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ytd-rich-item-renderer:hover .yutu-pip-btn,
+ytd-grid-video-renderer:hover .yutu-pip-btn,
+ytd-compact-video-renderer:hover .yutu-pip-btn,
+ytd-video-renderer:hover .yutu-pip-btn {
+  animation: yutu-fade-in 0.2s ease-out;
+}
