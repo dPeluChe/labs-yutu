@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Yutu Labs",
   "version": "1.0.0",
-  "description": "Mejoras experimentales para YouTube",
+  "description": "Experimental enhancements for YouTube",
   "permissions": [
     "storage",
     "scripting",

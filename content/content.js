@@ -3,6 +3,8 @@
  * Opens YouTube videos in a small floating window without leaving the current page
  */
 
+import { Modal } from './modal.js';
+
 class YutuPiPManager {
   constructor() {
     this.observer = null;
@@ -87,14 +89,14 @@ class YutuPiPManager {
   createButton(videoId) {
     const btn = document.createElement('button');
     btn.className = 'yutu-pip-btn';
-    btn.setAttribute('aria-label', 'Abrir en ventana flotante');
-    btn.title = 'Abrir en ventana flotante';
+    btn.setAttribute('aria-label', 'Open in floating window');
+    btn.title = 'Open in floating window';
 
     btn.innerHTML = `
       <svg height="12" viewBox="0 0 24 24" width="12" fill="currentColor">
         <path d="M8 5v14l11-7z"/>
       </svg>
-      <span>Abrir</span>
+      <span>Open</span>
     `;
 
     btn.onclick = (e) => {
@@ -146,11 +148,11 @@ class YutuPiPManager {
         console.log('✅ Floating window created successfully:', response.windowId);
       } else {
         console.error('❌ Failed to create floating window:', response.error);
-        alert(`⚠️ Error al crear ventana: ${response.error}`);
+        Modal.showError(`Error creating window: ${response.error}`);
       }
     } catch (error) {
       console.error('❌ Communication error with background script:', error);
-      alert('⚠️ Error de comunicación con la extensión. Por favor, recarga la extensión e intenta de nuevo.');
+      Modal.showError('Communication error with extension. Please reload the extension and try again.');
     }
   }
 

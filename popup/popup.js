@@ -51,14 +51,14 @@ async function saveSettings() {
     };
 
     // Show saving status
-    showSaveStatus('Guardando...', 'saving');
+    showSaveStatus('Saving...', 'saving');
     elements.saveBtn.disabled = true;
 
     // Save to storage
     await chrome.storage.local.set({ yutuSettings: settings });
 
     // Show success status
-    showSaveStatus('✓ Cambios guardados', 'success');
+    showSaveStatus('✓ Changes saved', 'success');
 
     // Notify content scripts in all tabs
     const tabs = await chrome.tabs.query({ url: '*://*.youtube.com/*' });
@@ -80,7 +80,7 @@ async function saveSettings() {
     }, 2000);
   } catch (error) {
     console.error('❌ Error saving settings:', error);
-    showSaveStatus('✗ Error al guardar', 'error');
+    showSaveStatus('✗ Error saving', 'error');
     elements.saveBtn.disabled = false;
 
     setTimeout(hideSaveStatus, 3000);
