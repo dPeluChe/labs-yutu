@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Yutu Labs** is a Chrome extension (Manifest V3) that enhances the YouTube browsing experience using the Document Picture-in-Picture API. Users can click a "PiP" button on video thumbnails to open videos in a floating always-on-top window without navigating away from their current page (Home, Search, Sidebar).
+**Yutu Labs** is a Chrome extension (Manifest V3) that enhances the YouTube browsing experience by opening videos in floating windows. Users can click an "Abrir" button on video thumbnails to open videos in a small floating window without navigating away from their current page (Home, Search, Sidebar).
 
 ### Technology Stack
-- **Core API**: Document Picture-in-Picture API (Chrome 116+)
+- **Core Solution**: window.open() for floating windows
 - **Build System**: esbuild (ESM format, Chrome 110+ target)
 - **Extension Type**: Chrome Manifest V3 with content scripts and service worker
 - **Language**: Vanilla JavaScript (no framework)
@@ -53,16 +53,15 @@ npm run watch
 **Core Class**: `YutuPiPManager`
 
 Responsibilities:
-- Injects "PiP" buttons onto YouTube video thumbnails across different page types
-- Manages Picture-in-Picture window lifecycle (create, close, cleanup)
+- Injects "Abrir" buttons onto YouTube video thumbnails across different page types
+- Opens videos in floating windows using window.open()
 - Uses MutationObserver to handle YouTube's dynamic DOM updates
-- Handles Document PiP API feature detection and error handling
+- Manages floating window lifecycle (open, track, cleanup)
 
 **Key Methods**:
 - `injectButtons()`: Finds video cards using multiple selectors for different YouTube layouts
-- `openPiPPlayer(videoId)`: Opens Document PiP window with YouTube embed iframe
-- `setupPiPWindow(pipWindow, videoId)`: Creates window structure (header, player, styles)
-- `handlePiPError(error)`: User-friendly error messages for common PiP failures
+- `openPiPPlayer(videoId)`: Opens video in floating window using window.open()
+- `createButton(videoId)`: Creates button element with click handler
 - `getVideoId(url)`: Extracts video ID from YouTube URLs
 
 **Supported YouTube Layouts**:
@@ -74,14 +73,13 @@ Responsibilities:
 'ytd-video-renderer'          // Search results
 ```
 
-**PiP Window Strategy**:
-1. Check for Document PiP API support (`'documentPictureInPicture' in window`)
-2. Close any existing PiP window before opening new one
-3. Request PiP window with 16:9 dimensions (1280x720)
-4. Inject custom HTML structure (header with branding + iframe container)
-5. Add inline styles (gradients, animations, responsive layout)
-6. Create YouTube embed iframe with autoplay
-7. Setup event listeners for window close/cleanup
+**Floating Window Strategy**:
+1. Close any existing floating window before opening new one
+2. Calculate position (bottom-right corner with 50px margins)
+3. Define dimensions (854x480 for 16:9 aspect ratio)
+4. Open youtube.com/watch?v=VIDEO_ID with autoplay using window.open()
+5. Track window state with interval checker
+6. Clean up when window closes
 
 #### 2. Background Service Worker (`background/background.js`)
 Minimal implementation - currently just logs initialization. Extension logic is primarily in content scripts.
@@ -96,34 +94,42 @@ Extension toolbar popup with basic HTML/CSS/JS interface.
 
 ---
 
-## Solution: Document Picture-in-Picture API
+## Solution: window.open() Floating Windows
 
-**See ATTEMPTS_AND_ALTERNATIVES.md and TECHNICAL_EVALUATION.md** for detailed technical history and research.
+**See docs/FINAL_SOLUTION.md** for complete history and decision process.
 
-### Previous Embedding Issues (Resolved)
-YouTube previously blocked iframe embeds when:
-- Origin matched the embedder (youtube.com embedding youtube.com)
-- Context appeared to be "recursive embedding"
-- Referrer policies were manipulated
+### YouTube Embedding Restrictions (Unresolvable)
+YouTube aggressively blocks ALL iframe embed attempts when:
+- Origin matches the embedder (youtube.com embedding youtube.com)
+- Context appears to be "recursive embedding"
+- Even with Document Picture-in-Picture API
+- Even with YouTube IFrame Player API (official)
+- Even with youtube-nocookie.com proxy
 
-### Current Solution
-**Document Picture-in-Picture API** completely bypasses these restrictions by:
-- Creating a separate window context (not same-origin iframe)
-- Using standard YouTube embed URL without restrictions
-- Browser-native API (Chrome 116+) with official support
+**Error**: `embedder.identity.missing.referrer` (Error 153) - persistent across all embed methods.
+
+### Final Solution: window.open()
+After multiple failed attempts with various embedding techniques, the pragmatic solution uses **window.open()** to open videos in native browser windows:
 
 Implementation:
 ```javascript
-const pipWindow = await window.documentPictureInPicture.requestWindow({
-  width: 1280,
-  height: 720
-});
+openPiPPlayer(videoId) {
+  const width = 854;   // 16:9 aspect ratio
+  const height = 480;
+  const left = window.screen.width - width - 50;
+  const top = window.screen.height - height - 100;
 
-const iframe = pipWindow.document.createElement('iframe');
-iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`;
+  const videoUrl = `https://www.youtube.com/watch?v=${videoId}&autoplay=1`;
+
+  this.currentPiPWindow = window.open(
+    videoUrl,
+    'YutuLabsPlayer',
+    `width=${width},height=${height},left=${left},top=${top},resizable=yes`
+  );
+}
 ```
 
-**Result**: Videos play perfectly without "Video unavailable" errors (152/153).
+**Result**: Videos always play perfectly using YouTube's official player. No embedding restrictions apply.
 
 ---
 
@@ -169,10 +175,7 @@ Player state tracked via DOM:
 
 **Content Scripts**:
 - Runs at `document_end` to ensure YouTube's initial DOM is loaded
-- CSS injection for button/player styling
-
-**Web Accessible Resources**:
-- `content/player.html` (for extension-origin iframe approach, currently unused)
+- CSS injection for button styling
 
 ---
 
@@ -203,19 +206,27 @@ labs-yutu/
 ├── background/
 │   └── background.js          # Service worker (minimal)
 ├── content/
-│   ├── content.js             # Main extension logic (YutuManager)
-│   ├── content.css            # Injected styles
-│   └── player.html            # (Legacy/unused alternative approach)
+│   ├── content.js             # Main extension logic (YutuPiPManager)
+│   ├── content.css            # Button styles
+│   └── player.html            # (Obsolete - can be removed)
 ├── popup/
 │   ├── popup.html             # Extension popup UI
 │   ├── popup.css
 │   └── popup.js
 ├── scripts/
 │   └── build.mjs              # esbuild configuration
+├── docs/                       # Documentation
+│   ├── ATTEMPTS_AND_ALTERNATIVES.md
+│   ├── TECHNICAL_EVALUATION.md
+│   ├── ERROR_153_DEBUGGING.md
+│   ├── FINAL_SOLUTION.md      # Complete solution history
+│   ├── TESTING.md
+│   └── REFACTOR_SUMMARY.md
 ├── dist/                       # Build output (gitignored)
 ├── manifest.json              # Chrome extension manifest
-├── package.json               # Node dependencies (esbuild, archiver)
-└── ATTEMPTS_AND_ALTERNATIVES.md  # Technical history/alternatives
+├── package.json               # Node dependencies (esbuild)
+├── README.md                  # User documentation
+└── CLAUDE.md                  # This file
 ```
 
 ---
@@ -223,6 +234,7 @@ labs-yutu/
 ## Important Notes
 
 - **YouTube DOM Changes**: YouTube frequently updates its UI. Selectors may need adjustment if button injection breaks after YouTube updates.
-- **Iframe Restrictions**: Current embed approach may be blocked by YouTube's security policies. Monitor console for errors.
+- **Popup Blockers**: Users must allow popups for youtube.com. The extension handles this gracefully with a message.
 - **No React/Framework**: Extension uses vanilla JS for minimal bundle size and fast injection.
-- **Spanish Documentation**: README and ATTEMPTS_AND_ALTERNATIVES are in Spanish; code comments are minimal/English.
+- **Spanish Documentation**: README and docs are in Spanish; code comments are English.
+- **Simple Solution**: After extensive testing of embed techniques, window.open() proved to be the most reliable solution.

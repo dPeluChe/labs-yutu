@@ -1,17 +1,17 @@
 # Yutu Labs Extension
 
-Una extensión de Chrome experimental para mejorar la experiencia de usuario en YouTube usando Document Picture-in-Picture.
+Una extensión de Chrome para mejorar la experiencia de usuario en YouTube abriendo videos en ventanas flotantes.
 
 ## Características Principales
 
-*   **Botón Picture-in-Picture ("PiP"):**
-    *   Inyecta automáticamente un botón "PiP" en las miniaturas de los videos (Home, Feed, Sidebar, Búsqueda).
-    *   Permite visualizar el video sin salir de la página actual ni navegar a una nueva URL.
-*   **Reproductor Flotante (Always-on-Top):**
-    *   Al hacer clic en "PiP", se abre una ventana flotante que permanece siempre visible.
-    *   Diseño moderno con gradiente morado y controles integrados.
-    *   Ventana 16:9 con player de YouTube completamente funcional.
-    *   Continúa reproduciendo mientras navegas por YouTube o cualquier otra pestaña.
+*   **Botón "Abrir" en Miniaturas:**
+    *   Inyecta automáticamente un botón en las miniaturas de los videos (Home, Feed, Sidebar, Búsqueda).
+    *   Permite visualizar el video sin salir de la página actual.
+*   **Ventana Flotante:**
+    *   Al hacer clic en "Abrir", se abre el video en una ventana nueva pequeña (854x480).
+    *   Posicionada en la esquina inferior derecha de tu pantalla.
+    *   Usa el reproductor oficial de YouTube (sin restricciones de embed).
+    *   Puedes redimensionar y mover la ventana libremente.
 
 ## Instalación (Modo Desarrollador)
 
@@ -23,7 +23,7 @@ Una extensión de Chrome experimental para mejorar la experiencia de usuario en 
 
 ## Requisitos del Sistema
 
-*   **Google Chrome 116+** (requerido para Document Picture-in-Picture API)
+*   **Google Chrome** (cualquier versión moderna)
 *   **Node.js 16+** (solo para desarrollo)
 *   **NPM** (solo para desarrollo)
 
@@ -54,7 +54,40 @@ npm run watch
 
 ## Tecnología
 
-*   **Document Picture-in-Picture API**: API oficial de Chrome para ventanas flotantes
+*   **window.open()**: Solución pragmática que abre videos en ventanas nativas del navegador
 *   **Vanilla JavaScript**: Sin frameworks, bundle mínimo
 *   **esbuild**: Build system ultra-rápido
 *   **Chrome Manifest V3**: Última versión del sistema de extensiones
+
+## Cómo Funciona
+
+1. **Inyección de Botones**: La extensión usa `MutationObserver` para detectar videos en YouTube
+2. **Apertura de Ventana**: Al hacer clic, usa `window.open()` para abrir el video en ventana flotante
+3. **Posicionamiento**: La ventana se abre en esquina inferior derecha (854x480, aspecto 16:9)
+4. **Player Oficial**: La ventana carga directamente YouTube.com (sin restricciones de embed)
+
+## Troubleshooting
+
+### Ventana no se abre
+
+**Causa**: Ventanas emergentes bloqueadas por Chrome
+
+**Solución**:
+1. Ve a `chrome://settings/content/popups`
+2. Agrega `youtube.com` a la lista de permitidos
+3. O haz click en el ícono de bloqueo en la barra de direcciones y permite popups
+
+### Botones no aparecen
+
+1. Verifica que la extensión está activa en `chrome://extensions/`
+2. Refresca la página de YouTube (F5)
+3. Revisa la consola (F12) para errores
+4. Si YouTube cambió su estructura, los selectores pueden necesitar actualización
+
+## Documentación
+
+Ver carpeta `docs/` para documentación técnica completa:
+- **TECHNICAL_EVALUATION.md**: Análisis de soluciones
+- **TESTING.md**: Guía de pruebas (12+ escenarios)
+- **ERROR_153_DEBUGGING.md**: Troubleshooting del error de embed
+- **REFACTOR_SUMMARY.md**: Historial de cambios

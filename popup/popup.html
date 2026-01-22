@@ -1,14 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <style>
-    body { width: 200px; padding: 10px; font-family: sans-serif; }
-    h3 { margin-top: 0; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yutu Labs - Configuración</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h3>Yutu Labs</h3>
-  <p>Experimental features active.</p>
+  <div class="popup-container">
+    <header>
+      <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"/>
+        </svg>
+        <h1>Yutu Labs</h1>
+      </div>
+      <p class="subtitle">Configuración de ventana flotante</p>
+    </header>
+
+    <section class="settings-section">
+      <h2>Ocultar elementos en ventana</h2>
+      <p class="help-text">Configuración que solo se aplica a las <strong>ventanas emergentes</strong> (al hacer click en "Abrir"). No afecta tu vista normal de YouTube.</p>
+
+      <div class="toggle-group">
+        <label class="toggle-label">
+          <input type="checkbox" id="hide-reels" class="toggle-input">
+          <span class="toggle-slider"></span>
+          <div class="toggle-text">
+            <span class="toggle-title">Reels / Shorts</span>
+            <span class="toggle-description">Ocultar la sección de videos cortos</span>
+          </div>
+        </label>
+
+        <label class="toggle-label">
+          <input type="checkbox" id="hide-sidebar" class="toggle-input">
+          <span class="toggle-slider"></span>
+          <div class="toggle-text">
+            <span class="toggle-title">Videos relacionados</span>
+            <span class="toggle-description">Ocultar sidebar de recomendaciones</span>
+          </div>
+        </label>
+
+        <label class="toggle-label">
+          <input type="checkbox" id="hide-description" class="toggle-input">
+          <span class="toggle-slider"></span>
+          <div class="toggle-text">
+            <span class="toggle-title">Descripción</span>
+            <span class="toggle-description">Ocultar la descripción del video</span>
+          </div>
+        </label>
+
+        <label class="toggle-label">
+          <input type="checkbox" id="hide-header" class="toggle-input">
+          <span class="toggle-slider"></span>
+          <div class="toggle-text">
+            <span class="toggle-title">Header</span>
+            <span class="toggle-description">Ocultar barra de navegación superior</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <footer>
+      <button id="save-btn" class="btn-primary">Guardar cambios</button>
+      <div id="save-status" class="save-status"></div>
+    </footer>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

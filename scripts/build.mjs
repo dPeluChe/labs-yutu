@@ -15,6 +15,7 @@ async function main() {
     entryPoints: {
       'background/background': resolve(projectRoot, 'background/background.js'),
       'content/content': resolve(projectRoot, 'content/content.js'),
+      'content/hider': resolve(projectRoot, 'content/hider.js'),
       'popup/popup': resolve(projectRoot, 'popup/popup.js'),
     },
     outdir: distDir,

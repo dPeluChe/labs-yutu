@@ -9,28 +9,169 @@
       height: 100%;
       background: #000;
       overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    iframe {
+
+    #player {
       width: 100%;
       height: 100%;
-      border: 0;
+    }
+
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    #error {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff6b6b;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+
+    #error a {
+      color: #4dabf7;
+      text-decoration: none;
+      display: block;
+      margin-top: 10px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
     }
   </style>
 </head>
 <body>
+  <div id="loading">Cargando YouTube Player...</div>
+  <div id="error">
+    <div id="error-message"></div>
+    <a id="error-link" href="#" target="_blank">Abrir en YouTube</a>
+  </div>
   <div id="player"></div>
+
+  <!-- Load YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
     const params = new URLSearchParams(window.location.search);
     const videoId = params.get('v');
+    let player;
+    let loadTimeout;
 
-    if (videoId) {
-      const iframe = document.createElement('iframe');
-      // Use standard youtube.com domain, the extension origin will be the referrer
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&playsinline=1`;
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
-      document.body.appendChild(iframe);
+    // Set a timeout in case the API fails to load
+    loadTimeout = setTimeout(() => {
+      showError('No se pudo cargar el reproductor de YouTube. Intenta recargar la página.');
+    }, 10000);
+
+    // This function is called by the YouTube IFrame API when it's ready
+    function onYouTubeIframeAPIReady() {
+      clearTimeout(loadTimeout);
+
+      if (!videoId) {
+        showError('Error: No se proporcionó ID de video');
+        return;
+      }
+
+      try {
+        // Create YouTube player using official API
+        player = new YT.Player('player', {
+          height: '100%',
+          width: '100%',
+          videoId: videoId,
+          playerVars: {
+            'autoplay': 1,
+            'modestbranding': 1,
+            'rel': 0,
+            'playsinline': 1,
+            'enablejsapi': 1,
+            'origin': window.location.origin,
+            'widget_referrer': window.location.origin
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      } catch (error) {
+        console.error('Error creating player:', error);
+        showError('Error al crear el reproductor: ' + error.message);
+      }
     }
+
+    function onPlayerReady(event) {
+      console.log('YouTube player ready');
+      document.getElementById('loading').style.display = 'none';
+
+      // Try to play the video
+      try {
+        event.target.playVideo();
+      } catch (error) {
+        console.error('Error playing video:', error);
+      }
+    }
+
+    function onPlayerError(event) {
+      console.error('YouTube player error:', event.data);
+
+      let errorMessage = 'Error desconocido';
+
+      switch(event.data) {
+        case 2:
+          errorMessage = 'Error en el ID del video';
+          break;
+        case 5:
+          errorMessage = 'Error de reproductor HTML5';
+          break;
+        case 100:
+          errorMessage = 'Video no encontrado o privado';
+          break;
+        case 101:
+        case 150:
+          errorMessage = 'Este video no permite reproducción embebida';
+          break;
+        default:
+          errorMessage = 'Error del reproductor (Código: ' + event.data + ')';
+      }
+
+      showError(errorMessage);
+    }
+
+    function onPlayerStateChange(event) {
+      // -1 (unstarted), 0 (ended), 1 (playing), 2 (paused), 3 (buffering), 5 (video cued)
+      console.log('Player state changed:', event.data);
+    }
+
+    function showError(message) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error-message').textContent = message;
+
+      if (videoId) {
+        const link = document.getElementById('error-link');
+        link.href = `https://www.youtube.com/watch?v=${videoId}`;
+        link.style.display = 'block';
+      }
+    }
+
+    // Fallback if API script fails to load
+    window.addEventListener('error', (event) => {
+      if (event.message.includes('iframe_api')) {
+        showError('No se pudo cargar la API de YouTube. Verifica tu conexión a internet.');
+      }
+    });
   </script>
 </body>
 </html>
