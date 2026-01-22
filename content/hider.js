@@ -4,13 +4,7 @@
  * Only applies to windows opened by the extension (yutu_popup=true parameter)
  */
 
-// Default settings
-const DEFAULT_SETTINGS = {
-  hideReels: false,
-  hideSidebar: false,
-  hideDescription: false,
-  hideHeader: false
-};
+import { DEFAULT_SETTINGS, loadSettings as loadConfig } from './config.js';
 
 let currentSettings = { ...DEFAULT_SETTINGS };
 let isYutuPopupWindow = false;
@@ -103,8 +97,7 @@ function applySettings(settings) {
  */
 async function loadSettings() {
   try {
-    const result = await chrome.storage.local.get('yutuSettings');
-    const settings = result.yutuSettings || DEFAULT_SETTINGS;
+    const settings = await loadConfig();
 
     console.log('📦 Loaded settings from storage:', settings);
     applySettings(settings);

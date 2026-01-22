@@ -1,12 +1,6 @@
 // Yutu Labs - Popup Configuration
 
-// Default settings
-const DEFAULT_SETTINGS = {
-  hideReels: false,
-  hideSidebar: false,
-  hideDescription: false,
-  hideHeader: false
-};
+import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 
 // DOM Elements
 const elements = {
@@ -23,8 +17,7 @@ const elements = {
  */
 async function loadSettings() {
   try {
-    const result = await chrome.storage.local.get('yutuSettings');
-    const settings = result.yutuSettings || DEFAULT_SETTINGS;
+    const settings = await loadConfig();
 
     // Update checkboxes
     elements.hideReels.checked = settings.hideReels;
@@ -55,7 +48,7 @@ async function saveSettings() {
     elements.saveBtn.disabled = true;
 
     // Save to storage
-    await chrome.storage.local.set({ yutuSettings: settings });
+    await saveConfig(settings);
 
     // Show success status
     showSaveStatus('✓ Changes saved', 'success');
