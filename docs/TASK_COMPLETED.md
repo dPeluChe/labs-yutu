@@ -6,6 +6,50 @@ This document tracks completed tasks and phases of the Yutu Labs project refacto
 
 ## 2025-01-22 - Session 1
 
+### Service Worker Idle Issue Fix
+**Status**: Pending commit
+**Date**: January 22, 2025
+
+**Problem**:
+After ~30 seconds of inactivity, clicking the "Open" button would show error:
+"⚠️ Communication error with extension. Please reload the extension and try again."
+
+**Root Cause**:
+Chrome Service Workers automatically go "idle" (dormant) after ~30 seconds of inactivity. When the content script tries to communicate with the background script after it has been idled, the message channel may be closed or the worker takes time to wake up.
+
+**Solution Implemented**:
+Added retry mechanism with exponential backoff:
+1. First attempt sends message immediately
+2. If fails, wait 500ms and retry (attempt 2/3)
+3. If fails again, wait 750ms and retry (attempt 3/3)
+4. If all retries fail, show error message
+
+**Files Modified**:
+- `content/content.js`
+  - Added `sendMessageWithRetry()` method
+  - Updated `openPiPPlayer()` to use retry logic
+  - Implements exponential backoff (500ms → 750ms → 1125ms)
+  - Checks for undefined response and chrome.runtime.lastError
+
+**Benefits**:
+- ✅ Handles service worker idle state automatically
+- ✅ No user intervention required (no manual reload needed)
+- ✅ Logs retry attempts for debugging
+- ✅ Graceful fallback to error message after 3 retries
+- ✅ Reduces spurious error messages
+
+**Code Quality**:
+- Clean separation: retry logic in dedicated method
+- Configurable: maxRetries and retryDelay parameters
+- Exponential backoff for better handling of slow wake-up
+- Detailed console logging for debugging
+
+**Files Changed**:
+- Modified: `content/content.js` (+35 lines)
+- No changes to other files
+
+---
+
 ### Translation & Modal System
 **Commit**: `87dfe43`
 **Date**: January 22, 2025

@@ -139,7 +139,8 @@ class YutuPiPManager {
     console.log(`🎬 Requesting floating window for video: ${videoId}`);
 
     try {
-      const response = await chrome.runtime.sendMessage({
+      // Use retry logic for service worker idle state
+      const response = await this.sendMessageWithRetry({
         action: 'openFloatingWindow',
         videoId: videoId
       });
@@ -154,6 +155,44 @@ class YutuPiPManager {
       console.error('❌ Communication error with background script:', error);
       Modal.showError('Communication error with extension. Please reload the extension and try again.');
     }
+  }
+
+  /**
+   * Send message to background script with retry logic
+   * Handles service worker idle state automatically
+   */
+  async sendMessageWithRetry(message, maxRetries = 3, retryDelay = 500) {
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await chrome.runtime.sendMessage(message);
+
+        // Check if response is undefined (channel may be closed)
+        if (response === undefined) {
+          if (chrome.runtime.lastError) {
+            throw new Error(chrome.runtime.lastError.message || 'Unknown runtime error');
+          }
+          // Service worker didn't respond, retry
+          throw new Error('No response from background script');
+        }
+
+        return response;
+      } catch (error) {
+        lastError = error;
+        console.warn(`⚠️ Attempt ${attempt}/${maxRetries} failed:`, error.message);
+
+        // Don't retry on the last attempt
+        if (attempt < maxRetries) {
+          console.log(`🔄 Retrying in ${retryDelay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+          retryDelay *= 1.5; // Exponential backoff
+        }
+      }
+    }
+
+    // All retries failed
+    throw lastError;
   }
 
 
