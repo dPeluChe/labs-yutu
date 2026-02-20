@@ -4,10 +4,12 @@
  */
 
 export const DEFAULT_SETTINGS = {
-  hideReels: false,
-  hideSidebar: false,
-  hideDescription: false,
-  hideHeader: false
+  hideReels: true,
+  hideSidebar: true,
+  hideDescription: true,
+  hideHeader: true,
+  hideActions: true,
+  hideMerchShelf: true
 };
 
 export const STORAGE_KEY = 'yutuSettings';
@@ -19,7 +21,10 @@ export const STORAGE_KEY = 'yutuSettings';
 export async function loadSettings() {
   try {
     const result = await chrome.storage.local.get(STORAGE_KEY);
-    return result[STORAGE_KEY] || DEFAULT_SETTINGS;
+    return {
+      ...DEFAULT_SETTINGS,
+      ...(result[STORAGE_KEY] || {})
+    };
   } catch (error) {
     console.error('❌ Error loading settings from storage:', error);
     return DEFAULT_SETTINGS;

@@ -94,6 +94,11 @@ header {
   background: #f8f9ff;
 }
 
+.toggle-label--master {
+  border-color: #667eea;
+  background: #f6f7ff;
+}
+
 .toggle-input {
   appearance: none;
   width: 20px;
@@ -202,4 +207,75 @@ footer {
 .btn-primary:focus-visible {
   outline: 2px solid #667eea;
   outline-offset: 2px;
+}
+
+/* Speed Control Section */
+.speed-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.speed-section h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f0f0f;
+  margin: 0 0 8px 0;
+}
+
+.speed-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.speed-btn {
+  padding: 10px 8px;
+  border: 2px solid #e5e5e5;
+  background: white;
+  color: #0f0f0f;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.speed-btn:hover {
+  border-color: #667eea;
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.speed-btn:active {
+  transform: translateY(0);
+}
+
+.speed-btn--active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+}
+
+.speed-status {
+  font-size: 12px;
+  min-height: 16px;
+  transition: all 0.3s ease;
+}
+
+.speed-status--loading {
+  color: #666;
+}
+
+.speed-status--success {
+  color: #059669;
+  font-weight: 500;
+}
+
+.speed-status--error {
+  color: #dc2626;
+  font-weight: 500;
 }

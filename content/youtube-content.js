@@ -1,8 +1,12 @@
 import { YutuPiPManager, attachYouTubePlaybackMessageListener } from './content.js';
+import { FloatingSpeedControls } from './floating-speed-controls.js';
 
 function initYouTube() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isYutuPopupWindow = urlParams.get('yutu_popup') === 'true';
+
   const manager = new YutuPiPManager({
-    enableYouTubeCards: true,
+    enableYouTubeCards: !isYutuPopupWindow,
     enableExternalLinks: false,
     injectDebounceMs: 150
   });
@@ -17,6 +21,12 @@ function initYouTube() {
   window.yutuPiPManager = manager;
 
   attachYouTubePlaybackMessageListener();
+
+  if (isYutuPopupWindow) {
+    const floatingSpeedControls = new FloatingSpeedControls();
+    floatingSpeedControls.init();
+    window.yutuFloatingSpeedControls = floatingSpeedControls;
+  }
 }
 
 if (document.readyState === 'loading') {

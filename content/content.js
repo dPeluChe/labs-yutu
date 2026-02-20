@@ -82,7 +82,7 @@ export class YutuPiPManager {
       if (!container) return;
 
       const btn = this.createCardButton(target.url, {
-        offsetLeftForMenu: container.classList.contains('yt-lockup-metadata-view-model')
+        offsetLeftForMenu: this.shouldOffsetForMenu(container)
       });
 
       const style = window.getComputedStyle(container);
@@ -194,8 +194,18 @@ export class YutuPiPManager {
   findButtonContainer(card) {
     return card.querySelector('#details') ||
       card.querySelector('.yt-lockup-metadata-view-model') ||
+      card.querySelector('.shortsLockupViewModelHostOutsideMetadata') ||
+      card.querySelector('.shortsLockupViewModelHostOutsideMetadataHasMenu') ||
+      card.querySelector('ytm-shorts-lockup-view-model') ||
+      card.querySelector('ytm-shorts-lockup-view-model-v2') ||
       card.querySelector('#meta') ||
       card.querySelector('ytd-thumbnail');
+  }
+
+  shouldOffsetForMenu(container) {
+    return container.classList.contains('yt-lockup-metadata-view-model') ||
+      Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
+      Boolean(container.querySelector('button[aria-label="More actions"]'));
   }
 
   extractVideoTarget(url) {

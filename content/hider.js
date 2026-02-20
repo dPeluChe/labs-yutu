@@ -8,6 +8,8 @@ import { DEFAULT_SETTINGS, loadSettings as loadConfig } from './config.js';
 
 let currentSettings = { ...DEFAULT_SETTINGS };
 let isYutuPopupWindow = false;
+const POPUP_LAYOUT_STYLE_ID = 'yutu-popup-layout-styles';
+const POPUP_TITLE_ID = 'yutu-popup-floating-title';
 
 /**
  * CSS selectors for elements to hide
@@ -49,6 +51,7 @@ function applySettings(settings) {
 
   // Store current settings
   currentSettings = { ...settings };
+  applyPopupLayoutStyles();
 
   // Remove old style tag if exists
   const oldStyle = document.getElementById('yutu-hider-styles');
@@ -131,6 +134,65 @@ function setupStorageListener() {
   });
 }
 
+function applyPopupLayoutStyles() {
+  if (!isYutuPopupWindow) return;
+
+  let style = document.getElementById(POPUP_LAYOUT_STYLE_ID);
+  if (!style) {
+    style = document.createElement('style');
+    style.id = POPUP_LAYOUT_STYLE_ID;
+    document.head.appendChild(style);
+  }
+
+  const popupRules = [
+    // We render our own title bar above ytd-app.
+    'ytd-watch-metadata #title { display: none !important; }'
+  ];
+
+  if (currentSettings.hideActions) {
+    popupRules.push('segmented-like-dislike-button-view-model { display: none !important; }');
+    popupRules.push('ytd-menu-renderer yt-button-shape#button-shape { display: none !important; }');
+  }
+
+  if (currentSettings.hideMerchShelf) {
+    popupRules.push('ytd-merch-shelf-renderer { display: none !important; }');
+    popupRules.push('#merch-shelf { display: none !important; }');
+    popupRules.push('#below ytd-merch-shelf-renderer { display: none !important; }');
+  }
+
+  style.textContent = popupRules.join('\n');
+}
+
+function syncPopupTopTitle() {
+  if (!isYutuPopupWindow) return;
+
+  const appRoot = document.querySelector('ytd-app');
+  if (!appRoot) return;
+
+  let titleBar = document.getElementById(POPUP_TITLE_ID);
+  if (!titleBar) {
+    titleBar = document.createElement('div');
+    titleBar.id = POPUP_TITLE_ID;
+    document.body.insertBefore(titleBar, appRoot);
+  }
+
+  const titleNode = document.querySelector('ytd-watch-metadata h1 yt-formatted-string');
+  const fallbackTitle = (document.title || '').replace(/\s*-\s*YouTube\s*$/i, '').trim();
+  const titleText = titleNode?.textContent?.trim() || fallbackTitle || 'YouTube';
+  titleBar.textContent = titleText;
+}
+
+function setupPopupLayoutObserver() {
+  if (!isYutuPopupWindow) return;
+
+  window.addEventListener('yt-navigate-finish', () => {
+    setTimeout(() => {
+      applyPopupLayoutStyles();
+      syncPopupTopTitle();
+    }, 250);
+  });
+}
+
 /**
  * Initialize hider
  */
@@ -148,6 +210,9 @@ function init() {
     // Setup listeners
     setupMessageListener();
     setupStorageListener();
+    applyPopupLayoutStyles();
+    syncPopupTopTitle();
+    setupPopupLayoutObserver();
   }
 
   console.log('✅ Yutu Labs Hider initialized');

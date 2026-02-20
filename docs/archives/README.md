@@ -4,6 +4,31 @@ This directory contains archived documentation from earlier phases of the Yutu L
 
 ## Document Index
 
+### TASK_COMPLETED_2025.md
+**Purpose**: Historical completed work log from earlier sessions
+**Status**: Archived (superseded by current `docs/TASK_COMPLETED.md`)
+**Content**: 2025 session-level completion notes and refactoring history
+
+### BUILD_VERIFICATION.md
+**Purpose**: Build verification checklist and legacy output expectations
+**Status**: Historical reference
+**Content**: Build sanity checks and troubleshooting notes from earlier structure
+
+### SPEED_CONTROLS_TESTING.md
+**Purpose**: Speed controls testing scenarios
+**Status**: Historical reference
+**Content**: Detailed testing cases and expected behavior for playback controls
+
+### SPEED_CONTROL_RESEARCH.md
+**Purpose**: Research notes for speed-control approaches
+**Status**: Historical reference
+**Content**: Alternative implementations and trade-off analysis
+
+### YOUTUBE_API_INVESTIGATION.md
+**Purpose**: Investigation notes for transcript/AI summary capabilities
+**Status**: Historical research
+**Content**: Internal DOM/API exploration and feasibility notes
+
 ### REFACTORING_RECOMMENDATIONS.md
 **Purpose**: Complete refactoring plan with 7 phases
 **Status**: Archived (tasks moved to TASK_TODO.md)
@@ -97,5 +122,5 @@ These documents should NOT be referenced for:
 
 ---
 
-*Archived on: 2025-01-22*
-*Reason: Consolidation of documentation for better maintainability*
+*Archived on: 2026-02-20*
+*Reason: Documentation reorganization and historical consolidation*

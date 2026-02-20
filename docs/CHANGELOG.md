@@ -1,9 +1,9 @@
 # Changelog
 
-All notable changes to the Yutu Labs extension will be documented in this file.
+All notable changes to the Yutu Labs extension are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
@@ -11,171 +11,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - External `View` button injection for YouTube/Vimeo links on Google and generic websites
-- New context entrypoints:
+- Context-specific content script entrypoints:
   - `content/youtube-content.js`
   - `content/google-content.js`
   - `content/external-content.js`
-- Vimeo URL detection and floating window support
+- Vimeo URL detection and floating window opening support
+- Compact/discreet external button variant aligned with current UI style
+- Inline speed controls injected directly in floating YouTube popup windows (`yutu_popup=true`)
+- Keyboard shortcuts for popup speed controls (`Alt/⌥ + 1..4`)
+- New popup settings controls:
+  - `Hide all (default)`
+  - `Hide Like/More actions`
+  - `Hide Merch shelf`
 
 ### Changed
 - Refactored `content/content.js` into shared core logic with per-context initialization
-- Updated manifest content script routing by context (YouTube, Google, Other sites)
-- Updated build entrypoints to bundle segmented content scripts
-- Unified external button styling and behavior with compact/discreet variant
-- Improved Google results handling to avoid rotated and duplicated external buttons
+- Updated `manifest.json` to route scripts by context (YouTube, Google, other websites)
+- Updated `scripts/build.mjs` with segmented content entrypoints
+- Improved Google SERP injection behavior to avoid duplicate buttons
+- Improved Google SERP compatibility to avoid rotated `View` button rendering
+- Floating window opening now accepts `targetUrl` (not only videoId)
+- Floating popup layout now renders a custom top title bar above `ytd-app`
+- Floating popup speed widget now anchors to the action row (`ytd-menu-renderer`) and adapts to responsive layouts
+- Added support for YouTube Shorts lockup structure so card button injection works in shorts shelves
+- Moved shorts card action button down to avoid overlap with title and 3-dot menu
+- Default hide settings now start enabled for popup cleanup
+- Removed unused `content/speed-controller.js`
 
 ### Performance
-- Added debounced button reinjection (`MutationObserver`) to reduce DOM churn on dynamic pages
-
-### Added (Historical - 2025-01-22)
-- Custom Modal system (`content/modal.js`) with non-intrusive notifications
-- Modal styles with smooth animations and professional design
-- Centralized configuration module (`content/config.js`)
-- Single source of truth for settings and storage
-- Consistent error handling across modules
-- `loadSettings()` and `saveSettings()` utility functions
-
-### Changed
-- **BREAKING**: All UI text now in English (previously Spanish)
-  - Popup interface translated
-  - Error messages translated
-  - Help text translated
-  - Manifest description translated
-- Replaced native `alert()` calls with `Modal.showError()`
-- Refactored settings management to use centralized config module
-- Removed code duplication between popup.js and hider.js
-
-### Fixed
-- Improved error handling in settings management
-- Better UX with non-blocking error notifications
-
-### Improved
-- Better code organization and maintainability
-- Easier to add new settings (single source of truth)
-- Improved testability with separated configuration
-- Consistent error messages and logging
-- Professional modal notifications instead of browser alerts
+- Added debounced reinjection in `MutationObserver` to reduce DOM churn on dynamic pages
 
 ### Documentation
-- Created `docs/TASK_TODO.md` with refactoring roadmap
-- Created `docs/TASK_COMPLETED.md` with completion log
-- Created `docs/CHANGELOG.md` (this file)
-- Created `docs/REFACTORING_RECOMMENDATIONS.md` with detailed plan
-
-### Internal
-- Extracted configuration management to separate module
-- Removed 19 lines of duplicate code
-- Added 1300+ lines of well-structured code
-- Set up import/export structure for future modules
+- Updated main `README.md` with multi-site behavior and segmented architecture
+- Cleaned and restructured `docs/TASK_TODO.md` to reflect current priorities
+- Moved outdated task completion log to `docs/archives/TASK_COMPLETED_2025.md`
+- Created refreshed `docs/TASK_COMPLETED.md` with current completed scope
 
 ---
 
-## [1.0.0] - Previous Release
+## [1.0.0] - 2025-01-22
 
 ### Added
 - Floating window system for YouTube videos
-- "Open" button on video thumbnails (Home, Search, Sidebar)
-- Configuration panel for hiding elements in floating windows
+- "Open" button on YouTube thumbnails (Home, Search, Sidebar)
+- Settings panel for hiding elements in floating windows
   - Hide Reels/Shorts
-  - Hide Related Videos sidebar
+  - Hide Sidebar recommendations
   - Hide Description
-  - Hide Header navigation bar
-- Element hiding functionality (content/hider.js)
-- Background service worker for window management
-- Custom styling for buttons and UI elements
-- Chrome Manifest V3 support
-- Auto-save settings functionality
+  - Hide Header
+- Custom modal notification system (`content/modal.js`)
+- Centralized settings config module (`content/config.js`)
+- Popup speed controls UI (1x, 1.25x, 1.5x, 2x)
+- Speed control messaging between popup and content script
 
-### Features
-- Opens YouTube videos in floating windows without leaving current page
-- Multiple layout support (Home grid, Search results, Sidebar)
-- MutationObserver for dynamic YouTube SPA navigation
-- Settings persistence using chrome.storage
-- Selective element hiding in floating windows only
-- Window positioning in bottom-right corner
-- Responsive button design with hover effects
+### Changed
+- UI/messages migrated to English
+- Replaced `alert()` calls with modal-based notifications
+- Settings management refactored to centralized config pattern
+
+### Fixed
+- Improved handling of background/service-worker idle communication with retry logic
+- Improved reliability of playback speed update with fallback methods
 
 ### Technical
-- Vanilla JavaScript (no frameworks)
-- esbuild for bundling
-- Content script injection for YouTube pages
-- Service worker for background tasks
-- CSS animations and gradients
-- Sourcemap support for debugging
+- Manifest V3 architecture
+- Vanilla JavaScript + esbuild bundling
+- Content scripts + background worker communication model
 
 ---
 
-## Migration Guide
+## Legacy / Research Documents
 
-### From 1.0.0 to 1.1.0 (Unreleased)
+Historical deep-dives and implementation notes are kept under:
+- `docs/archives/`
 
-**No breaking changes** - All user settings are preserved.
-
-**Language Change**:
-- All UI is now in English
-- Existing Spanish users will see English interface
-- No functionality changes, only text language
-
-**Developer Changes**:
-- Settings structure unchanged
-- Storage key unchanged (`yutuSettings`)
-- Popup and hider now import from `content/config.js`
-- Error messages now use `Modal.showError()` instead of `alert()`
-
----
-
-## Version Scheme
-
-- **Major version (X)**: Breaking changes, major features
-- **Minor version (x)**: New features, non-breaking changes
-- **Patch version (x.x)**: Bug fixes, minor improvements
-
----
-
-## Future Releases
-
-### 1.2.0 - Planned
-- Phase 2: Extract Selectors
-- Phase 3: Extract Constants
-- Phase 4: Separate Button Creation
-- Improved code organization
-
-### 1.3.0 - Planned
-- Phase 5: Refactor Popup to Class
-- Phase 6: Background Window Manager
-- Phase 7: Utilities & Error Handling
-- Complete refactoring
-
-### 2.0.0 - Potential Future
-- New features (window management, button customization, UI enhancements)
-- Keyboard shortcuts
-- Multiple floating windows
-- Analytics and statistics
-- Advanced YouTube integration
-
----
-
-## Commit History
-
-### Session 1 - 2025-01-22
-```
-c9de42f refactor: Phase 1 - Extract configuration management
-87dfe43 feat: Translate extension to English and implement custom modal system
-9a1bfbb feat: Sistema de configuración para ocultar elementos en ventanas emergentes
-```
-
----
-
-## Contributors
-
-- Original development team
-- Refactoring and improvements (2025)
-
----
-
-## Links
-
-- [GitHub Repository](https://github.com/your-repo/yutu-labs)
-- [Issue Tracker](https://github.com/your-repo/yutu-labs/issues)
-- [Documentation](./README.md)
-- [Refactoring Plan](./REFACTORING_RECOMMENDATIONS.md)
+Notable archived references:
+- `docs/archives/SPEED_CONTROL_RESEARCH.md`
+- `docs/archives/SPEED_CONTROLS_TESTING.md`
+- `docs/archives/YOUTUBE_API_INVESTIGATION.md`
+- `docs/archives/BUILD_VERIFICATION.md`
+- `docs/archives/TASK_COMPLETED_2025.md`
