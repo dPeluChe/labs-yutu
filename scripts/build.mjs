@@ -14,7 +14,9 @@ async function main() {
   await build({
     entryPoints: {
       'background/background': resolve(projectRoot, 'background/background.js'),
-      'content/content': resolve(projectRoot, 'content/content.js'),
+      'content/youtube-content': resolve(projectRoot, 'content/youtube-content.js'),
+      'content/google-content': resolve(projectRoot, 'content/google-content.js'),
+      'content/external-content': resolve(projectRoot, 'content/external-content.js'),
       'content/hider': resolve(projectRoot, 'content/hider.js'),
       'popup/popup': resolve(projectRoot, 'popup/popup.js'),
     },

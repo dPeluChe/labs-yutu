@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'openFloatingWindow') {
-    console.log('🎬 Opening floating window for video:', request.videoId);
+    console.log('🎬 Opening floating window for URL/video:', request.targetUrl || request.videoId);
 
     // Define response function to ensure we always respond
     const respond = (success, windowId = null, error = null) => {
@@ -44,10 +44,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           console.log('ℹ️ Previous floating window already closed');
         }
         floatingWindowId = null;
-        createNewWindow(request.videoId, respond);
+        createNewWindow(request, respond);
       });
     } else {
-      createNewWindow(request.videoId, respond);
+      createNewWindow(request, respond);
     }
 
     return true; // Keep message channel open for async response
@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 /**
  * Create new floating window with Yutu popup marker
  */
-function createNewWindow(videoId, respond) {
+function createNewWindow(request, respond) {
   // Calculate window dimensions
   const width = 854;
   const height = 480;
@@ -81,8 +81,12 @@ function createNewWindow(videoId, respond) {
     console.log('🖥️ Display bounds:', display.workArea);
     console.log('📐 Window position:', { left, top, width, height });
 
-    // Build URL with yutu_popup parameter
-    const url = 'https://www.youtube.com/watch?v=' + videoId + '&autoplay=1&yutu_popup=true';
+    // Build destination URL
+    const url = resolveOpenUrl(request);
+    if (!url) {
+      respond(false, null, 'Invalid or unsupported video URL');
+      return;
+    }
 
     // Create floating window
     chrome.windows.create({
@@ -104,4 +108,46 @@ function createNewWindow(videoId, respond) {
       }
     });
   });
+}
+
+function resolveOpenUrl(request) {
+  if (request.targetUrl) {
+    return normalizeVideoUrl(request.targetUrl);
+  }
+
+  if (request.videoId) {
+    return normalizeVideoUrl(`https://www.youtube.com/watch?v=${request.videoId}`);
+  }
+
+  return null;
+}
+
+function normalizeVideoUrl(rawUrl) {
+  try {
+    const parsedUrl = new URL(rawUrl);
+
+    if (isYouTubeUrl(parsedUrl)) {
+      parsedUrl.searchParams.set('autoplay', '1');
+      parsedUrl.searchParams.set('yutu_popup', 'true');
+      return parsedUrl.toString();
+    }
+
+    if (isVimeoUrl(parsedUrl)) {
+      parsedUrl.searchParams.set('autoplay', '1');
+      return parsedUrl.toString();
+    }
+
+    return parsedUrl.toString();
+  } catch (error) {
+    console.error('Error normalizing URL:', error);
+    return null;
+  }
+}
+
+function isYouTubeUrl(parsedUrl) {
+  return parsedUrl.hostname.includes('youtube.com') || parsedUrl.hostname === 'youtu.be';
+}
+
+function isVimeoUrl(parsedUrl) {
+  return parsedUrl.hostname.includes('vimeo.com');
 }

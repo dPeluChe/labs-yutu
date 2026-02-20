@@ -1,38 +1,34 @@
 /**
- * Yutu Labs - Floating Window Implementation
- * Opens YouTube videos in a small floating window without leaving the current page
+ * Yutu Labs - Shared floating window logic
  */
 
 import { Modal } from './modal.js';
 
-class YutuPiPManager {
-  constructor() {
+export class YutuPiPManager {
+  constructor(options = {}) {
     this.observer = null;
-    this.init();
+    this.injectTimer = null;
+    this.injectDebounceMs = options.injectDebounceMs ?? 150;
+    this.enableYouTubeCards = options.enableYouTubeCards ?? false;
+    this.enableExternalLinks = options.enableExternalLinks ?? false;
+    this.externalScope = options.externalScope ?? 'all';
   }
 
   init() {
-    console.log('🚀 Yutu Labs: Initializing...');
+    console.log('🚀 Yutu Labs: Initializing manager...');
 
     this.injectButtons();
     this.observe();
     this.setupCleanup();
   }
 
-  /**
-   * MutationObserver to detect when YouTube adds new video cards (SPA navigation)
-   */
   observe() {
     this.observer = new MutationObserver((mutations) => {
-      let shouldInject = false;
-      for (const m of mutations) {
-        if (m.addedNodes.length) {
-          shouldInject = true;
-          break;
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          this.scheduleInject();
+          return;
         }
-      }
-      if (shouldInject) {
-        this.injectButtons();
       }
     });
 
@@ -42,53 +38,123 @@ class YutuPiPManager {
     });
   }
 
-  /**
-   * Inject PiP buttons on all video thumbnails across different YouTube layouts
-   */
+  scheduleInject() {
+    if (this.injectTimer) {
+      clearTimeout(this.injectTimer);
+    }
+
+    this.injectTimer = setTimeout(() => {
+      this.injectButtons();
+      this.injectTimer = null;
+    }, this.injectDebounceMs);
+  }
+
   injectButtons() {
-    // Selectors for different YouTube page types
+    if (this.enableYouTubeCards) {
+      this.injectYouTubeCardButtons();
+    }
+
+    if (this.enableExternalLinks) {
+      this.injectExternalVideoLinkButtons();
+    }
+  }
+
+  injectYouTubeCardButtons() {
     const selectors = [
-      'ytd-rich-item-renderer',      // Home grid
-      'ytd-grid-video-renderer',     // Grid views
-      'ytd-compact-video-renderer',  // Sidebar
-      'ytd-video-renderer'            // Search results
+      'ytd-rich-item-renderer',
+      'ytd-grid-video-renderer',
+      'ytd-compact-video-renderer',
+      'ytd-video-renderer'
     ];
 
     const cards = document.querySelectorAll(selectors.join(','));
 
-    cards.forEach(card => {
-      // Skip if button already injected
+    cards.forEach((card) => {
       if (card.querySelector('.yutu-pip-btn')) return;
 
-      // Find video link
-      const link = card.querySelector('a[href*="/watch?v="]');
+      const link = card.querySelector('a[href*="/watch"], a[href*="youtu.be/"], a[href*="/shorts/"]');
       if (!link) return;
 
-      const videoId = this.getVideoId(link.href);
-      if (!videoId) return;
+      const target = this.extractVideoTarget(link.href);
+      if (!target) return;
 
-      // Create PiP button
-      const btn = this.createButton(videoId);
-
-      // Find best container for button placement
       const container = this.findButtonContainer(card);
-      if (container) {
-        // Ensure relative positioning for absolute button
-        const style = window.getComputedStyle(container);
-        if (style.position === 'static') {
-          container.style.position = 'relative';
-        }
-        container.appendChild(btn);
+      if (!container) return;
+
+      const btn = this.createCardButton(target.url, {
+        offsetLeftForMenu: container.classList.contains('yt-lockup-metadata-view-model')
+      });
+
+      const style = window.getComputedStyle(container);
+      if (style.position === 'static') {
+        container.style.position = 'relative';
       }
+
+      container.appendChild(btn);
     });
   }
 
-  /**
-   * Create play button element
-   */
-  createButton(videoId) {
+  injectExternalVideoLinkButtons() {
+    const links = document.querySelectorAll(
+      'a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"], a[href*="vimeo.com/"]'
+    );
+
+    links.forEach((link) => {
+      if (link.dataset.yutuInlineInjected === '1') return;
+
+      if (!this.shouldInjectExternalForCurrentScope(link)) {
+        return;
+      }
+
+      const target = this.extractVideoTarget(link.href);
+      if (!target) return;
+
+      const resultCard = link.closest('[jscontroller="rTuANe"], .WVV5ke');
+      if (resultCard && resultCard.querySelector('.yutu-inline-open-btn')) {
+        link.dataset.yutuInlineInjected = '1';
+        return;
+      }
+
+      if (link.closest('ytd-rich-item-renderer, ytd-grid-video-renderer, ytd-compact-video-renderer, ytd-video-renderer')) {
+        return;
+      }
+
+      link.dataset.yutuInlineInjected = '1';
+
+      const btn = this.createInlineButton(target.url);
+      const injectionAnchor = this.getExternalInjectionAnchor(link);
+      injectionAnchor.insertAdjacentElement('afterend', btn);
+    });
+  }
+
+  shouldInjectExternalForCurrentScope(link) {
+    if (this.externalScope === 'google') {
+      return this.isGoogleLinkContext(link);
+    }
+
+    return true;
+  }
+
+  isGoogleLinkContext(link) {
+    return Boolean(link.closest('[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search'));
+  }
+
+  getExternalInjectionAnchor(link) {
+    const rotatedWrapper = link.closest('.V9tjod');
+    if (rotatedWrapper) {
+      return rotatedWrapper;
+    }
+
+    return link;
+  }
+
+  createCardButton(targetUrl, options = {}) {
     const btn = document.createElement('button');
     btn.className = 'yutu-pip-btn';
+    if (options.offsetLeftForMenu) {
+      btn.classList.add('yutu-pip-btn--offset-menu');
+    }
+
     btn.setAttribute('aria-label', 'Open in floating window');
     btn.title = 'Open in floating window';
 
@@ -102,47 +168,118 @@ class YutuPiPManager {
     btn.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      this.openPiPPlayer(videoId);
+      this.openPiPUrl(targetUrl);
     };
 
     return btn;
   }
 
-  /**
-   * Find best container for button placement based on card type
-   */
-  findButtonContainer(card) {
-    return card.querySelector('#details') ||
-           card.querySelector('.yt-lockup-metadata-view-model') ||
-           card.querySelector('#meta') ||
-           card.querySelector('ytd-thumbnail');
+  createInlineButton(targetUrl) {
+    const btn = document.createElement('button');
+    btn.className = 'yutu-inline-open-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open video in floating window');
+    btn.title = 'Open in floating window';
+    btn.textContent = 'View';
+
+    btn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.openPiPUrl(targetUrl);
+    };
+
+    return btn;
   }
 
-  /**
-   * Extract video ID from YouTube URL
-   */
+  findButtonContainer(card) {
+    return card.querySelector('#details') ||
+      card.querySelector('.yt-lockup-metadata-view-model') ||
+      card.querySelector('#meta') ||
+      card.querySelector('ytd-thumbnail');
+  }
+
+  extractVideoTarget(url) {
+    try {
+      const parsedUrl = new URL(url, window.location.origin);
+
+      if (this.isYouTubeUrl(parsedUrl)) {
+        const videoId = this.getVideoId(parsedUrl.href);
+        if (!videoId) return null;
+
+        return {
+          provider: 'youtube',
+          videoId,
+          url: this.formatYouTubeWatchUrl(videoId)
+        };
+      }
+
+      if (this.isVimeoUrl(parsedUrl)) {
+        const videoId = this.getVimeoId(parsedUrl);
+        if (!videoId) return null;
+
+        return {
+          provider: 'vimeo',
+          videoId,
+          url: `https://vimeo.com/${videoId}`
+        };
+      }
+
+      return null;
+    } catch (e) {
+      console.error('Yutu Labs: Error parsing video URL:', e);
+      return null;
+    }
+  }
+
+  isYouTubeUrl(parsedUrl) {
+    return parsedUrl.hostname.includes('youtube.com') || parsedUrl.hostname === 'youtu.be';
+  }
+
+  isVimeoUrl(parsedUrl) {
+    return parsedUrl.hostname.includes('vimeo.com');
+  }
+
   getVideoId(url) {
     try {
-      const u = new URL(url, window.location.origin);
-      return u.searchParams.get('v');
-    } catch(e) {
+      const parsedUrl = new URL(url, window.location.origin);
+      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+
+      if (parsedUrl.hostname === 'youtu.be' && pathParts.length > 0) {
+        return pathParts[0];
+      }
+
+      if (pathParts[0] === 'shorts' && pathParts[1]) {
+        return pathParts[1];
+      }
+
+      if (pathParts[0] === 'embed' && pathParts[1]) {
+        return pathParts[1];
+      }
+
+      return parsedUrl.searchParams.get('v');
+    } catch (e) {
       console.error('Yutu Labs: Error parsing URL:', e);
       return null;
     }
   }
 
-  /**
-   * Open video in floating window using Chrome extension API
-   * This bypasses popup blockers and allows precise window control
-   */
-  async openPiPPlayer(videoId) {
-    console.log(`🎬 Requesting floating window for video: ${videoId}`);
+  getVimeoId(parsedUrl) {
+    const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+    const numericPart = pathParts.find((part) => /^\d+$/.test(part));
+    return numericPart || null;
+  }
+
+  formatYouTubeWatchUrl(videoId) {
+    return `https://www.youtube.com/watch?v=${videoId}`;
+  }
+
+  async openPiPUrl(targetUrl) {
+    console.log(`🎬 Requesting floating window for URL: ${targetUrl}`);
 
     try {
-      // Use retry logic for service worker idle state
       const response = await this.sendMessageWithRetry({
         action: 'openFloatingWindow',
-        videoId: videoId
+        targetUrl
       });
 
       if (response.success) {
@@ -157,10 +294,6 @@ class YutuPiPManager {
     }
   }
 
-  /**
-   * Send message to background script with retry logic
-   * Handles service worker idle state automatically
-   */
   async sendMessageWithRetry(message, maxRetries = 3, retryDelay = 500) {
     let lastError = null;
 
@@ -168,12 +301,10 @@ class YutuPiPManager {
       try {
         const response = await chrome.runtime.sendMessage(message);
 
-        // Check if response is undefined (channel may be closed)
         if (response === undefined) {
           if (chrome.runtime.lastError) {
             throw new Error(chrome.runtime.lastError.message || 'Unknown runtime error');
           }
-          // Service worker didn't respond, retry
           throw new Error('No response from background script');
         }
 
@@ -182,51 +313,96 @@ class YutuPiPManager {
         lastError = error;
         console.warn(`⚠️ Attempt ${attempt}/${maxRetries} failed:`, error.message);
 
-        // Don't retry on the last attempt
         if (attempt < maxRetries) {
-          console.log(`🔄 Retrying in ${retryDelay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, retryDelay));
-          retryDelay *= 1.5; // Exponential backoff
+          await new Promise((resolve) => setTimeout(resolve, retryDelay));
+          retryDelay *= 1.5;
         }
       }
     }
 
-    // All retries failed
     throw lastError;
   }
 
-
-  /**
-   * Setup cleanup on page unload
-   */
   setupCleanup() {
     window.addEventListener('beforeunload', () => {
       this.cleanup();
     });
-
-    // Also listen to YouTube's SPA navigation
-    window.addEventListener('yt-navigate-finish', () => {
-      // Re-inject buttons after navigation
-      setTimeout(() => this.injectButtons(), 500);
-    });
   }
 
-  /**
-   * Cleanup resources
-   */
   cleanup() {
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
+
+    if (this.injectTimer) {
+      clearTimeout(this.injectTimer);
+      this.injectTimer = null;
+    }
   }
 }
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.yutuPiPManager = new YutuPiPManager();
+let youtubeMessageListenerAttached = false;
+
+export function attachYouTubePlaybackMessageListener() {
+  if (youtubeMessageListenerAttached) return;
+  youtubeMessageListenerAttached = true;
+
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'setPlaybackSpeed') {
+      const speed = request.speed;
+      const player = document.querySelector('#movie_player');
+
+      if (player && player.setPlaybackRate) {
+        try {
+          player.setPlaybackRate(speed);
+          sendResponse({ success: true, speed, method: 'internal' });
+        } catch (error) {
+          const video = player.querySelector('video');
+          if (video) {
+            video.playbackRate = speed;
+            sendResponse({ success: true, speed, method: 'video-element' });
+          } else {
+            sendResponse({ success: false, error: 'Video element not found' });
+          }
+        }
+      } else {
+        const video = document.querySelector('video');
+        if (video) {
+          video.playbackRate = speed;
+          sendResponse({ success: true, speed, method: 'direct' });
+        } else {
+          sendResponse({ success: false, error: 'No player or video found' });
+        }
+      }
+
+      return true;
+    }
+
+    if (request.action === 'getPlaybackSpeed') {
+      const player = document.querySelector('#movie_player');
+
+      if (player && player.getPlaybackRate) {
+        try {
+          const speed = player.getPlaybackRate();
+          sendResponse({ success: true, speed });
+        } catch (error) {
+          const video = player.querySelector('video');
+          if (video) {
+            sendResponse({ success: true, speed: video.playbackRate });
+          } else {
+            const videoDirect = document.querySelector('video');
+            sendResponse({ success: true, speed: videoDirect?.playbackRate || 1 });
+          }
+        }
+      } else {
+        const video = document.querySelector('video');
+        sendResponse({ success: true, speed: video?.playbackRate || 1 });
+      }
+
+      return true;
+    }
+
+    return false;
   });
-} else {
-  window.yutuPiPManager = new YutuPiPManager();
 }

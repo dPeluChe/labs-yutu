@@ -1,16 +1,19 @@
 # Yutu Labs Extension
 
-Una extensión de Chrome para mejorar la experiencia de usuario en YouTube abriendo videos en ventanas flotantes.
+Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotantes, sin salir de la página actual.
 
 ## Características Principales
 
 *   **Botón "Abrir" en Miniaturas:**
     *   Inyecta automáticamente un botón en las miniaturas de los videos (Home, Feed, Sidebar, Búsqueda).
     *   Permite visualizar el video sin salir de la página actual.
+*   **Botón "View" en Enlaces Externos:**
+    *   Detecta enlaces de YouTube/Vimeo en Google y otras webs.
+    *   Inyecta un botón compacto y discreto junto al enlace.
 *   **Ventana Flotante:**
-    *   Al hacer clic en "Abrir", se abre el video en una ventana nueva pequeña (854x480).
+    *   Al hacer clic en "Open/View", se abre el video en una ventana nueva pequeña (854x480).
     *   Posicionada en la esquina inferior derecha de tu pantalla.
-    *   Usa el reproductor oficial de YouTube (sin restricciones de embed).
+    *   Soporta URLs de YouTube y Vimeo.
     *   Puedes redimensionar y mover la ventana libremente.
 
 ## Instalación (Modo Desarrollador)
@@ -44,8 +47,11 @@ npm run watch
 
 ## Estructura del Proyecto
 
-*   `/content`: Scripts y estilos que se inyectan en la página de YouTube.
-    *   `content.js`: Lógica principal (YutuPiPManager) con Document Picture-in-Picture API
+*   `/content`: Scripts y estilos inyectados por contexto.
+    *   `content.js`: Núcleo compartido (YutuPiPManager)
+    *   `youtube-content.js`: Inyección para cards de YouTube + speed control messages
+    *   `google-content.js`: Inyección optimizada para resultados de Google
+    *   `external-content.js`: Inyección para otras webs con enlaces YouTube/Vimeo
     *   `content.css`: Estilos del botón PiP
 *   `/background`: Service worker de la extensión.
 *   `/popup`: Interfaz del popup de la extensión (icono en la barra).
@@ -61,10 +67,11 @@ npm run watch
 
 ## Cómo Funciona
 
-1. **Inyección de Botones**: La extensión usa `MutationObserver` para detectar videos en YouTube
-2. **Apertura de Ventana**: Al hacer clic, usa `window.open()` para abrir el video en ventana flotante
-3. **Posicionamiento**: La ventana se abre en esquina inferior derecha (854x480, aspecto 16:9)
-4. **Player Oficial**: La ventana carga directamente YouTube.com (sin restricciones de embed)
+1. **Inyección Segmentada**: La extensión usa content scripts separados para YouTube, Google y otras webs.
+2. **Detección de Enlaces**: En sitios externos detecta enlaces YouTube/Vimeo y añade botón `View`.
+3. **Observer con Debounce**: Reduce reinyecciones en páginas dinámicas.
+4. **Apertura de Ventana**: Al hacer clic, usa la API de extensión para abrir el video en ventana flotante.
+5. **Posicionamiento**: La ventana se abre en esquina inferior derecha (854x480, aspecto 16:9).
 
 ## Troubleshooting
 

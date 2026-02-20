@@ -7,9 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] - 2025-01-22
+## [Unreleased] - 2026-02-20
 
 ### Added
+- External `View` button injection for YouTube/Vimeo links on Google and generic websites
+- New context entrypoints:
+  - `content/youtube-content.js`
+  - `content/google-content.js`
+  - `content/external-content.js`
+- Vimeo URL detection and floating window support
+
+### Changed
+- Refactored `content/content.js` into shared core logic with per-context initialization
+- Updated manifest content script routing by context (YouTube, Google, Other sites)
+- Updated build entrypoints to bundle segmented content scripts
+- Unified external button styling and behavior with compact/discreet variant
+- Improved Google results handling to avoid rotated and duplicated external buttons
+
+### Performance
+- Added debounced button reinjection (`MutationObserver`) to reduce DOM churn on dynamic pages
+
+### Added (Historical - 2025-01-22)
 - Custom Modal system (`content/modal.js`) with non-intrusive notifications
 - Modal styles with smooth animations and professional design
 - Centralized configuration module (`content/config.js`)

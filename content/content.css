@@ -23,6 +23,10 @@
   backdrop-filter: blur(4px);
 }
 
+.yutu-pip-btn--offset-menu {
+  right: 34px;
+}
+
 /* Show button on hover */
 ytd-rich-item-renderer:hover .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
@@ -47,6 +51,41 @@ ytd-video-renderer:hover .yutu-pip-btn {
 .yutu-pip-btn span {
   font-size: 11px;
   letter-spacing: 0.3px;
+}
+
+.yutu-inline-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.1;
+  cursor: pointer;
+  vertical-align: middle;
+  width: auto !important;
+  max-width: max-content;
+  opacity: 0.9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  white-space: nowrap;
+}
+
+.yutu-inline-open-btn:hover {
+  opacity: 1;
+  transform: scale(1.03);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.yutu-inline-open-btn:active {
+  transform: scale(0.95);
 }
 
 /* Animation for button appearance */

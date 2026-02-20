@@ -21,7 +21,21 @@
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content/content.js", "content/hider.js"],
+      "js": ["content/youtube-content.js", "content/hider.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://google.com/*", "*://*.google.com/*"],
+      "exclude_matches": ["*://*.youtube.com/*"],
+      "js": ["content/google-content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "exclude_matches": ["*://*.youtube.com/*", "*://google.com/*", "*://*.google.com/*"],
+      "js": ["content/external-content.js"],
       "css": ["content/content.css"],
       "run_at": "document_end"
     }
