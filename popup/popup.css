@@ -224,6 +224,22 @@ footer {
   margin: 0 0 8px 0;
 }
 
+.speed-toggle-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.speed-toggle-label:hover {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
 .speed-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

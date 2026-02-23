@@ -9,7 +9,8 @@ export const DEFAULT_SETTINGS = {
   hideDescription: true,
   hideHeader: true,
   hideActions: true,
-  hideMerchShelf: true
+  hideMerchShelf: true,
+  closeOnFinish: true
 };
 
 export const STORAGE_KEY = 'yutuSettings';

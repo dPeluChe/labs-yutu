@@ -280,6 +280,28 @@ ytd-video-renderer:hover .yutu-pip-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.yutu-floating-speed__close-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.yutu-floating-speed__close-input {
+  accent-color: #667eea;
+  width: 12px;
+  height: 12px;
+}
+
+.yutu-floating-speed__close-text {
+  font-size: 10px;
+  line-height: 1;
+}
+
 /* Top title rendered above ytd-app in popup mode */
 #yutu-popup-floating-title {
   position: sticky;

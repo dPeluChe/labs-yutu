@@ -15,6 +15,10 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
     *   Posicionada en la esquina inferior derecha de tu pantalla.
     *   Soporta URLs de YouTube y Vimeo.
     *   Puedes redimensionar y mover la ventana libremente.
+*   **Controles Inline de Velocidad (Popup):**
+    *   Incluye botones rápidos `1x`, `1.25x`, `1.5x`, `2x` dentro de la ventana flotante.
+    *   Soporta hotkeys (`⌥/Alt + 1..4`).
+    *   Incluye opción `Close on finish` para cerrar automáticamente al terminar el video.
 
 ## Instalación (Modo Desarrollador)
 

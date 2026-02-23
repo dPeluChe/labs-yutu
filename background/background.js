@@ -52,6 +52,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     return true; // Keep message channel open for async response
   }
+
+  if (request.action === 'closeFloatingWindow') {
+    const windowId = sender.tab?.windowId || floatingWindowId;
+    if (!windowId) {
+      sendResponse({ success: false, error: 'No floating window found' });
+      return false;
+    }
+
+    chrome.windows.remove(windowId, () => {
+      if (chrome.runtime.lastError) {
+        sendResponse({ success: false, error: chrome.runtime.lastError.message });
+      } else {
+        if (windowId === floatingWindowId) {
+          floatingWindowId = null;
+        }
+        sendResponse({ success: true });
+      }
+    });
+
+    return true;
+  }
 });
 
 /**

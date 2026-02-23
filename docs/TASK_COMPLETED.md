@@ -20,6 +20,17 @@ Registro resumido de trabajo completado y validado.
 - Apertura de ventana flotante por `targetUrl` (YouTube/Vimeo)
 - Actualización de `manifest.json` y `scripts/build.mjs` para entrypoints segmentados
 - Build validado con `npm run build`
+- Controles inline de velocidad dentro de la ventana flotante
+- Hotkeys de velocidad (`⌥/Alt + 1..4`)
+- Toggle `Close on finish`:
+  - en popup global de la extensión
+  - en widget inline del player flotante
+- Cierre automático de ventana al terminar video (si la opción está activa)
+- Nuevos toggles de ocultamiento en popup:
+  - `Hide all (default)`
+  - `Hide Like/More actions`
+  - `Hide Merch shelf`
+- Soporte de inyección de botón en estructura de Shorts lockup
 
 ### Notes
 - Este bloque consolida trabajo reciente de integración por contexto.

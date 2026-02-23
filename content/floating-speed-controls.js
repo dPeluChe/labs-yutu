@@ -3,6 +3,8 @@
  * Injects quick playback controls inside yutu popup windows.
  */
 
+import { loadSettings, saveSettings } from './config.js';
+
 const CONTROL_ID = 'yutu-floating-speed-controls';
 const PRESET_SPEEDS = [1, 1.25, 1.5, 2];
 const SHORTCUTS_BY_CODE = {
@@ -16,16 +18,20 @@ export class FloatingSpeedControls {
   constructor() {
     this.video = null;
     this.videoObserver = null;
+    this.closeOnFinish = true;
     this.onRateChangeBound = this.onRateChange.bind(this);
+    this.onVideoEndedBound = this.onVideoEnded.bind(this);
   }
 
   init() {
     if (!this.isYutuPopupWindow()) return;
 
+    this.loadPreferences();
     this.ensureControlsMounted();
     this.bindToCurrentVideo();
     this.observeVideoChanges();
     this.setupKeyboardShortcuts();
+    this.setupStorageListener();
 
     window.addEventListener('yt-navigate-finish', () => {
       setTimeout(() => {
@@ -79,12 +85,25 @@ export class FloatingSpeedControls {
       buttons.appendChild(btn);
     });
 
+    const closeToggle = document.createElement('label');
+    closeToggle.className = 'yutu-floating-speed__close-wrap';
+    closeToggle.innerHTML = `
+      <input type="checkbox" id="yutu-close-on-finish" class="yutu-floating-speed__close-input">
+      <span class="yutu-floating-speed__close-text">Close on finish</span>
+    `;
+    closeToggle.querySelector('input').checked = this.closeOnFinish;
+    closeToggle.querySelector('input').addEventListener('change', (event) => {
+      this.updateCloseOnFinish(Boolean(event.target.checked), { persist: true });
+    });
+
     root.appendChild(label);
     root.appendChild(buttons);
+    root.appendChild(closeToggle);
     anchor.appendChild(root);
     this.syncLayoutMode(root, anchor);
 
     this.syncActiveSpeed();
+    this.syncCloseToggle();
   }
 
   getControlsAnchor() {
@@ -117,10 +136,12 @@ export class FloatingSpeedControls {
 
     if (this.video) {
       this.video.removeEventListener('ratechange', this.onRateChangeBound);
+      this.video.removeEventListener('ended', this.onVideoEndedBound);
     }
 
     this.video = currentVideo;
     this.video.addEventListener('ratechange', this.onRateChangeBound);
+    this.video.addEventListener('ended', this.onVideoEndedBound);
 
     this.syncActiveSpeed();
   }
@@ -151,6 +172,11 @@ export class FloatingSpeedControls {
 
   onRateChange() {
     this.syncActiveSpeed();
+  }
+
+  onVideoEnded() {
+    if (!this.closeOnFinish) return;
+    this.requestCloseFloatingWindow();
   }
 
   setupKeyboardShortcuts() {
@@ -205,5 +231,55 @@ export class FloatingSpeedControls {
       const isActive = Math.abs(btnSpeed - activeRate) < 0.01;
       btn.classList.toggle('yutu-floating-speed__btn--active', isActive);
     });
+  }
+
+  syncCloseToggle() {
+    const input = document.getElementById('yutu-close-on-finish');
+    if (!input) return;
+    input.checked = this.closeOnFinish;
+  }
+
+  async loadPreferences() {
+    try {
+      const settings = await loadSettings();
+      this.closeOnFinish = settings.closeOnFinish !== false;
+      this.syncCloseToggle();
+    } catch (error) {
+      console.warn('Yutu Labs: failed loading close-on-finish preference', error);
+    }
+  }
+
+  async updateCloseOnFinish(value, { persist } = { persist: false }) {
+    this.closeOnFinish = value;
+    this.syncCloseToggle();
+
+    if (!persist) return;
+
+    try {
+      const settings = await loadSettings();
+      await saveSettings({
+        ...settings,
+        closeOnFinish: value
+      });
+    } catch (error) {
+      console.warn('Yutu Labs: failed saving close-on-finish preference', error);
+    }
+  }
+
+  setupStorageListener() {
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== 'local' || !changes.yutuSettings?.newValue) return;
+      const closeOnFinish = changes.yutuSettings.newValue.closeOnFinish;
+      this.updateCloseOnFinish(closeOnFinish !== false);
+    });
+  }
+
+  async requestCloseFloatingWindow() {
+    try {
+      await chrome.runtime.sendMessage({ action: 'closeFloatingWindow' });
+    } catch (error) {
+      // Fallback when messaging fails.
+      window.close();
+    }
   }
 }

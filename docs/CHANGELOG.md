@@ -23,6 +23,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   - `Hide all (default)`
   - `Hide Like/More actions`
   - `Hide Merch shelf`
+- Global `Close on finish` setting in popup configuration
+- Inline `Close on finish` toggle in floating player controls
 
 ### Changed
 - Refactored `content/content.js` into shared core logic with per-context initialization
@@ -37,6 +39,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Moved shorts card action button down to avoid overlap with title and 3-dot menu
 - Default hide settings now start enabled for popup cleanup
 - Removed unused `content/speed-controller.js`
+- Added background action to close the floating window on demand (`closeFloatingWindow`)
+- Synced close-on-finish state between popup settings and inline player control
 
 ### Performance
 - Added debounced reinjection in `MutationObserver` to reduce DOM churn on dynamic pages

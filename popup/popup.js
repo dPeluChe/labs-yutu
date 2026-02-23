@@ -11,6 +11,7 @@ const elements = {
   hideHeader: document.getElementById('hide-header'),
   hideActions: document.getElementById('hide-actions'),
   hideMerchShelf: document.getElementById('hide-merch-shelf'),
+  closeOnFinish: document.getElementById('close-on-finish'),
   saveBtn: document.getElementById('save-btn'),
   saveStatus: document.getElementById('save-status'),
   speedButtons: document.querySelectorAll('.speed-btn'),
@@ -40,6 +41,7 @@ async function loadSettings() {
     elements.hideHeader.checked = settings.hideHeader;
     elements.hideActions.checked = settings.hideActions;
     elements.hideMerchShelf.checked = settings.hideMerchShelf;
+    elements.closeOnFinish.checked = settings.closeOnFinish;
     syncHideAllCheckbox();
 
     console.log('✅ Settings loaded:', settings);
@@ -59,7 +61,8 @@ async function saveSettings() {
       hideDescription: elements.hideDescription.checked,
       hideHeader: elements.hideHeader.checked,
       hideActions: elements.hideActions.checked,
-      hideMerchShelf: elements.hideMerchShelf.checked
+      hideMerchShelf: elements.hideMerchShelf.checked,
+      closeOnFinish: elements.closeOnFinish.checked
     };
 
     // Show saving status
@@ -200,6 +203,11 @@ function setupAutoSave() {
       elements[key].checked = checked;
     });
 
+    clearTimeout(window.autoSaveTimeout);
+    window.autoSaveTimeout = setTimeout(saveSettings, 300);
+  });
+
+  elements.closeOnFinish.addEventListener('change', () => {
     clearTimeout(window.autoSaveTimeout);
     window.autoSaveTimeout = setTimeout(saveSettings, 300);
   });
