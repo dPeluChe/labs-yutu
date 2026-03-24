@@ -4,12 +4,10 @@ function initExternal() {
   const manager = new YutuPiPManager({
     enableYouTubeCards: false,
     enableExternalLinks: true,
-    externalScope: 'all',
-    injectDebounceMs: 150
+    externalScope: 'all'
   });
 
   manager.init();
-  window.yutuPiPManager = manager;
 }
 
 if (document.readyState === 'loading') {

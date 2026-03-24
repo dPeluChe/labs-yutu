@@ -125,6 +125,31 @@ function hideSaveStatus() {
 }
 
 /**
+ * Query the active YouTube tab for its current playback speed
+ * and highlight the matching button.
+ */
+async function syncCurrentSpeed() {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tabs.length === 0 || !tabs[0].url?.includes('youtube.com')) return;
+
+    const response = await chrome.tabs.sendMessage(tabs[0].id, {
+      action: 'getPlaybackSpeed'
+    });
+
+    if (response?.success) {
+      const currentSpeed = response.speed;
+      elements.speedButtons.forEach(btn => {
+        const btnSpeed = parseFloat(btn.getAttribute('data-speed'));
+        btn.classList.toggle('speed-btn--active', Math.abs(btnSpeed - currentSpeed) < 0.01);
+      });
+    }
+  } catch {
+    // Content script may not be loaded yet, ignore
+  }
+}
+
+/**
  * Setup speed control buttons
  */
 function setupSpeedControls() {
@@ -229,10 +254,10 @@ function init() {
   // Setup auto-save
   setupAutoSave();
 
-  // Setup speed controls
+  // Setup speed controls and sync current speed from active tab
   setupSpeedControls();
+  syncCurrentSpeed();
 
-  // Manual save button (optional, auto-save is enabled)
   elements.saveBtn.addEventListener('click', saveSettings);
 
   console.log('✅ Popup initialized');

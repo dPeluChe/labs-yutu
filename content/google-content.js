@@ -4,12 +4,10 @@ function initGoogle() {
   const manager = new YutuPiPManager({
     enableYouTubeCards: false,
     enableExternalLinks: true,
-    externalScope: 'google',
-    injectDebounceMs: 150
+    externalScope: 'google'
   });
 
   manager.init();
-  window.yutuPiPManager = manager;
 }
 
 if (document.readyState === 'loading') {

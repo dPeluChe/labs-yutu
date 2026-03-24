@@ -33,16 +33,36 @@ export class Modal {
 
     const icon = this.getIcon(type);
 
-    modal.innerHTML = `
-      <div class="yutu-modal__content">
-        <div class="yutu-modal__icon">${icon}</div>
-        <div class="yutu-modal__text">
-          <div class="yutu-modal__title">${title}</div>
-          <div class="yutu-modal__message">${message}</div>
-        </div>
-        <button class="yutu-modal__close" aria-label="Close">×</button>
-      </div>
-    `;
+    const content = document.createElement('div');
+    content.className = 'yutu-modal__content';
+
+    const iconEl = document.createElement('div');
+    iconEl.className = 'yutu-modal__icon';
+    iconEl.textContent = icon;
+
+    const textEl = document.createElement('div');
+    textEl.className = 'yutu-modal__text';
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'yutu-modal__title';
+    titleEl.textContent = title;
+
+    const messageEl = document.createElement('div');
+    messageEl.className = 'yutu-modal__message';
+    messageEl.textContent = message;
+
+    textEl.appendChild(titleEl);
+    textEl.appendChild(messageEl);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'yutu-modal__close';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.textContent = '\u00d7';
+
+    content.appendChild(iconEl);
+    content.appendChild(textEl);
+    content.appendChild(closeBtn);
+    modal.appendChild(content);
 
     document.body.appendChild(modal);
 
@@ -52,7 +72,6 @@ export class Modal {
     });
 
     // Setup close handlers
-    const closeBtn = modal.querySelector('.yutu-modal__close');
     closeBtn.onclick = () => this.hide();
 
     // Click outside to close

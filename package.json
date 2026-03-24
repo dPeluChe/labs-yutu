@@ -8,8 +8,6 @@
     "watch": "node scripts/build.mjs --watch"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0",
-    "archiver": "^7.0.1",
-    "dotenv": "^16.4.5"
+    "esbuild": "^0.24.0"
   }
 }

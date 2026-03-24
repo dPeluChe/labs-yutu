@@ -3,7 +3,7 @@
  * Injects quick playback controls inside yutu popup windows.
  */
 
-import { loadSettings, saveSettings } from './config.js';
+import { loadSettings, saveSettings, isYutuPopupWindow, STORAGE_KEY } from './config.js';
 
 const CONTROL_ID = 'yutu-floating-speed-controls';
 const PRESET_SPEEDS = [1, 1.25, 1.5, 2];
@@ -15,21 +15,26 @@ const SHORTCUTS_BY_CODE = {
 };
 
 export class FloatingSpeedControls {
-  constructor() {
+  constructor(options = {}) {
+    this.enableOnRegularPages = options.enableOnRegularPages ?? false;
+    this.manager = options.manager ?? null;
     this.video = null;
-    this.videoObserver = null;
     this.closeOnFinish = true;
+    this.isPopupWindow = false;
     this.onRateChangeBound = this.onRateChange.bind(this);
     this.onVideoEndedBound = this.onVideoEnded.bind(this);
   }
 
   init() {
-    if (!this.isYutuPopupWindow()) return;
+    this.isPopupWindow = isYutuPopupWindow();
+    if (!this.isPopupWindow && !this.enableOnRegularPages) return;
 
     this.loadPreferences();
     this.ensureControlsMounted();
     this.bindToCurrentVideo();
-    this.observeVideoChanges();
+    if (this.manager) {
+      this.manager.onMutation(() => this.bindToCurrentVideo());
+    }
     this.setupKeyboardShortcuts();
     this.setupStorageListener();
 
@@ -39,11 +44,6 @@ export class FloatingSpeedControls {
         this.bindToCurrentVideo();
       }, 300);
     });
-  }
-
-  isYutuPopupWindow() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('yutu_popup') === 'true';
   }
 
   ensureControlsMounted() {
@@ -62,14 +62,21 @@ export class FloatingSpeedControls {
     const root = document.createElement('div');
     root.id = CONTROL_ID;
     root.className = 'yutu-floating-speed';
+    if (!this.isPopupWindow) {
+      root.classList.add('yutu-floating-speed--regular');
+    }
 
     const label = document.createElement('div');
     label.className = 'yutu-floating-speed__label';
-    const shortcutHint = this.getShortcutHintText();
-    label.innerHTML = `
-      <span class="yutu-floating-speed__kbd-icon" aria-hidden="true">⌨</span>
-      <span class="yutu-floating-speed__kbd-text">${shortcutHint}</span>
-    `;
+    const kbdIcon = document.createElement('span');
+    kbdIcon.className = 'yutu-floating-speed__kbd-icon';
+    kbdIcon.setAttribute('aria-hidden', 'true');
+    kbdIcon.textContent = '\u2328';
+    const kbdText = document.createElement('span');
+    kbdText.className = 'yutu-floating-speed__kbd-text';
+    kbdText.textContent = this.getShortcutHintText();
+    label.appendChild(kbdIcon);
+    label.appendChild(kbdText);
 
     const buttons = document.createElement('div');
     buttons.className = 'yutu-floating-speed__buttons';
@@ -87,14 +94,24 @@ export class FloatingSpeedControls {
 
     const closeToggle = document.createElement('label');
     closeToggle.className = 'yutu-floating-speed__close-wrap';
-    closeToggle.innerHTML = `
-      <input type="checkbox" id="yutu-close-on-finish" class="yutu-floating-speed__close-input">
-      <span class="yutu-floating-speed__close-text">Close on finish</span>
-    `;
-    closeToggle.querySelector('input').checked = this.closeOnFinish;
-    closeToggle.querySelector('input').addEventListener('change', (event) => {
+    const closeInput = document.createElement('input');
+    closeInput.type = 'checkbox';
+    closeInput.id = 'yutu-close-on-finish';
+    closeInput.className = 'yutu-floating-speed__close-input';
+    closeInput.checked = this.closeOnFinish;
+    closeInput.addEventListener('change', (event) => {
       this.updateCloseOnFinish(Boolean(event.target.checked), { persist: true });
     });
+    const closeText = document.createElement('span');
+    closeText.className = 'yutu-floating-speed__close-text';
+    closeText.textContent = 'Close on finish';
+    closeToggle.appendChild(closeInput);
+    closeToggle.appendChild(closeText);
+
+    // "Close on finish" only makes sense for extension-created popup windows.
+    if (!this.isPopupWindow) {
+      closeToggle.style.display = 'none';
+    }
 
     root.appendChild(label);
     root.appendChild(buttons);
@@ -146,19 +163,6 @@ export class FloatingSpeedControls {
     this.syncActiveSpeed();
   }
 
-  observeVideoChanges() {
-    if (this.videoObserver) return;
-
-    this.videoObserver = new MutationObserver(() => {
-      this.bindToCurrentVideo();
-    });
-
-    this.videoObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-
   setSpeed(speed) {
     if (!this.video) {
       this.bindToCurrentVideo();
@@ -175,7 +179,7 @@ export class FloatingSpeedControls {
   }
 
   onVideoEnded() {
-    if (!this.closeOnFinish) return;
+    if (!this.isPopupWindow || !this.closeOnFinish) return;
     this.requestCloseFloatingWindow();
   }
 
@@ -268,8 +272,8 @@ export class FloatingSpeedControls {
 
   setupStorageListener() {
     chrome.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName !== 'local' || !changes.yutuSettings?.newValue) return;
-      const closeOnFinish = changes.yutuSettings.newValue.closeOnFinish;
+      if (areaName !== 'local' || !changes[STORAGE_KEY]?.newValue) return;
+      const closeOnFinish = changes[STORAGE_KEY].newValue.closeOnFinish;
       this.updateCloseOnFinish(closeOnFinish !== false);
     });
   }

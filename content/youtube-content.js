@@ -1,14 +1,13 @@
-import { YutuPiPManager, attachYouTubePlaybackMessageListener } from './content.js';
+import { isYutuPopupWindow } from './config.js';
+import { YutuPiPManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
 
 function initYouTube() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const isYutuPopupWindow = urlParams.get('yutu_popup') === 'true';
+  const isPopup = isYutuPopupWindow();
 
   const manager = new YutuPiPManager({
-    enableYouTubeCards: !isYutuPopupWindow,
-    enableExternalLinks: false,
-    injectDebounceMs: 150
+    enableYouTubeCards: !isPopup,
+    enableExternalLinks: false
   });
 
   manager.init();
@@ -18,15 +17,13 @@ function initYouTube() {
     setTimeout(() => manager.injectButtons(), 250);
   });
 
-  window.yutuPiPManager = manager;
+  attachPlaybackMessageListener();
 
-  attachYouTubePlaybackMessageListener();
-
-  if (isYutuPopupWindow) {
-    const floatingSpeedControls = new FloatingSpeedControls();
-    floatingSpeedControls.init();
-    window.yutuFloatingSpeedControls = floatingSpeedControls;
-  }
+  const floatingSpeedControls = new FloatingSpeedControls({
+    enableOnRegularPages: true,
+    manager
+  });
+  floatingSpeedControls.init();
 }
 
 if (document.readyState === 'loading') {

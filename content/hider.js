@@ -4,46 +4,20 @@
  * Only applies to windows opened by the extension (yutu_popup=true parameter)
  */
 
-import { DEFAULT_SETTINGS, loadSettings as loadConfig } from './config.js';
+import { DEFAULT_SETTINGS, STORAGE_KEY, loadSettings as loadConfig, isYutuPopupWindow } from './config.js';
+import { HIDER_SELECTORS } from './selectors.js';
 
 let currentSettings = { ...DEFAULT_SETTINGS };
-let isYutuPopupWindow = false;
 const POPUP_LAYOUT_STYLE_ID = 'yutu-popup-layout-styles';
 const POPUP_TITLE_ID = 'yutu-popup-floating-title';
 
-/**
- * CSS selectors for elements to hide
- */
-const SELECTORS = {
-  reels: 'ytd-reel-shelf-renderer',
-  sidebar: 'yt-lockup-view-model',
-  description: '#description',
-  header: 'ytd-masthead'
-};
-
-/**
- * Check if current page is a Yutu popup window
- */
-function checkIfYutuPopup() {
-  const urlParams = new URLSearchParams(window.location.search);
-  isYutuPopupWindow = urlParams.get('yutu_popup') === 'true';
-
-  if (isYutuPopupWindow) {
-    console.log('✅ Yutu Labs: This is a popup window, applying element hiding');
-  } else {
-    console.log('ℹ️ Yutu Labs: This is a regular YouTube page, skipping element hiding');
-  }
-
-  return isYutuPopupWindow;
-}
 
 /**
  * Apply CSS to hide/show elements based on settings (only in Yutu popup windows)
  */
 function applySettings(settings) {
   // Only apply in Yutu popup windows
-  if (!isYutuPopupWindow) {
-    console.log('ℹ️ Yutu Labs: Skipping - not a popup window');
+  if (!isYutuPopupWindow()) {
     return;
   }
 
@@ -63,23 +37,23 @@ function applySettings(settings) {
   const cssRules = [];
 
   if (settings.hideReels) {
-    cssRules.push(`${SELECTORS.reels} { display: none !important; }`);
+    cssRules.push(`${HIDER_SELECTORS.reels} { display: none !important; }`);
   }
 
   if (settings.hideSidebar) {
     // Hide sidebar recommendations
-    cssRules.push(`${SELECTORS.sidebar} { display: none !important; }`);
+    cssRules.push(`${HIDER_SELECTORS.sidebar} { display: none !important; }`);
 
     // Also hide the secondary column (sidebar container)
     cssRules.push(`#secondary, #secondary-inner { display: none !important; }`);
   }
 
   if (settings.hideDescription) {
-    cssRules.push(`${SELECTORS.description} { display: none !important; }`);
+    cssRules.push(`${HIDER_SELECTORS.description} { display: none !important; }`);
   }
 
   if (settings.hideHeader) {
-    cssRules.push(`${SELECTORS.header} { display: none !important; }`);
+    cssRules.push(`${HIDER_SELECTORS.header} { display: none !important; }`);
   }
 
   // Apply new styles if there are rules
@@ -127,16 +101,13 @@ function setupMessageListener() {
  */
 function setupStorageListener() {
   chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === 'local' && changes.yutuSettings) {
-      console.log('🔄 Storage changed:', changes.yutuSettings.newValue);
-      applySettings(changes.yutuSettings.newValue);
+    if (areaName === 'local' && changes[STORAGE_KEY]) {
+      applySettings(changes[STORAGE_KEY].newValue);
     }
   });
 }
 
 function applyPopupLayoutStyles() {
-  if (!isYutuPopupWindow) return;
-
   let style = document.getElementById(POPUP_LAYOUT_STYLE_ID);
   if (!style) {
     style = document.createElement('style');
@@ -164,8 +135,6 @@ function applyPopupLayoutStyles() {
 }
 
 function syncPopupTopTitle() {
-  if (!isYutuPopupWindow) return;
-
   const appRoot = document.querySelector('ytd-app');
   if (!appRoot) return;
 
@@ -183,8 +152,6 @@ function syncPopupTopTitle() {
 }
 
 function setupPopupLayoutObserver() {
-  if (!isYutuPopupWindow) return;
-
   window.addEventListener('yt-navigate-finish', () => {
     setTimeout(() => {
       applyPopupLayoutStyles();
@@ -199,11 +166,8 @@ function setupPopupLayoutObserver() {
 function init() {
   console.log('🚀 Yutu Labs Hider initializing...');
 
-  // Check if this is a Yutu popup window
-  checkIfYutuPopup();
-
   // Only load settings and setup listeners if it's a popup window
-  if (isYutuPopupWindow) {
+  if (isYutuPopupWindow()) {
     // Load initial settings
     loadSettings();
 
@@ -225,11 +189,3 @@ if (document.readyState === 'loading') {
   init();
 }
 
-// Export for debugging (accessible from console)
-if (typeof window !== 'undefined') {
-  window.yutuHider = {
-    applySettings,
-    loadSettings,
-    getSettings: () => currentSettings
-  };
-}

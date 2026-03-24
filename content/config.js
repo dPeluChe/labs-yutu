@@ -15,6 +15,20 @@ export const DEFAULT_SETTINGS = {
 
 export const STORAGE_KEY = 'yutuSettings';
 
+let _isPopupCached = null;
+
+/**
+ * Check if the current page is a Yutu popup window.
+ * Result is cached since the URL does not change during page lifetime.
+ */
+export function isYutuPopupWindow() {
+  if (_isPopupCached === null) {
+    const params = new URLSearchParams(window.location.search);
+    _isPopupCached = params.get('yutu_popup') === 'true';
+  }
+  return _isPopupCached;
+}
+
 /**
  * Load settings from chrome.storage.local
  * @returns {Promise<Object>} Settings object
