@@ -62,7 +62,7 @@ async function main() {
     },
     outdir: distDir,
     bundle: true,
-    format: 'esm',
+    format: 'iife',
     target: ['chrome110'],
     minify: !isWatchMode,
     sourcemap: isWatchMode,
