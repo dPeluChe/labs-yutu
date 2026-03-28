@@ -11,12 +11,6 @@ function initYouTube() {
   });
 
   manager.init();
-
-  // YouTube SPA navigation requires reinjection after virtual route changes.
-  window.addEventListener('yt-navigate-finish', () => {
-    setTimeout(() => manager.injectButtons(), 250);
-  });
-
   attachPlaybackMessageListener();
 
   const floatingSpeedControls = new FloatingSpeedControls({
@@ -24,6 +18,10 @@ function initYouTube() {
     manager
   });
   floatingSpeedControls.init();
+
+  window.addEventListener('yt-navigate-finish', () => {
+    setTimeout(() => manager.injectButtons(), 250);
+  });
 }
 
 if (document.readyState === 'loading') {

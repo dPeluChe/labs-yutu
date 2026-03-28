@@ -37,24 +37,18 @@ export class FloatingSpeedControls {
     }
     this.setupKeyboardShortcuts();
     this.setupStorageListener();
-
-    window.addEventListener('yt-navigate-finish', () => {
-      setTimeout(() => {
-        this.ensureControlsMounted();
-        this.bindToCurrentVideo();
-      }, 300);
-    });
   }
 
   ensureControlsMounted() {
+    // Fast path: controls already mounted and connected
+    const existing = document.getElementById(CONTROL_ID);
+    if (existing?.isConnected && existing.parentElement) return;
+
     const anchor = this.getControlsAnchor();
     if (!anchor) return;
 
-    const existing = document.getElementById(CONTROL_ID);
     if (existing) {
-      if (existing.parentElement !== anchor) {
-        anchor.appendChild(existing);
-      }
+      anchor.appendChild(existing);
       this.syncLayoutMode(existing, anchor);
       return;
     }
@@ -124,11 +118,20 @@ export class FloatingSpeedControls {
   }
 
   getControlsAnchor() {
-    return document.querySelector('ytd-watch-metadata ytd-menu-renderer') ||
+    // Prefer metadata area below the video (where Share/Save buttons live)
+    const metadataAnchor =
+      document.querySelector('ytd-watch-metadata ytd-menu-renderer') ||
       document.querySelector('#menu ytd-menu-renderer') ||
       document.querySelector('ytd-watch-metadata ytd-menu-renderer #top-level-buttons-computed') ||
-      document.querySelector('#menu ytd-menu-renderer #top-level-buttons-computed') ||
-      document.querySelector('#movie_player') ||
+      document.querySelector('#menu ytd-menu-renderer #top-level-buttons-computed');
+
+    if (metadataAnchor) return metadataAnchor;
+
+    // Only fall back to player container on regular pages (not popup windows)
+    // to avoid overlaying controls on the video in the compact popup layout.
+    if (this.isPopupWindow) return null;
+
+    return document.querySelector('#movie_player') ||
       document.querySelector('.html5-video-player') ||
       document.querySelector('#player');
   }

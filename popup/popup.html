@@ -18,103 +18,137 @@
       <p class="subtitle">Floating window settings</p>
     </header>
 
-    <section class="speed-section">
-      <h2>Playback Speed Control</h2>
-      <p class="help-text">Change playback speed on the <strong>active YouTube tab</strong>.</p>
+    <nav class="tab-bar">
+      <button class="tab-btn tab-btn--active" data-tab="settings">Settings</button>
+      <button class="tab-btn" data-tab="sites">Sites</button>
+    </nav>
 
-      <label class="speed-toggle-label">
-        <input type="checkbox" id="close-on-finish" class="toggle-input">
-        <span class="toggle-slider"></span>
-        <div class="toggle-text">
-          <span class="toggle-title">Close on finish</span>
-          <span class="toggle-description">Automatically close floating window when video ends</span>
+    <!-- Tab: Settings -->
+    <div class="tab-panel" id="tab-settings">
+      <section class="speed-section">
+        <h2>Playback Speed Control</h2>
+        <p class="help-text">Change playback speed on the <strong>active YouTube tab</strong>.</p>
+
+        <label class="speed-toggle-label">
+          <input type="checkbox" id="close-on-finish" class="toggle-input">
+
+          <div class="toggle-text">
+            <span class="toggle-title">Close on finish</span>
+            <span class="toggle-description">Automatically close floating window when video ends</span>
+          </div>
+        </label>
+
+        <div class="speed-buttons">
+          <button class="speed-btn" data-speed="1">1x</button>
+          <button class="speed-btn" data-speed="1.25">1.25x</button>
+          <button class="speed-btn" data-speed="1.5">1.5x</button>
+          <button class="speed-btn" data-speed="2">2x</button>
         </div>
-      </label>
 
-      <div class="speed-buttons">
-        <button class="speed-btn" data-speed="1">1x</button>
-        <button class="speed-btn" data-speed="1.25">1.25x</button>
-        <button class="speed-btn" data-speed="1.5">1.5x</button>
-        <button class="speed-btn" data-speed="2">2x</button>
-      </div>
+        <div id="speed-status" class="speed-status"></div>
+      </section>
 
-      <div id="speed-status" class="speed-status"></div>
-    </section>
+      <section class="settings-section">
+        <h2>Hide elements in window</h2>
+        <p class="help-text">Settings only apply to <strong>floating windows</strong> (when clicking "Open"). Does not affect your normal YouTube view.</p>
 
-    <section class="settings-section">
-      <h2>Hide elements in window</h2>
-      <p class="help-text">Settings only apply to <strong>floating windows</strong> (when clicking "Open"). Does not affect your normal YouTube view.</p>
+        <div class="toggle-group">
+          <label class="toggle-label toggle-label--master">
+            <input type="checkbox" id="hide-all" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Hide all (default)</span>
+              <span class="toggle-description">Enable all hide rules in popup window</span>
+            </div>
+          </label>
 
-      <div class="toggle-group">
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-reels" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Reels / Shorts</span>
+              <span class="toggle-description">Hide short videos section</span>
+            </div>
+          </label>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-sidebar" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Related videos</span>
+              <span class="toggle-description">Hide recommendations sidebar</span>
+            </div>
+          </label>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-description" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Description</span>
+              <span class="toggle-description">Hide video description</span>
+            </div>
+          </label>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-header" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Header</span>
+              <span class="toggle-description">Hide top navigation bar</span>
+            </div>
+          </label>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-actions" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Like/More actions</span>
+              <span class="toggle-description">Hide like-dislike and more-actions buttons</span>
+            </div>
+          </label>
+
+          <label class="toggle-label">
+            <input type="checkbox" id="hide-merch-shelf" class="toggle-input">
+  
+            <div class="toggle-text">
+              <span class="toggle-title">Merch shelf</span>
+              <span class="toggle-description">Hide products/store section below video</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <footer>
+        <button id="save-btn" class="btn-primary">Save changes</button>
+        <div id="save-status" class="save-status"></div>
+      </footer>
+    </div>
+
+    <!-- Tab: Sites -->
+    <div class="tab-panel tab-panel--hidden" id="tab-sites">
+      <section class="sites-section">
+        <h2>External Sites</h2>
+        <p class="help-text">Show "View" buttons on YouTube/Vimeo links across <strong>whitelisted sites</strong>. Only active on domains you add below.</p>
+
         <label class="toggle-label toggle-label--master">
-          <input type="checkbox" id="hide-all" class="toggle-input">
-          <span class="toggle-slider"></span>
+          <input type="checkbox" id="external-enabled" class="toggle-input">
+
           <div class="toggle-text">
-            <span class="toggle-title">Hide all (default)</span>
-            <span class="toggle-description">Enable all hide rules in popup window</span>
+            <span class="toggle-title">Enable external sites</span>
+            <span class="toggle-description">Inject buttons on whitelisted domains</span>
           </div>
         </label>
 
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-reels" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Reels / Shorts</span>
-            <span class="toggle-description">Hide short videos section</span>
-          </div>
-        </label>
+        <div class="domain-input-group">
+          <input type="text" id="domain-input" class="domain-input" placeholder="e.g. reddit.com">
+          <button id="add-domain-btn" class="btn-add">Add</button>
+        </div>
 
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-sidebar" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Related videos</span>
-            <span class="toggle-description">Hide recommendations sidebar</span>
-          </div>
-        </label>
+        <ul id="domain-list" class="domain-list"></ul>
 
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-description" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Description</span>
-            <span class="toggle-description">Hide video description</span>
-          </div>
-        </label>
-
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-header" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Header</span>
-            <span class="toggle-description">Hide top navigation bar</span>
-          </div>
-        </label>
-
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-actions" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Like/More actions</span>
-            <span class="toggle-description">Hide like-dislike and more-actions buttons</span>
-          </div>
-        </label>
-
-        <label class="toggle-label">
-          <input type="checkbox" id="hide-merch-shelf" class="toggle-input">
-          <span class="toggle-slider"></span>
-          <div class="toggle-text">
-            <span class="toggle-title">Merch shelf</span>
-            <span class="toggle-description">Hide products/store section below video</span>
-          </div>
-        </label>
-      </div>
-    </section>
-
-    <footer>
-      <button id="save-btn" class="btn-primary">Save changes</button>
-      <div id="save-status" class="save-status"></div>
-    </footer>
+        <div id="sites-status" class="save-status"></div>
+      </section>
+    </div>
   </div>
 
   <script src="popup.js"></script>

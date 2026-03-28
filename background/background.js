@@ -1,9 +1,13 @@
 // Background service worker for Yutu Labs
 
-console.log('Yutu Labs background service worker loaded');
+const STORAGE_KEY = 'yutuSettings';
+const EXTERNAL_SCRIPT_ID = 'yutu-external-sites';
 
 // Track floating windows
 let floatingWindowId = null;
+
+// Restore dynamic content scripts on startup
+restoreExternalSiteScripts();
 
 // Listen for window close events
 chrome.windows.onRemoved.addListener((windowId) => {
@@ -12,7 +16,7 @@ chrome.windows.onRemoved.addListener((windowId) => {
   }
 });
 
-// Listen for messages from content script
+// Listen for messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'openFloatingWindow') {
     handleOpenFloatingWindow(request).then(sendResponse);
@@ -24,20 +28,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleCloseFloatingWindow(windowId).then(sendResponse);
     return true;
   }
+
+  if (request.action === 'updateExternalSites') {
+    handleUpdateExternalSites(request.settings).then(sendResponse);
+    return true;
+  }
+
 });
+
+// --- Floating Window ---
 
 async function handleOpenFloatingWindow(request) {
   try {
-    // Close existing floating window if any
     if (floatingWindowId) {
-      try {
-        await chrome.windows.remove(floatingWindowId);
-      } catch {
-        // Window may already be closed
-      }
+      try { await chrome.windows.remove(floatingWindowId); } catch {}
       floatingWindowId = null;
     }
-
     return await createNewWindow(request);
   } catch (error) {
     return { success: false, windowId: null, error: error.message };
@@ -45,15 +51,11 @@ async function handleOpenFloatingWindow(request) {
 }
 
 async function handleCloseFloatingWindow(windowId) {
-  if (!windowId) {
-    return { success: false, error: 'No floating window found' };
-  }
+  if (!windowId) return { success: false, error: 'No floating window found' };
 
   try {
     await chrome.windows.remove(windowId);
-    if (windowId === floatingWindowId) {
-      floatingWindowId = null;
-    }
+    if (windowId === floatingWindowId) floatingWindowId = null;
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
@@ -71,9 +73,7 @@ async function createNewWindow(request) {
   const top = display.workArea.top + display.workArea.height - height - 20;
 
   const url = resolveOpenUrl(request);
-  if (!url) {
-    return { success: false, windowId: null, error: 'Invalid or unsupported video URL' };
-  }
+  if (!url) return { success: false, windowId: null, error: 'Invalid or unsupported video URL' };
 
   const win = await chrome.windows.create({
     url,
@@ -90,42 +90,82 @@ async function createNewWindow(request) {
 }
 
 function resolveOpenUrl(request) {
-  if (request.targetUrl) {
-    return normalizeVideoUrl(request.targetUrl);
-  }
-
-  if (request.videoId) {
-    return normalizeVideoUrl(`https://www.youtube.com/watch?v=${request.videoId}`);
-  }
-
+  if (request.targetUrl) return normalizeVideoUrl(request.targetUrl);
+  if (request.videoId) return normalizeVideoUrl(`https://www.youtube.com/watch?v=${request.videoId}`);
   return null;
 }
 
 function normalizeVideoUrl(rawUrl) {
   try {
     const parsedUrl = new URL(rawUrl);
-
-    if (isYouTubeUrl(parsedUrl)) {
+    if (parsedUrl.hostname.includes('youtube.com') || parsedUrl.hostname === 'youtu.be') {
       parsedUrl.searchParams.set('autoplay', '1');
       parsedUrl.searchParams.set('yutu_popup', 'true');
       return parsedUrl.toString();
     }
-
-    if (isVimeoUrl(parsedUrl)) {
+    if (parsedUrl.hostname.includes('vimeo.com')) {
       parsedUrl.searchParams.set('autoplay', '1');
       return parsedUrl.toString();
     }
-
     return parsedUrl.toString();
   } catch {
     return null;
   }
 }
 
-function isYouTubeUrl(parsedUrl) {
-  return parsedUrl.hostname.includes('youtube.com') || parsedUrl.hostname === 'youtu.be';
+// --- External Sites Dynamic Registration ---
+
+async function restoreExternalSiteScripts() {
+  try {
+    const existing = await chrome.scripting.getRegisteredContentScripts({ ids: [EXTERNAL_SCRIPT_ID] });
+    if (existing.length > 0) return;
+
+    const result = await chrome.storage.local.get(STORAGE_KEY);
+    const settings = result[STORAGE_KEY] || {};
+    const ext = settings.externalSites || { enabled: false, domains: [] };
+
+    if (ext.enabled && ext.domains.length > 0) {
+      await registerExternalScripts(ext.domains);
+    }
+  } catch {
+    // First install or no settings yet
+  }
 }
 
-function isVimeoUrl(parsedUrl) {
-  return parsedUrl.hostname.includes('vimeo.com');
+async function handleUpdateExternalSites(externalSites) {
+  try {
+    await unregisterExternalScripts();
+
+    if (externalSites.enabled && externalSites.domains.length > 0) {
+      await registerExternalScripts(externalSites.domains);
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function registerExternalScripts(domains) {
+  const matches = domains.flatMap(domain => [
+    `*://${domain}/*`,
+    `*://*.${domain}/*`
+  ]);
+
+  await chrome.scripting.registerContentScripts([{
+    id: EXTERNAL_SCRIPT_ID,
+    matches,
+    excludeMatches: ['*://*.youtube.com/*', '*://google.com/*', '*://*.google.com/*'],
+    js: ['content/external-content.js'],
+    css: ['content/content.css'],
+    runAt: 'document_end'
+  }]);
+}
+
+async function unregisterExternalScripts() {
+  try {
+    await chrome.scripting.unregisterContentScripts({ ids: [EXTERNAL_SCRIPT_ID] });
+  } catch {
+    // Not registered, ignore
+  }
 }

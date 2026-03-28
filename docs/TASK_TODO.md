@@ -52,13 +52,18 @@ Ultima actualizacion: 2026-03-24
 
 ## Low Priority - Features Futuras
 
-### 7) Transcript Extractor
-- [ ] Implementar extraccion de transcripts via hibrido DOM + Innertube API
-- [ ] DOM: Click programatico en "Show transcript" -> parsear `ytd-transcript-segment-renderer`
-- [ ] Fallback Innertube: POST `/youtubei/v1/player` -> `captionTracks[].baseUrl` + `&fmt=json3`
-- [ ] Disenar UI para mostrar transcript (panel lateral o en ventana flotante)
-- [ ] Manejar caso de videos sin subtitulos disponibles
-- [ ] Research documentado en `docs/archives/YOUTUBE_API_INVESTIGATION.md`
+### 7) Transcript Extractor (requiere backend o approach MAIN world)
+- [ ] **Approach recomendado**: Backend service con `youtube-transcript-api` (Python). La extension envia videoId a un endpoint propio, recibe transcript. Requiere hosting.
+- [ ] **Approach alternativo**: Content script `world: "MAIN"` declarado en manifest (bypasa CSP en Chrome 111+). Accede a `player.getPlayerResponse()` para obtener caption tracks, luego fetch timedtext URLs desde page context.
+- **Approaches descartados** (documentados en marzo 2026):
+  - Innertube `get_transcript` con protobuf: encoding fragil, 0 bytes response
+  - `captionTracks` baseUrl fetch desde content script: URLs firmadas con IP, devuelven 0 bytes fuera del page context
+  - URL limpia `timedtext?v=ID&lang=en`: YouTube rechaza sin firma
+  - Inline script injection al MAIN world: CSP de YouTube bloquea
+  - DOM click en "Show transcript": requiere user gesture real, panel no aparece con click programatico
+- [ ] Disenar UI: boton en barra de speed controls, panel colapsable a la derecha
+- [ ] Selector de idioma basado en captionTracks disponibles
+- [ ] Research base documentado en `docs/archives/YOUTUBE_API_INVESTIGATION.md`
 
 ### 8) Preparacion Chrome Web Store
 - [ ] Preparar politica de privacidad (requerida por Chrome Web Store)

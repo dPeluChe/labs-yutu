@@ -10,7 +10,11 @@ export const DEFAULT_SETTINGS = {
   hideHeader: true,
   hideActions: true,
   hideMerchShelf: true,
-  closeOnFinish: true
+  closeOnFinish: true,
+  externalSites: {
+    enabled: false,
+    domains: []
+  }
 };
 
 export const STORAGE_KEY = 'yutuSettings';
@@ -36,13 +40,18 @@ export function isYutuPopupWindow() {
 export async function loadSettings() {
   try {
     const result = await chrome.storage.local.get(STORAGE_KEY);
+    const stored = result[STORAGE_KEY] || {};
     return {
       ...DEFAULT_SETTINGS,
-      ...(result[STORAGE_KEY] || {})
+      ...stored,
+      externalSites: {
+        ...DEFAULT_SETTINGS.externalSites,
+        ...(stored.externalSites || {})
+      }
     };
   } catch (error) {
-    console.error('❌ Error loading settings from storage:', error);
-    return DEFAULT_SETTINGS;
+    console.error('Error loading settings from storage:', error);
+    return { ...DEFAULT_SETTINGS };
   }
 }
 
