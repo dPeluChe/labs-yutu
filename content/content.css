@@ -233,6 +233,38 @@ ytd-video-renderer:hover .yutu-pip-btn {
   z-index: 3;
 }
 
+.yutu-popup-speed-slot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  max-width: var(--yutu-popup-safe-width, calc(100% - 32px));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.yutu-floating-speed--popup-row {
+  position: relative;
+  left: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  z-index: 1;
+  margin: 0 auto;
+  max-width: 100%;
+  pointer-events: auto;
+}
+
+.yutu-floating-speed--compact .yutu-floating-speed__label {
+  display: none;
+}
+
 .yutu-floating-speed__label {
   color: rgba(255, 255, 255, 0.78);
   font-size: 10px;
@@ -334,6 +366,10 @@ ytd-video-renderer:hover .yutu-pip-btn {
   .yutu-floating-speed--menu {
     top: calc(100% + 10px);
     transform: translateX(-50%);
+  }
+
+  .yutu-floating-speed--popup-row {
+    gap: 6px;
   }
 }
 

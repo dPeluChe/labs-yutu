@@ -17,8 +17,12 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
     *   Puedes redimensionar y mover la ventana libremente.
 *   **Controles Inline de Velocidad (Popup):**
     *   Incluye botones rápidos `1x`, `1.25x`, `1.5x`, `2x` dentro de la ventana flotante.
+    *   El widget se centra en la fila superior del popup y se adapta al espacio disponible.
     *   Soporta hotkeys (`⌥/Alt + 1..4`).
     *   Incluye opción `Close on finish` para cerrar automáticamente al terminar el video.
+*   **Limpieza Visual del Popup:**
+    *   Permite ocultar descripción, recomendaciones, header, acciones y merch shelf.
+    *   Los hide rules se reaplican después de navegación SPA dentro del popup.
 
 ## Instalación (Modo Desarrollador)
 
@@ -76,6 +80,7 @@ npm run watch
 3. **Observer con Debounce**: Reduce reinyecciones en páginas dinámicas.
 4. **Apertura de Ventana**: Al hacer clic, usa la API de extensión para abrir el video en ventana flotante.
 5. **Posicionamiento**: La ventana se abre en esquina inferior derecha (854x480, aspecto 16:9).
+6. **Modo Popup Persistente**: La ventana marcada con `yutu_popup=true` conserva su comportamiento aun si YouTube rehidrata o navega internamente.
 
 ## Troubleshooting
 

@@ -35,12 +35,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Floating window opening now accepts `targetUrl` (not only videoId)
 - Floating popup layout now renders a custom top title bar above `ytd-app`
 - Floating popup speed widget now anchors to the action row (`ytd-menu-renderer`) and adapts to responsive layouts
+- Floating popup speed widget now recenters in the top metadata row and recomputes safe width on resize
 - Added support for YouTube Shorts lockup structure so card button injection works in shorts shelves
 - Moved shorts card action button down to avoid overlap with title and 3-dot menu
 - Default hide settings now start enabled for popup cleanup
 - Removed unused `content/speed-controller.js`
 - Added background action to close the floating window on demand (`closeFloatingWindow`)
 - Synced close-on-finish state between popup settings and inline player control
+
+### Fixed
+- Restored popup speed widget mounting after delayed YouTube DOM updates and SPA navigation
+- Persisted popup detection across in-window YouTube navigation using session storage fallback
+- Expanded popup hide rules to cover modern description and secondary-rail structures (`#bottom-row`, structured description, engagement panels)
 
 ### Performance
 - Added debounced reinjection in `MutationObserver` to reduce DOM churn on dynamic pages

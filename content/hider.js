@@ -10,6 +10,7 @@ import { HIDER_SELECTORS } from './selectors.js';
 let currentSettings = { ...DEFAULT_SETTINGS };
 const POPUP_LAYOUT_STYLE_ID = 'yutu-popup-layout-styles';
 const POPUP_TITLE_ID = 'yutu-popup-floating-title';
+const HIDER_STYLE_ID = 'yutu-hider-styles';
 
 
 /**
@@ -28,7 +29,7 @@ function applySettings(settings) {
   applyPopupLayoutStyles();
 
   // Remove old style tag if exists
-  const oldStyle = document.getElementById('yutu-hider-styles');
+  const oldStyle = document.getElementById(HIDER_STYLE_ID);
   if (oldStyle) {
     oldStyle.remove();
   }
@@ -41,11 +42,7 @@ function applySettings(settings) {
   }
 
   if (settings.hideSidebar) {
-    // Hide sidebar recommendations
     cssRules.push(`${HIDER_SELECTORS.sidebar} { display: none !important; }`);
-
-    // Also hide the secondary column (sidebar container)
-    cssRules.push(`#secondary, #secondary-inner { display: none !important; }`);
   }
 
   if (settings.hideDescription) {
@@ -59,7 +56,7 @@ function applySettings(settings) {
   // Apply new styles if there are rules
   if (cssRules.length > 0) {
     const style = document.createElement('style');
-    style.id = 'yutu-hider-styles';
+    style.id = HIDER_STYLE_ID;
     style.textContent = cssRules.join('\n');
     document.head.appendChild(style);
 
@@ -152,11 +149,15 @@ function syncPopupTopTitle() {
 }
 
 function setupPopupLayoutObserver() {
+  const reapplyPopupState = () => {
+    applyPopupLayoutStyles();
+    syncPopupTopTitle();
+    void loadSettings();
+  };
+
   window.addEventListener('yt-navigate-finish', () => {
-    setTimeout(() => {
-      applyPopupLayoutStyles();
-      syncPopupTopTitle();
-    }, 250);
+    setTimeout(reapplyPopupState, 250);
+    setTimeout(reapplyPopupState, 1200);
   });
 }
 
@@ -188,4 +189,3 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
-

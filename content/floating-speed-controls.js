@@ -6,6 +6,7 @@
 import { loadSettings, saveSettings, isYutuPopupWindow, STORAGE_KEY } from './config.js';
 
 const CONTROL_ID = 'yutu-floating-speed-controls';
+const POPUP_ROW_SLOT_ID = 'yutu-popup-speed-slot';
 const PRESET_SPEEDS = [1, 1.25, 1.5, 2];
 const SHORTCUTS_BY_CODE = {
   Digit1: 1,
@@ -21,6 +22,7 @@ export class FloatingSpeedControls {
     this.video = null;
     this.closeOnFinish = true;
     this.isPopupWindow = false;
+    this.popupRowResizeObserver = null;
     this.onRateChangeBound = this.onRateChange.bind(this);
     this.onVideoEndedBound = this.onVideoEnded.bind(this);
   }
@@ -30,22 +32,29 @@ export class FloatingSpeedControls {
     if (!this.isPopupWindow && !this.enableOnRegularPages) return;
 
     this.loadPreferences();
-    this.ensureControlsMounted();
-    this.bindToCurrentVideo();
+    const syncControls = () => {
+      this.ensureControlsMounted();
+      this.bindToCurrentVideo();
+    };
+
+    syncControls();
     if (this.manager) {
-      this.manager.onMutation(() => this.bindToCurrentVideo());
+      this.manager.onMutation(syncControls);
     }
+    window.addEventListener('yt-navigate-finish', () => setTimeout(syncControls, 250));
     this.setupKeyboardShortcuts();
     this.setupStorageListener();
   }
 
   ensureControlsMounted() {
-    // Fast path: controls already mounted and connected
     const existing = document.getElementById(CONTROL_ID);
-    if (existing?.isConnected && existing.parentElement) return;
-
     const anchor = this.getControlsAnchor();
     if (!anchor) return;
+
+    if (existing?.isConnected && existing.parentElement === anchor) {
+      this.syncLayoutMode(existing, anchor);
+      return;
+    }
 
     if (existing) {
       anchor.appendChild(existing);
@@ -118,6 +127,26 @@ export class FloatingSpeedControls {
   }
 
   getControlsAnchor() {
+    if (this.isPopupWindow) {
+      const topRow = document.querySelector('ytd-watch-metadata #top-row');
+      if (topRow) {
+        let slot = document.getElementById(POPUP_ROW_SLOT_ID);
+        if (!slot || slot.parentElement !== topRow) {
+          slot = document.createElement('div');
+          slot.id = POPUP_ROW_SLOT_ID;
+          slot.className = 'yutu-popup-speed-slot item style-scope ytd-watch-metadata';
+
+          const actionsItem = topRow.querySelector(':scope > #actions');
+          if (actionsItem) {
+            topRow.insertBefore(slot, actionsItem);
+          } else {
+            topRow.appendChild(slot);
+          }
+        }
+        return slot;
+      }
+    }
+
     // Prefer metadata area below the video (where Share/Save buttons live)
     const metadataAnchor =
       document.querySelector('ytd-watch-metadata ytd-menu-renderer') ||
@@ -137,12 +166,56 @@ export class FloatingSpeedControls {
   }
 
   syncLayoutMode(root, anchor) {
+    const isPopupRow = anchor.id === POPUP_ROW_SLOT_ID;
     const isMenuRow = anchor.matches('ytd-menu-renderer, #top-level-buttons-computed');
+
+    root.classList.toggle('yutu-floating-speed--popup-row', isPopupRow);
     root.classList.toggle('yutu-floating-speed--menu', isMenuRow);
+
+    if (isPopupRow) {
+      this.setupPopupRowPositioning(anchor, root);
+    }
 
     if (isMenuRow && window.getComputedStyle(anchor).position === 'static') {
       anchor.style.position = 'relative';
     }
+  }
+
+  setupPopupRowPositioning(anchor, root) {
+    const topRow = anchor.parentElement;
+    if (!topRow) return;
+
+    if (window.getComputedStyle(topRow).position === 'static') {
+      topRow.style.position = 'relative';
+    }
+
+    const updateMetrics = () => {
+      const owner = topRow.querySelector(':scope > #owner');
+      const actions = topRow.querySelector(':scope > #actions');
+      const rowWidth = Math.round(topRow.getBoundingClientRect().width);
+      const ownerWidth = Math.round(owner?.getBoundingClientRect().width || 0);
+      const actionsWidth = Math.round(actions?.getBoundingClientRect().width || 0);
+      const gutter = 24;
+      const safeWidth = Math.max(180, rowWidth - (Math.max(ownerWidth, actionsWidth) * 2) - gutter);
+
+      anchor.style.setProperty('--yutu-popup-safe-width', `${safeWidth}px`);
+      root.classList.toggle('yutu-floating-speed--compact', safeWidth < 320);
+    };
+
+    updateMetrics();
+
+    if (!window.ResizeObserver) return;
+    if (this.popupRowResizeObserver) {
+      this.popupRowResizeObserver.disconnect();
+    }
+
+    this.popupRowResizeObserver = new ResizeObserver(updateMetrics);
+    this.popupRowResizeObserver.observe(topRow);
+
+    const owner = topRow.querySelector(':scope > #owner');
+    const actions = topRow.querySelector(':scope > #actions');
+    if (owner) this.popupRowResizeObserver.observe(owner);
+    if (actions) this.popupRowResizeObserver.observe(actions);
   }
 
   bindToCurrentVideo() {

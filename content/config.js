@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS = {
 };
 
 export const STORAGE_KEY = 'yutuSettings';
+const POPUP_SESSION_KEY = 'yutu_popup';
 
 let _isPopupCached = null;
 
@@ -28,7 +29,14 @@ let _isPopupCached = null;
 export function isYutuPopupWindow() {
   if (_isPopupCached === null) {
     const params = new URLSearchParams(window.location.search);
-    _isPopupCached = params.get('yutu_popup') === 'true';
+    const popupFromQuery = params.get('yutu_popup') === 'true';
+    const popupFromSession = window.sessionStorage.getItem(POPUP_SESSION_KEY) === 'true';
+
+    if (popupFromQuery) {
+      window.sessionStorage.setItem(POPUP_SESSION_KEY, 'true');
+    }
+
+    _isPopupCached = popupFromQuery || popupFromSession;
   }
   return _isPopupCached;
 }
