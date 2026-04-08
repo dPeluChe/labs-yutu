@@ -27,13 +27,7 @@
   right: 34px;
 }
 
-/* Shorts cards need a lower button position to avoid title/menu overlap */
-.shortsLockupViewModelHostOutsideMetadata .yutu-pip-btn,
-.shortsLockupViewModelHostOutsideMetadataHasMenu .yutu-pip-btn {
-  top: 30px;
-}
-
-/* Show button on hover */
+/* Show button when hovering the entire card (thumbnail or metadata) */
 ytd-rich-item-renderer:hover .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
 ytd-compact-video-renderer:hover .yutu-pip-btn,

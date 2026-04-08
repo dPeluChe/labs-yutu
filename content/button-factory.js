@@ -170,9 +170,8 @@ function findButtonContainer(card, link, customSelector) {
 }
 
 function shouldOffsetForMenu(container) {
-  return container.classList.contains('ytLockupMetadataViewModelMenuButton') ||
-    container.tagName?.toLowerCase() === 'yt-lockup-metadata-view-model' ||
-    Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
+  // Only offset when placed inside metadata areas that have a menu button
+  return Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
     Boolean(container.querySelector('button[aria-label="More actions"]'));
 }
 

@@ -19,17 +19,25 @@ export const VIDEO_LINK_SELECTOR = 'a[href*="/watch"], a[href*="youtu.be/"], a[h
 export const EXTERNAL_LINK_SELECTOR =
   'a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"], a[href*="vimeo.com/"]';
 
-/** Containers where the "Open" card button can be appended (tried in order) */
+/**
+ * Containers where the "Open" card button can be appended (tried in order).
+ * Thumbnail-area selectors go first so the button overlays the video preview.
+ */
 export const BUTTON_CONTAINER_SELECTORS = [
-  '#details',
-  '.ytLockupMetadataViewModelMenuButton',
-  'yt-lockup-metadata-view-model',
+  // Thumbnail areas (button appears over the video preview image)
+  'a.ytLockupViewModelContentImage',
+  'ytd-thumbnail #thumbnail',
+  'ytd-thumbnail',
+  '#thumbnail',
+  // Shorts-specific containers
+  '.shortsLockupViewModelHostThumbnailParentContainer',
   '.shortsLockupViewModelHostOutsideMetadata',
   '.shortsLockupViewModelHostOutsideMetadataHasMenu',
   'ytm-shorts-lockup-view-model',
   'ytm-shorts-lockup-view-model-v2',
-  '#meta',
-  'ytd-thumbnail'
+  // Metadata fallbacks
+  '#details',
+  '#meta'
 ];
 
 /** Google SERP context wrappers — used to scope injection to search results only */

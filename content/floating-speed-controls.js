@@ -147,12 +147,16 @@ export class FloatingSpeedControls {
       }
     }
 
+    // Only mount speed controls on watch pages (not home/browse/search)
+    const isWatchPage = location.pathname === '/watch';
+    if (!isWatchPage) return null;
+
     // Prefer metadata area below the video (where Share/Save buttons live)
     const metadataAnchor =
       document.querySelector('ytd-watch-metadata ytd-menu-renderer') ||
-      document.querySelector('#menu ytd-menu-renderer') ||
+      document.querySelector('ytd-watch-flexy #menu ytd-menu-renderer') ||
       document.querySelector('ytd-watch-metadata ytd-menu-renderer #top-level-buttons-computed') ||
-      document.querySelector('#menu ytd-menu-renderer #top-level-buttons-computed');
+      document.querySelector('ytd-watch-flexy #menu ytd-menu-renderer #top-level-buttons-computed');
 
     if (metadataAnchor) return metadataAnchor;
 
