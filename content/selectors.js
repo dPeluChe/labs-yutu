@@ -22,7 +22,8 @@ export const EXTERNAL_LINK_SELECTOR =
 /** Containers where the "Open" card button can be appended (tried in order) */
 export const BUTTON_CONTAINER_SELECTORS = [
   '#details',
-  '.yt-lockup-metadata-view-model',
+  '.ytLockupMetadataViewModelMenuButton',
+  'yt-lockup-metadata-view-model',
   '.shortsLockupViewModelHostOutsideMetadata',
   '.shortsLockupViewModelHostOutsideMetadataHasMenu',
   'ytm-shorts-lockup-view-model',

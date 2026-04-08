@@ -9,8 +9,10 @@ import { extractVideoTarget } from './url-utils.js';
 /**
  * Scan YouTube video cards and inject an "Open" button on each.
  * @param {Function} onOpen - Called with the target URL when the user clicks Open.
+ * @param {Object} options
+ * @param {string} options.customSelector - User-defined CSS selector override (tried first).
  */
-export function injectYouTubeCardButtons(onOpen) {
+export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
   const cards = document.querySelectorAll(CARD_SELECTORS.join(','));
 
   cards.forEach((card) => {
@@ -22,7 +24,7 @@ export function injectYouTubeCardButtons(onOpen) {
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    const container = findButtonContainer(card);
+    const container = findButtonContainer(card, link, customSelector);
     if (!container) return;
 
     const btn = createCardButton(target.url, onOpen, {
@@ -124,16 +126,52 @@ function createInlineButton(targetUrl, onOpen) {
   return btn;
 }
 
-function findButtonContainer(card) {
+/**
+ * Find a container for the "Open" button.
+ * 1. Try user's custom selector (if configured).
+ * 2. Try known selectors (fast path for current YouTube markup).
+ * 3. Fallback: walk up from the video link to find the first ancestor
+ *    that contains a thumbnail image — this survives YouTube DOM reshuffles
+ *    because a card always has a link wrapping a thumbnail <img>.
+ */
+function findButtonContainer(card, link, customSelector) {
+  // User-defined override takes priority
+  if (customSelector) {
+    try {
+      const custom = card.querySelector(customSelector);
+      if (custom) return custom;
+    } catch { /* invalid selector — fall through to defaults */ }
+  }
+
   for (const selector of BUTTON_CONTAINER_SELECTORS) {
     const el = card.querySelector(selector);
     if (el) return el;
   }
+
+  if (!link) return null;
+
+  // Fallback: find the thumbnail wrapper by walking up from the link.
+  // Look for the closest ancestor (still inside the card) that contains an <img>.
+  let candidate = link;
+  while (candidate && candidate !== card) {
+    if (candidate.querySelector('img')) {
+      return candidate;
+    }
+    candidate = candidate.parentElement;
+  }
+
+  // Last resort: use the card's first child with an <img>
+  const imgHolder = card.querySelector('img');
+  if (imgHolder) {
+    return imgHolder.parentElement;
+  }
+
   return null;
 }
 
 function shouldOffsetForMenu(container) {
-  return container.classList.contains('yt-lockup-metadata-view-model') ||
+  return container.classList.contains('ytLockupMetadataViewModelMenuButton') ||
+    container.tagName?.toLowerCase() === 'yt-lockup-metadata-view-model' ||
     Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
     Boolean(container.querySelector('button[aria-label="More actions"]'));
 }

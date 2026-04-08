@@ -14,7 +14,8 @@ export const DEFAULT_SETTINGS = {
   externalSites: {
     enabled: false,
     domains: []
-  }
+  },
+  customButtonSelector: ''
 };
 
 export const STORAGE_KEY = 'yutuSettings';

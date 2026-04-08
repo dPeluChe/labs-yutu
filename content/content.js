@@ -20,6 +20,7 @@ export class YutuPiPManager {
     this.enableYouTubeCards = options.enableYouTubeCards ?? false;
     this.enableExternalLinks = options.enableExternalLinks ?? false;
     this.externalScope = options.externalScope ?? 'all';
+    this.customButtonSelector = options.customButtonSelector ?? '';
     this.mutationSubscribers = [];
 
     this.handleOpen = (targetUrl) => openFloatingWindow(targetUrl);
@@ -75,7 +76,9 @@ export class YutuPiPManager {
 
   injectButtons() {
     if (this.enableYouTubeCards) {
-      injectYouTubeCardButtons(this.handleOpen);
+      injectYouTubeCardButtons(this.handleOpen, {
+        customSelector: this.customButtonSelector
+      });
     }
 
     if (this.enableExternalLinks) {
