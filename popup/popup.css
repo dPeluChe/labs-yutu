@@ -423,3 +423,128 @@ footer {
   font-size: 12px;
   padding: 16px 0;
 }
+
+/* Selector Section */
+.selector-section {
+  padding: 20px;
+}
+
+.selector-section h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #0f0f0f;
+}
+
+.selector-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.selector-current__label {
+  font-size: 12px;
+  color: #666;
+}
+
+.selector-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.selector-badge--default {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.selector-badge--custom {
+  background: #ede7f6;
+  color: #5e35b1;
+}
+
+.selector-input-group {
+  margin-bottom: 16px;
+}
+
+.selector-input-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.selector-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.selector-input:focus {
+  border-color: #667eea;
+}
+
+.selector-hint {
+  font-size: 11px;
+  color: #999;
+  margin-top: 6px;
+}
+
+.selector-defaults {
+  background: #f8f9fa;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.selector-defaults__title {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.selector-defaults__list {
+  display: block;
+  font-size: 11px;
+  color: #333;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.selector-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.selector-actions .btn-primary {
+  flex: 1;
+}
+
+.btn-secondary {
+  padding: 10px 16px;
+  background: white;
+  color: #666;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+  background: #fef2f2;
+}

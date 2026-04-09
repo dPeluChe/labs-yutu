@@ -1,16 +1,25 @@
 /**
  * Yutu Labs - Button Factory
- * Creates and injects "Open" / "View" buttons into video cards and links.
+ * Creates and injects "Open" buttons into video cards and links.
+ *
+ * Strategy: inject a single small button inside the thumbnail <a> tag.
+ * Always visible (like YouTube's duration badge), no hover dependency.
  */
 
-import { CARD_SELECTORS, VIDEO_LINK_SELECTOR, EXTERNAL_LINK_SELECTOR, BUTTON_CONTAINER_SELECTORS, GOOGLE_CONTEXT_SELECTOR } from './selectors.js';
+import { CARD_SELECTORS, VIDEO_LINK_SELECTOR, EXTERNAL_LINK_SELECTOR, GOOGLE_CONTEXT_SELECTOR } from './selectors.js';
 import { extractVideoTarget } from './url-utils.js';
 
+const THUMB_SELECTORS = [
+  'a.ytLockupViewModelContentImage',
+  'a#thumbnail',
+  'ytd-thumbnail a',
+  '.shortsLockupViewModelHostThumbnailParentContainer'
+];
+
 /**
- * Scan YouTube video cards and inject an "Open" button on each.
- * @param {Function} onOpen - Called with the target URL when the user clicks Open.
+ * Scan YouTube video cards and inject a button on each thumbnail.
  */
-export function injectYouTubeCardButtons(onOpen) {
+export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
   const cards = document.querySelectorAll(CARD_SELECTORS.join(','));
 
   cards.forEach((card) => {
@@ -22,81 +31,63 @@ export function injectYouTubeCardButtons(onOpen) {
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    const container = findButtonContainer(card);
+    const container = findThumbContainer(card, link, customSelector);
     if (!container) return;
-
-    const btn = createCardButton(target.url, onOpen, {
-      offsetLeftForMenu: shouldOffsetForMenu(container)
-    });
 
     if (window.getComputedStyle(container).position === 'static') {
       container.style.position = 'relative';
     }
 
-    container.appendChild(btn);
+    container.appendChild(createButton(target.url, onOpen));
   });
 }
 
 /**
  * Scan links to YouTube/Vimeo on the current page and inject a compact "View" button.
- * @param {Function} onOpen - Called with the target URL when the user clicks View.
- * @param {Object} options
- * @param {string} options.scope - 'google' restricts injection to Google SERP context, 'all' injects everywhere.
  */
 export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
   const links = document.querySelectorAll(EXTERNAL_LINK_SELECTOR);
 
   links.forEach((link) => {
     if (link.dataset.yutuInlineInjected === '1') return;
-
     if (scope === 'google' && !isGoogleLinkContext(link)) return;
 
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    // Avoid duplicate if a card-level button already handles this link
     const resultCard = link.closest('[jscontroller="rTuANe"], .WVV5ke');
     if (resultCard && resultCard.querySelector('.yutu-inline-open-btn')) {
       link.dataset.yutuInlineInjected = '1';
       return;
     }
-
     if (link.closest(CARD_SELECTORS.join(','))) return;
 
     link.dataset.yutuInlineInjected = '1';
-
     const btn = createInlineButton(target.url, onOpen);
-    const anchor = getExternalInjectionAnchor(link);
+    const anchor = link.closest('.V9tjod') || link;
     anchor.insertAdjacentElement('afterend', btn);
   });
 }
 
-// --- Internal helpers ---
+// --- Button creators ---
 
-function createCardButton(targetUrl, onOpen, options = {}) {
+function createButton(targetUrl, onOpen) {
   const btn = document.createElement('button');
   btn.className = 'yutu-pip-btn';
-  if (options.offsetLeftForMenu) {
-    btn.classList.add('yutu-pip-btn--offset-menu');
-  }
-
   btn.setAttribute('aria-label', 'Open in floating window');
   btn.title = 'Open in floating window';
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('height', '12');
-  svg.setAttribute('width', '12');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('width', '14');
   svg.setAttribute('viewBox', '0 0 24 24');
   svg.setAttribute('fill', 'currentColor');
+
+  // "open in new window" icon
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  path.setAttribute('d', 'M8 5v14l11-7z');
+  path.setAttribute('d', 'M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z');
   svg.appendChild(path);
-
-  const span = document.createElement('span');
-  span.textContent = 'Open';
-
   btn.appendChild(svg);
-  btn.appendChild(span);
 
   btn.onclick = (e) => {
     e.preventDefault();
@@ -124,24 +115,36 @@ function createInlineButton(targetUrl, onOpen) {
   return btn;
 }
 
-function findButtonContainer(card) {
-  for (const selector of BUTTON_CONTAINER_SELECTORS) {
-    const el = card.querySelector(selector);
+// --- Container finder ---
+
+function findThumbContainer(card, link, customSelector) {
+  // User override
+  if (customSelector) {
+    try {
+      const el = card.querySelector(customSelector);
+      if (el) return el;
+    } catch { /* invalid */ }
+  }
+
+  // Try known thumbnail containers
+  for (const sel of THUMB_SELECTORS) {
+    const el = card.querySelector(sel);
     if (el) return el;
   }
+
+  // Fallback: the link itself if it contains an image
+  if (link.querySelector('img')) return link;
+
+  // Walk up from link to find ancestor with img
+  let candidate = link.parentElement;
+  while (candidate && candidate !== card) {
+    if (candidate.querySelector('img')) return candidate;
+    candidate = candidate.parentElement;
+  }
+
   return null;
 }
 
-function shouldOffsetForMenu(container) {
-  return container.classList.contains('yt-lockup-metadata-view-model') ||
-    Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
-    Boolean(container.querySelector('button[aria-label="More actions"]'));
-}
-
 function isGoogleLinkContext(link) {
-  return Boolean(link.closest(GOOGLE_CONTEXT_SELECTOR));
-}
-
-function getExternalInjectionAnchor(link) {
-  return link.closest('.V9tjod') || link;
+  return Boolean(link.closest('[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search'));
 }

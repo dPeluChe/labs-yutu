@@ -20,6 +20,7 @@
 
     <nav class="tab-bar">
       <button class="tab-btn tab-btn--active" data-tab="settings">Settings</button>
+      <button class="tab-btn" data-tab="selector">Selector</button>
       <button class="tab-btn" data-tab="sites">Sites</button>
     </nav>
 
@@ -122,6 +123,37 @@
         <button id="save-btn" class="btn-primary">Save changes</button>
         <div id="save-status" class="save-status"></div>
       </footer>
+    </div>
+
+    <!-- Tab: Selector -->
+    <div class="tab-panel tab-panel--hidden" id="tab-selector">
+      <section class="selector-section">
+        <h2>Button Position</h2>
+        <p class="help-text">Override where the <strong>"Open" button</strong> is placed inside each video card. Use a CSS selector relative to the card container.</p>
+
+        <div class="selector-current">
+          <span class="selector-current__label">Status</span>
+          <span id="selector-status-badge" class="selector-badge selector-badge--default">Using defaults</span>
+        </div>
+
+        <div class="selector-input-group">
+          <label for="custom-selector-input" class="selector-input-label">Custom CSS selector</label>
+          <input type="text" id="custom-selector-input" class="selector-input" placeholder="e.g. .ytLockupMetadataViewModelMenuButton">
+          <p class="selector-hint">The button will be appended inside the first element matching this selector within each video card.</p>
+        </div>
+
+        <div class="selector-defaults">
+          <span class="selector-defaults__title">Default selectors (tried in order):</span>
+          <code class="selector-defaults__list">yt-lockup-metadata-view-model, #details, #meta, ytd-thumbnail, .shortsLockupViewModelHostOutsideMetadata</code>
+        </div>
+
+        <div class="selector-actions">
+          <button id="selector-save-btn" class="btn-primary">Save selector</button>
+          <button id="selector-reset-btn" class="btn-secondary">Reset to default</button>
+        </div>
+
+        <div id="selector-save-status" class="save-status"></div>
+      </section>
     </div>
 
     <!-- Tab: Sites -->

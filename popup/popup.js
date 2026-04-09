@@ -20,6 +20,12 @@ const elements = {
   // Tabs
   tabButtons: document.querySelectorAll('.tab-btn'),
   tabPanels: document.querySelectorAll('.tab-panel'),
+  // Selector
+  customSelectorInput: document.getElementById('custom-selector-input'),
+  selectorSaveBtn: document.getElementById('selector-save-btn'),
+  selectorResetBtn: document.getElementById('selector-reset-btn'),
+  selectorSaveStatus: document.getElementById('selector-save-status'),
+  selectorStatusBadge: document.getElementById('selector-status-badge'),
   // Sites
   externalEnabled: document.getElementById('external-enabled'),
   domainInput: document.getElementById('domain-input'),
@@ -70,6 +76,10 @@ async function loadSettings() {
     currentExternalSites = settings.externalSites || { enabled: false, domains: [] };
     elements.externalEnabled.checked = currentExternalSites.enabled;
     renderDomainList();
+
+    // Load custom selector
+    elements.customSelectorInput.value = settings.customButtonSelector || '';
+    updateSelectorBadge(settings.customButtonSelector);
   } catch (error) {
     console.error('Error loading settings:', error);
   }
@@ -352,6 +362,61 @@ function setupExternalSites() {
   });
 }
 
+// --- Custom Selector ---
+
+function updateSelectorBadge(selector) {
+  if (selector && selector.trim()) {
+    elements.selectorStatusBadge.textContent = 'Custom active';
+    elements.selectorStatusBadge.className = 'selector-badge selector-badge--custom';
+  } else {
+    elements.selectorStatusBadge.textContent = 'Using defaults';
+    elements.selectorStatusBadge.className = 'selector-badge selector-badge--default';
+  }
+}
+
+async function saveCustomSelector() {
+  const selector = elements.customSelectorInput.value.trim();
+
+  // Validate selector syntax
+  if (selector) {
+    try {
+      document.querySelector(selector);
+    } catch {
+      flashStatus(elements.selectorSaveStatus, 'Invalid CSS selector', 'error');
+      return;
+    }
+  }
+
+  const settings = await loadConfig();
+  settings.customButtonSelector = selector;
+  await saveConfig(settings);
+
+  updateSelectorBadge(selector);
+  flashStatus(elements.selectorSaveStatus, selector ? 'Custom selector saved' : 'Cleared — using defaults', 'success');
+
+  // Notify YouTube tabs to re-inject buttons
+  const tabs = await chrome.tabs.query({ url: '*://*.youtube.com/*' });
+  tabs.forEach(tab => {
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'updateCustomSelector',
+      customButtonSelector: selector
+    }).catch(() => {});
+  });
+}
+
+async function resetCustomSelector() {
+  elements.customSelectorInput.value = '';
+  await saveCustomSelector();
+}
+
+function setupCustomSelector() {
+  elements.selectorSaveBtn.addEventListener('click', saveCustomSelector);
+  elements.selectorResetBtn.addEventListener('click', resetCustomSelector);
+  elements.customSelectorInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') saveCustomSelector();
+  });
+}
+
 // --- Init ---
 
 function init() {
@@ -361,6 +426,7 @@ function init() {
   setupSpeedControls();
   syncCurrentSpeed();
   setupExternalSites();
+  setupCustomSelector();
   elements.saveBtn.addEventListener('click', saveSettings);
 }
 

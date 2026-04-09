@@ -19,17 +19,11 @@ export const VIDEO_LINK_SELECTOR = 'a[href*="/watch"], a[href*="youtu.be/"], a[h
 export const EXTERNAL_LINK_SELECTOR =
   'a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"], a[href*="vimeo.com/"]';
 
-/** Containers where the "Open" card button can be appended (tried in order) */
-export const BUTTON_CONTAINER_SELECTORS = [
-  '#details',
-  '.yt-lockup-metadata-view-model',
-  '.shortsLockupViewModelHostOutsideMetadata',
-  '.shortsLockupViewModelHostOutsideMetadataHasMenu',
-  'ytm-shorts-lockup-view-model',
-  'ytm-shorts-lockup-view-model-v2',
-  '#meta',
-  'ytd-thumbnail'
-];
+/**
+ * @deprecated — Button container selection moved to button-factory.js THUMB_SELECTORS.
+ * Kept for backwards compatibility with custom selector feature.
+ */
+export const BUTTON_CONTAINER_SELECTORS = [];
 
 /** Google SERP context wrappers — used to scope injection to search results only */
 export const GOOGLE_CONTEXT_SELECTOR = '[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search';
