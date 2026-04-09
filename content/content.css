@@ -46,7 +46,11 @@ ytd-compact-video-renderer:hover .yutu-pip-btn,
 ytd-video-renderer:hover .yutu-pip-btn,
 yt-lockup-view-model:hover .yutu-pip-btn,
 .ytLockupViewModelHost:hover .yutu-pip-btn,
-ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
+ytm-shorts-lockup-view-model:hover .yutu-pip-btn,
+/* Thumbnail <a> is a sibling of .ytLockupViewModelMetadata — use ~ combinator */
+a.ytLockupViewModelContentImage:hover ~ .ytLockupViewModelMetadata .yutu-pip-btn,
+a.ytLockupViewModelContentImage:hover ~ * .yutu-pip-btn,
+yt-touch-feedback-shape:hover ~ * .yutu-pip-btn {
   opacity: 1;
 }
 
@@ -121,7 +125,10 @@ ytd-compact-video-renderer:hover .yutu-pip-btn,
 ytd-video-renderer:hover .yutu-pip-btn,
 yt-lockup-view-model:hover .yutu-pip-btn,
 .ytLockupViewModelHost:hover .yutu-pip-btn,
-ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
+ytm-shorts-lockup-view-model:hover .yutu-pip-btn,
+a.ytLockupViewModelContentImage:hover ~ .ytLockupViewModelMetadata .yutu-pip-btn,
+a.ytLockupViewModelContentImage:hover ~ * .yutu-pip-btn,
+yt-touch-feedback-shape:hover ~ * .yutu-pip-btn {
   animation: yutu-fade-in 0.2s ease-out;
 }
 
