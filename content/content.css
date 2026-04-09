@@ -1,75 +1,31 @@
 /* Yutu Labs - Floating Window Styles */
 
-/* ===== Play Buttons — shared base ===== */
+/* ===== Open Button — always visible on thumbnails ===== */
 .yutu-pip-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
   z-index: 1000;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
+  padding: 4px 6px;
   cursor: pointer;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.2s ease, transform 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  white-space: nowrap;
-}
-
-/* ----- Thumbnail button: icon-only, overlays the preview image ----- */
-.yutu-pip-btn--thumb {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  padding: 6px;
-  border-radius: 50%;
   font-size: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* Show thumbnail button when hovering its own <a> container */
-a.ytLockupViewModelContentImage:hover .yutu-pip-btn--thumb,
-ytd-thumbnail:hover .yutu-pip-btn--thumb,
-#thumbnail:hover .yutu-pip-btn--thumb {
-  opacity: 1;
-}
-
-/* ----- Metadata button: text, inline in the row ----- */
-.yutu-pip-btn--meta {
-  padding: 4px 8px;
-  font-size: 11px;
-  gap: 4px;
-  flex-shrink: 0;
-  align-self: center;
-}
-
-.yutu-pip-btn--offset-menu {
-  right: 34px;
-}
-
-/* Absolute positioning for shorts and classic thumbnail containers */
-.shortsLockupViewModelHostOutsideMetadata .yutu-pip-btn,
-.shortsLockupViewModelHostOutsideMetadataHasMenu .yutu-pip-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-}
-
-/* Show metadata button on card hover */
-ytd-rich-item-renderer:hover .yutu-pip-btn--meta,
-ytd-grid-video-renderer:hover .yutu-pip-btn--meta,
-ytd-compact-video-renderer:hover .yutu-pip-btn--meta,
-ytd-video-renderer:hover .yutu-pip-btn--meta,
-yt-lockup-view-model:hover .yutu-pip-btn--meta,
-.ytLockupViewModelHost:hover .yutu-pip-btn--meta,
-ytm-shorts-lockup-view-model:hover .yutu-pip-btn--meta {
-  opacity: 1;
+  line-height: 1;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
 }
 
 .yutu-pip-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+  opacity: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scale(1.1);
 }
 
 .yutu-pip-btn:active {
@@ -78,11 +34,7 @@ ytm-shorts-lockup-view-model:hover .yutu-pip-btn--meta {
 
 .yutu-pip-btn svg {
   flex-shrink: 0;
-}
-
-.yutu-pip-btn span {
-  font-size: 11px;
-  letter-spacing: 0.3px;
+  display: block;
 }
 
 .yutu-inline-open-btn {
@@ -120,28 +72,6 @@ ytm-shorts-lockup-view-model:hover .yutu-pip-btn--meta {
   transform: scale(0.95);
 }
 
-/* Animation for button appearance */
-@keyframes yutu-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-a.ytLockupViewModelContentImage:hover .yutu-pip-btn--thumb,
-ytd-thumbnail:hover .yutu-pip-btn--thumb,
-ytd-rich-item-renderer:hover .yutu-pip-btn--meta,
-ytd-grid-video-renderer:hover .yutu-pip-btn--meta,
-ytd-compact-video-renderer:hover .yutu-pip-btn--meta,
-ytd-video-renderer:hover .yutu-pip-btn--meta,
-yt-lockup-view-model:hover .yutu-pip-btn--meta,
-ytm-shorts-lockup-view-model:hover .yutu-pip-btn--meta {
-  animation: yutu-fade-in 0.2s ease-out;
-}
 
 /* Custom Modal Styles */
 .yutu-modal {
