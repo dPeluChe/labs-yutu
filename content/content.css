@@ -248,6 +248,15 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   transform: scale(0.95);
 }
 
+/* Speed controls inside Shorts player */
+ytd-shorts-player-controls .yutu-floating-speed,
+ytd-shorts-player-controls #right-controls .yutu-floating-speed {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  margin-top: 8px;
+}
+
 /* Floating window inline speed controls (yutu_popup=true) */
 .yutu-floating-speed {
   position: absolute;

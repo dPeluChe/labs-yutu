@@ -147,9 +147,17 @@ export class FloatingSpeedControls {
       }
     }
 
-    // Only mount speed controls on watch pages (not home/browse/search)
+    // Only mount speed controls on watch and shorts pages (not home/browse/search)
     const isWatchPage = location.pathname === '/watch';
-    if (!isWatchPage) return null;
+    const isShortsPage = location.pathname.startsWith('/shorts/');
+    if (!isWatchPage && !isShortsPage) return null;
+
+    // Shorts player: place controls near the player controls at the bottom
+    if (isShortsPage) {
+      return document.querySelector('ytd-shorts-player-controls #right-controls') ||
+        document.querySelector('ytd-shorts-player-controls') ||
+        document.querySelector('ytd-reel-video-renderer .player-controls');
+    }
 
     // Prefer metadata area below the video (where Share/Save buttons live)
     const metadataAnchor =
