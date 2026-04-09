@@ -18,6 +18,7 @@ const THUMB_SELECTORS = [
 
 const META_SELECTORS = [
   'yt-lockup-metadata-view-model',
+  '.shortsLockupViewModelHostOutsideMetadata',
   '#details',
   '#meta'
 ];
@@ -99,11 +100,14 @@ function createThumbButton(targetUrl, onOpen) {
   svg.appendChild(path);
   btn.appendChild(svg);
 
-  btn.onclick = (e) => {
+  // Use capture phase + stopImmediatePropagation to prevent parent <a> from navigating
+  btn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation();
     onOpen(targetUrl);
-  };
+  }, true);
+
   return btn;
 }
 

@@ -62,7 +62,9 @@ ytd-rich-item-renderer:hover .yutu-pip-btn--meta,
 ytd-grid-video-renderer:hover .yutu-pip-btn--meta,
 ytd-compact-video-renderer:hover .yutu-pip-btn--meta,
 ytd-video-renderer:hover .yutu-pip-btn--meta,
-yt-lockup-view-model:hover .yutu-pip-btn--meta {
+yt-lockup-view-model:hover .yutu-pip-btn--meta,
+ytm-shorts-lockup-view-model:hover .yutu-pip-btn--meta,
+ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   opacity: 1;
 }
 
