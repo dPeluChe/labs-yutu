@@ -1,27 +1,36 @@
 /* Yutu Labs - Floating Window Styles */
 
-/* Play Button on Video Thumbnails — bottom-right corner */
+/* Play Button — inline in metadata row, right-aligned */
 .yutu-pip-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
   z-index: 1000;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 4px 8px;
   cursor: pointer;
   font-size: 11px;
   font-weight: 600;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.15s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Absolute positioning fallback for thumbnail/shorts containers */
+ytd-thumbnail .yutu-pip-btn,
+#thumbnail .yutu-pip-btn,
+.shortsLockupViewModelHostOutsideMetadata .yutu-pip-btn,
+.shortsLockupViewModelHostOutsideMetadataHasMenu .yutu-pip-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
 }
 
 .yutu-pip-btn--offset-menu {
@@ -29,30 +38,18 @@
 }
 
 /*
- * Show button on hover — multiple triggers for resilience.
- * YouTube's new yt-lockup-view-model can block card-level hover propagation,
- * so we also target the thumbnail link and intermediate containers directly.
+ * Show button on hover — card-level and intermediate triggers.
+ * Hovering anywhere on the card (thumbnail or metadata) reveals the button.
  */
-ytd-rich-item-renderer:hover > * .yutu-pip-btn,
+ytd-rich-item-renderer:hover .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
 ytd-compact-video-renderer:hover .yutu-pip-btn,
 ytd-video-renderer:hover .yutu-pip-btn,
-a.ytLockupViewModelContentImage:hover .yutu-pip-btn,
 yt-lockup-view-model:hover .yutu-pip-btn,
 .ytLockupViewModelHost:hover .yutu-pip-btn,
-ytd-thumbnail:hover .yutu-pip-btn,
-#thumbnail:hover .yutu-pip-btn,
-.shortsLockupViewModelHostThumbnailParentContainer:hover ~ * .yutu-pip-btn,
 ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
   opacity: 1;
   pointer-events: auto;
-}
-
-/* Ensure thumbnail containers don't clip the button */
-a.ytLockupViewModelContentImage,
-ytd-thumbnail,
-.shortsLockupViewModelHostThumbnailParentContainer {
-  overflow: visible !important;
 }
 
 .yutu-pip-btn:hover {
@@ -120,15 +117,12 @@ ytd-thumbnail,
   }
 }
 
-ytd-rich-item-renderer:hover > * .yutu-pip-btn,
+ytd-rich-item-renderer:hover .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
 ytd-compact-video-renderer:hover .yutu-pip-btn,
 ytd-video-renderer:hover .yutu-pip-btn,
-a.ytLockupViewModelContentImage:hover .yutu-pip-btn,
 yt-lockup-view-model:hover .yutu-pip-btn,
 .ytLockupViewModelHost:hover .yutu-pip-btn,
-ytd-thumbnail:hover .yutu-pip-btn,
-#thumbnail:hover .yutu-pip-btn,
 ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
   animation: yutu-fade-in 0.2s ease-out;
 }

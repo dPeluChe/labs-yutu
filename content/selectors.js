@@ -21,23 +21,20 @@ export const EXTERNAL_LINK_SELECTOR =
 
 /**
  * Containers where the "Open" card button can be appended (tried in order).
- * Thumbnail-area selectors go first so the button overlays the video preview.
+ * Metadata-row selectors go first so the button sits inline next to the ⋮ menu.
  */
 export const BUTTON_CONTAINER_SELECTORS = [
-  // Thumbnail areas (button appears over the video preview image)
-  'a.ytLockupViewModelContentImage',
-  'ytd-thumbnail #thumbnail',
+  // New lockup: append as last child in the metadata row (next to ⋮ menu)
+  'yt-lockup-metadata-view-model',
+  // Classic layout
+  '#details',
+  '#meta',
   'ytd-thumbnail',
-  '#thumbnail',
   // Shorts-specific containers
-  '.shortsLockupViewModelHostThumbnailParentContainer',
   '.shortsLockupViewModelHostOutsideMetadata',
   '.shortsLockupViewModelHostOutsideMetadataHasMenu',
   'ytm-shorts-lockup-view-model',
-  'ytm-shorts-lockup-view-model-v2',
-  // Metadata fallbacks
-  '#details',
-  '#meta'
+  'ytm-shorts-lockup-view-model-v2'
 ];
 
 /** Google SERP context wrappers — used to scope injection to search results only */
