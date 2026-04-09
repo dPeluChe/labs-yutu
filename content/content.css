@@ -1,9 +1,9 @@
 /* Yutu Labs - Floating Window Styles */
 
-/* Play Button on Video Thumbnails */
+/* Play Button on Video Thumbnails — bottom-right corner */
 .yutu-pip-btn {
   position: absolute;
-  top: 8px;
+  bottom: 8px;
   right: 8px;
   z-index: 1000;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,7 +15,8 @@
   font-size: 11px;
   font-weight: 600;
   opacity: 0;
-  transition: all 0.2s ease;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.15s ease;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -27,12 +28,31 @@
   right: 34px;
 }
 
-/* Show button when hovering the entire card (thumbnail or metadata) */
-ytd-rich-item-renderer:hover .yutu-pip-btn,
+/*
+ * Show button on hover — multiple triggers for resilience.
+ * YouTube's new yt-lockup-view-model can block card-level hover propagation,
+ * so we also target the thumbnail link and intermediate containers directly.
+ */
+ytd-rich-item-renderer:hover > * .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
 ytd-compact-video-renderer:hover .yutu-pip-btn,
-ytd-video-renderer:hover .yutu-pip-btn {
+ytd-video-renderer:hover .yutu-pip-btn,
+a.ytLockupViewModelContentImage:hover .yutu-pip-btn,
+yt-lockup-view-model:hover .yutu-pip-btn,
+.ytLockupViewModelHost:hover .yutu-pip-btn,
+ytd-thumbnail:hover .yutu-pip-btn,
+#thumbnail:hover .yutu-pip-btn,
+.shortsLockupViewModelHostThumbnailParentContainer:hover ~ * .yutu-pip-btn,
+ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
   opacity: 1;
+  pointer-events: auto;
+}
+
+/* Ensure thumbnail containers don't clip the button */
+a.ytLockupViewModelContentImage,
+ytd-thumbnail,
+.shortsLockupViewModelHostThumbnailParentContainer {
+  overflow: visible !important;
 }
 
 .yutu-pip-btn:hover {
@@ -92,7 +112,7 @@ ytd-video-renderer:hover .yutu-pip-btn {
 @keyframes yutu-fade-in {
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -100,10 +120,16 @@ ytd-video-renderer:hover .yutu-pip-btn {
   }
 }
 
-ytd-rich-item-renderer:hover .yutu-pip-btn,
+ytd-rich-item-renderer:hover > * .yutu-pip-btn,
 ytd-grid-video-renderer:hover .yutu-pip-btn,
 ytd-compact-video-renderer:hover .yutu-pip-btn,
-ytd-video-renderer:hover .yutu-pip-btn {
+ytd-video-renderer:hover .yutu-pip-btn,
+a.ytLockupViewModelContentImage:hover .yutu-pip-btn,
+yt-lockup-view-model:hover .yutu-pip-btn,
+.ytLockupViewModelHost:hover .yutu-pip-btn,
+ytd-thumbnail:hover .yutu-pip-btn,
+#thumbnail:hover .yutu-pip-btn,
+ytm-shorts-lockup-view-model:hover .yutu-pip-btn {
   animation: yutu-fade-in 0.2s ease-out;
 }
 
