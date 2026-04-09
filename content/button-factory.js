@@ -1,16 +1,22 @@
 /**
  * Yutu Labs - Button Factory
  * Creates and injects "Open" / "View" buttons into video cards and links.
+ *
+ * Two buttons per card (new lockup model):
+ *   1. Thumbnail button — small icon on the preview image, visible on image hover
+ *   2. Metadata button  — "Open" text in the metadata row, visible on card hover
+ *
+ * Classic layouts (ytd-thumbnail, #details) get a single button.
  */
 
 import { CARD_SELECTORS, VIDEO_LINK_SELECTOR, EXTERNAL_LINK_SELECTOR, BUTTON_CONTAINER_SELECTORS, GOOGLE_CONTEXT_SELECTOR } from './selectors.js';
 import { extractVideoTarget } from './url-utils.js';
 
+// Selectors for the thumbnail <a> in the new lockup model
+const THUMB_LINK_SELECTOR = 'a.ytLockupViewModelContentImage';
+
 /**
- * Scan YouTube video cards and inject an "Open" button on each.
- * @param {Function} onOpen - Called with the target URL when the user clicks Open.
- * @param {Object} options
- * @param {string} options.customSelector - User-defined CSS selector override (tried first).
+ * Scan YouTube video cards and inject buttons.
  */
 export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
   const cards = document.querySelectorAll(CARD_SELECTORS.join(','));
@@ -24,26 +30,38 @@ export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    const container = findButtonContainer(card, link, customSelector);
-    if (!container) return;
-
-    const btn = createCardButton(target.url, onOpen, {
-      offsetLeftForMenu: shouldOffsetForMenu(container)
-    });
-
-    if (window.getComputedStyle(container).position === 'static') {
-      container.style.position = 'relative';
+    // --- Thumbnail button (inside the <a> that wraps the image) ---
+    const thumbLink = card.querySelector(THUMB_LINK_SELECTOR);
+    if (thumbLink) {
+      if (window.getComputedStyle(thumbLink).position === 'static') {
+        thumbLink.style.position = 'relative';
+      }
+      thumbLink.appendChild(createThumbButton(target.url, onOpen));
     }
 
-    container.appendChild(btn);
+    // --- Metadata button (inline in the metadata row) ---
+    const metaContainer = findButtonContainer(card, link, customSelector);
+    if (metaContainer && metaContainer !== thumbLink) {
+      metaContainer.appendChild(createCardButton(target.url, onOpen, {
+        offsetLeftForMenu: shouldOffsetForMenu(metaContainer)
+      }));
+    }
+
+    // If neither worked, try the fallback container for a single button
+    if (!thumbLink && !metaContainer) {
+      const fallback = findFallbackContainer(card, link);
+      if (fallback) {
+        if (window.getComputedStyle(fallback).position === 'static') {
+          fallback.style.position = 'relative';
+        }
+        fallback.appendChild(createCardButton(target.url, onOpen));
+      }
+    }
   });
 }
 
 /**
  * Scan links to YouTube/Vimeo on the current page and inject a compact "View" button.
- * @param {Function} onOpen - Called with the target URL when the user clicks View.
- * @param {Object} options
- * @param {string} options.scope - 'google' restricts injection to Google SERP context, 'all' injects everywhere.
  */
 export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
   const links = document.querySelectorAll(EXTERNAL_LINK_SELECTOR);
@@ -56,7 +74,6 @@ export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    // Avoid duplicate if a card-level button already handles this link
     const resultCard = link.closest('[jscontroller="rTuANe"], .WVV5ke');
     if (resultCard && resultCard.querySelector('.yutu-inline-open-btn')) {
       link.dataset.yutuInlineInjected = '1';
@@ -73,11 +90,38 @@ export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
   });
 }
 
-// --- Internal helpers ---
+// --- Button creators ---
 
+/** Small icon-only button for the thumbnail overlay */
+function createThumbButton(targetUrl, onOpen) {
+  const btn = document.createElement('button');
+  btn.className = 'yutu-pip-btn yutu-pip-btn--thumb';
+  btn.setAttribute('aria-label', 'Open in floating window');
+  btn.title = 'Open in floating window';
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'currentColor');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z');
+  svg.appendChild(path);
+  btn.appendChild(svg);
+
+  btn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpen(targetUrl);
+  };
+
+  return btn;
+}
+
+/** Text button for the metadata row */
 function createCardButton(targetUrl, onOpen, options = {}) {
   const btn = document.createElement('button');
-  btn.className = 'yutu-pip-btn';
+  btn.className = 'yutu-pip-btn yutu-pip-btn--meta';
   if (options.offsetLeftForMenu) {
     btn.classList.add('yutu-pip-btn--offset-menu');
   }
@@ -126,21 +170,14 @@ function createInlineButton(targetUrl, onOpen) {
   return btn;
 }
 
-/**
- * Find a container for the "Open" button.
- * 1. Try user's custom selector (if configured).
- * 2. Try known selectors (fast path for current YouTube markup).
- * 3. Fallback: walk up from the video link to find the first ancestor
- *    that contains a thumbnail image — this survives YouTube DOM reshuffles
- *    because a card always has a link wrapping a thumbnail <img>.
- */
+// --- Container finders ---
+
 function findButtonContainer(card, link, customSelector) {
-  // User-defined override takes priority
   if (customSelector) {
     try {
       const custom = card.querySelector(customSelector);
       if (custom) return custom;
-    } catch { /* invalid selector — fall through to defaults */ }
+    } catch { /* invalid selector */ }
   }
 
   for (const selector of BUTTON_CONTAINER_SELECTORS) {
@@ -148,29 +185,22 @@ function findButtonContainer(card, link, customSelector) {
     if (el) return el;
   }
 
-  if (!link) return null;
-
-  // Fallback: find the thumbnail wrapper by walking up from the link.
-  // Look for the closest ancestor (still inside the card) that contains an <img>.
-  let candidate = link;
-  while (candidate && candidate !== card) {
-    if (candidate.querySelector('img')) {
-      return candidate;
-    }
-    candidate = candidate.parentElement;
-  }
-
-  // Last resort: use the card's first child with an <img>
-  const imgHolder = card.querySelector('img');
-  if (imgHolder) {
-    return imgHolder.parentElement;
-  }
-
   return null;
 }
 
+/** Walk up from the link to find a thumbnail-like container */
+function findFallbackContainer(card, link) {
+  let candidate = link;
+  while (candidate && candidate !== card) {
+    if (candidate.querySelector('img')) return candidate;
+    candidate = candidate.parentElement;
+  }
+
+  const img = card.querySelector('img');
+  return img ? img.parentElement : null;
+}
+
 function shouldOffsetForMenu(container) {
-  // Only offset when placed inside metadata areas that have a menu button
   return Boolean(container.querySelector('.shortsLockupViewModelHostOutsideMetadataMenu')) ||
     Boolean(container.querySelector('button[aria-label="More actions"]'));
 }
