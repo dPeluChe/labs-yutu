@@ -24,6 +24,7 @@ const elements = {
   customSelectorInput: document.getElementById('custom-selector-input'),
   selectorSaveBtn: document.getElementById('selector-save-btn'),
   selectorResetBtn: document.getElementById('selector-reset-btn'),
+  selectorPickBtn: document.getElementById('selector-pick-btn'),
   selectorSaveStatus: document.getElementById('selector-save-status'),
   selectorStatusBadge: document.getElementById('selector-status-badge'),
   // Sites
@@ -409,9 +410,37 @@ async function resetCustomSelector() {
   await saveCustomSelector();
 }
 
+async function startElementPicker() {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tabs.length || !tabs[0].url?.includes('youtube.com')) {
+      flashStatus(elements.selectorSaveStatus, 'Open YouTube first', 'error');
+      return;
+    }
+
+    // Listen for picker result
+    chrome.runtime.onMessage.addListener(function pickerHandler(msg) {
+      if (msg.action !== 'pickerResult') return;
+      chrome.runtime.onMessage.removeListener(pickerHandler);
+
+      if (msg.selector) {
+        elements.customSelectorInput.value = msg.selector;
+        flashStatus(elements.selectorSaveStatus, `Picked: ${msg.selector}`, 'success');
+      }
+    });
+
+    // Send message to start picker and close popup
+    await chrome.tabs.sendMessage(tabs[0].id, { action: 'startElementPicker' });
+    window.close();
+  } catch (error) {
+    flashStatus(elements.selectorSaveStatus, 'Error starting picker', 'error');
+  }
+}
+
 function setupCustomSelector() {
   elements.selectorSaveBtn.addEventListener('click', saveCustomSelector);
   elements.selectorResetBtn.addEventListener('click', resetCustomSelector);
+  elements.selectorPickBtn.addEventListener('click', startElementPicker);
   elements.customSelectorInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') saveCustomSelector();
   });

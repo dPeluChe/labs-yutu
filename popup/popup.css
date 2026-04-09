@@ -527,8 +527,22 @@ footer {
   margin-bottom: 12px;
 }
 
-.selector-actions .btn-primary {
+.btn-picker {
   flex: 1;
+  padding: 10px 12px;
+  background: #1a1a2e;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-picker:hover {
+  background: #667eea;
+  color: white;
 }
 
 .btn-secondary {

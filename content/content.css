@@ -4,7 +4,7 @@
 .yutu-pip-btn {
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
   z-index: 1000;
   background: rgba(0, 0, 0, 0.7);
   color: white;
@@ -35,6 +35,85 @@
 .yutu-pip-btn svg {
   flex-shrink: 0;
   display: block;
+}
+
+/* ===== Metadata "Open" button — inline next to title ===== */
+.yutu-pip-btn--meta {
+  position: static;
+  opacity: 0;
+  padding: 2px 8px;
+  font-size: 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+}
+
+.yutu-pip-btn--meta span {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+ytd-rich-item-renderer:hover .yutu-pip-btn--meta,
+ytd-grid-video-renderer:hover .yutu-pip-btn--meta,
+ytd-compact-video-renderer:hover .yutu-pip-btn--meta,
+ytd-video-renderer:hover .yutu-pip-btn--meta,
+yt-lockup-view-model:hover .yutu-pip-btn--meta {
+  opacity: 1;
+}
+
+/* ===== Element picker overlay ===== */
+.yutu-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  cursor: crosshair;
+}
+
+.yutu-picker-highlight {
+  position: fixed;
+  border: 2px solid #667eea;
+  background: rgba(102, 126, 234, 0.15);
+  z-index: 99998;
+  pointer-events: none;
+  border-radius: 4px;
+  transition: all 0.1s ease;
+}
+
+.yutu-picker-label {
+  position: fixed;
+  z-index: 100000;
+  background: #1a1a2e;
+  color: #667eea;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.yutu-picker-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100001;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .yutu-inline-open-btn {

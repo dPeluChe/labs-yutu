@@ -1,6 +1,7 @@
 import { isYutuPopupWindow, loadSettings } from './config.js';
 import { YutuPiPManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
+import { setupPickerListener } from './element-picker.js';
 
 async function initYouTube() {
   const isPopup = isYutuPopupWindow();
@@ -14,6 +15,7 @@ async function initYouTube() {
 
   manager.init();
   attachPlaybackMessageListener();
+  setupPickerListener();
 
   const floatingSpeedControls = new FloatingSpeedControls({
     enableOnRegularPages: true,

@@ -1,9 +1,9 @@
 /**
  * Yutu Labs - Button Factory
- * Creates and injects "Open" buttons into video cards and links.
  *
- * Strategy: inject a single small button inside the thumbnail <a> tag.
- * Always visible (like YouTube's duration badge), no hover dependency.
+ * Two buttons per card:
+ *   1. Thumbnail icon — always visible, top-left of preview image
+ *   2. Metadata "Open" — appears on card hover, inline in metadata row
  */
 
 import { CARD_SELECTORS, VIDEO_LINK_SELECTOR, EXTERNAL_LINK_SELECTOR, GOOGLE_CONTEXT_SELECTOR } from './selectors.js';
@@ -16,8 +16,14 @@ const THUMB_SELECTORS = [
   '.shortsLockupViewModelHostThumbnailParentContainer'
 ];
 
+const META_SELECTORS = [
+  'yt-lockup-metadata-view-model',
+  '#details',
+  '#meta'
+];
+
 /**
- * Scan YouTube video cards and inject a button on each thumbnail.
+ * Scan YouTube video cards and inject buttons.
  */
 export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
   const cards = document.querySelectorAll(CARD_SELECTORS.join(','));
@@ -31,19 +37,25 @@ export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
     const target = extractVideoTarget(link.href);
     if (!target) return;
 
-    const container = findThumbContainer(card, link, customSelector);
-    if (!container) return;
-
-    if (window.getComputedStyle(container).position === 'static') {
-      container.style.position = 'relative';
+    // 1. Thumbnail button (always visible icon)
+    const thumb = findContainer(card, customSelector, THUMB_SELECTORS, link);
+    if (thumb) {
+      if (window.getComputedStyle(thumb).position === 'static') {
+        thumb.style.position = 'relative';
+      }
+      thumb.appendChild(createThumbButton(target.url, onOpen));
     }
 
-    container.appendChild(createButton(target.url, onOpen));
+    // 2. Metadata "Open" button (hover to reveal)
+    const meta = findContainer(card, null, META_SELECTORS, null);
+    if (meta && meta !== thumb) {
+      meta.appendChild(createMetaButton(target.url, onOpen));
+    }
   });
 }
 
 /**
- * Scan links to YouTube/Vimeo on the current page and inject a compact "View" button.
+ * Scan links to YouTube/Vimeo on external pages.
  */
 export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
   const links = document.querySelectorAll(EXTERNAL_LINK_SELECTOR);
@@ -71,7 +83,7 @@ export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
 
 // --- Button creators ---
 
-function createButton(targetUrl, onOpen) {
+function createThumbButton(targetUrl, onOpen) {
   const btn = document.createElement('button');
   btn.className = 'yutu-pip-btn';
   btn.setAttribute('aria-label', 'Open in floating window');
@@ -82,8 +94,6 @@ function createButton(targetUrl, onOpen) {
   svg.setAttribute('width', '14');
   svg.setAttribute('viewBox', '0 0 24 24');
   svg.setAttribute('fill', 'currentColor');
-
-  // "open in new window" icon
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   path.setAttribute('d', 'M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z');
   svg.appendChild(path);
@@ -94,7 +104,35 @@ function createButton(targetUrl, onOpen) {
     e.stopPropagation();
     onOpen(targetUrl);
   };
+  return btn;
+}
 
+function createMetaButton(targetUrl, onOpen) {
+  const btn = document.createElement('button');
+  btn.className = 'yutu-pip-btn yutu-pip-btn--meta';
+  btn.setAttribute('aria-label', 'Open in floating window');
+  btn.title = 'Open in floating window';
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('height', '10');
+  svg.setAttribute('width', '10');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'currentColor');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M8 5v14l11-7z');
+  svg.appendChild(path);
+
+  const span = document.createElement('span');
+  span.textContent = 'Open';
+
+  btn.appendChild(svg);
+  btn.appendChild(span);
+
+  btn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpen(targetUrl);
+  };
   return btn;
 }
 
@@ -111,14 +149,12 @@ function createInlineButton(targetUrl, onOpen) {
     e.stopPropagation();
     onOpen(targetUrl);
   };
-
   return btn;
 }
 
-// --- Container finder ---
+// --- Container finders ---
 
-function findThumbContainer(card, link, customSelector) {
-  // User override
+function findContainer(card, customSelector, selectors, link) {
   if (customSelector) {
     try {
       const el = card.querySelector(customSelector);
@@ -126,20 +162,19 @@ function findThumbContainer(card, link, customSelector) {
     } catch { /* invalid */ }
   }
 
-  // Try known thumbnail containers
-  for (const sel of THUMB_SELECTORS) {
+  for (const sel of selectors) {
     const el = card.querySelector(sel);
     if (el) return el;
   }
 
-  // Fallback: the link itself if it contains an image
-  if (link.querySelector('img')) return link;
-
-  // Walk up from link to find ancestor with img
-  let candidate = link.parentElement;
-  while (candidate && candidate !== card) {
-    if (candidate.querySelector('img')) return candidate;
-    candidate = candidate.parentElement;
+  // Fallback: walk up from link to find ancestor with img
+  if (link) {
+    if (link.querySelector('img')) return link;
+    let candidate = link.parentElement;
+    while (candidate && candidate !== card) {
+      if (candidate.querySelector('img')) return candidate;
+      candidate = candidate.parentElement;
+    }
   }
 
   return null;
