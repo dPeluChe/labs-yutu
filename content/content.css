@@ -1,21 +1,38 @@
 /* Yutu Labs - Floating Window Styles */
 
+:root {
+  --yutu-brand: #667eea;
+  --yutu-brand-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --yutu-text: #0f0f0f;
+  --yutu-text-muted: #666;
+  --yutu-text-subtle: #999;
+  --yutu-border: #e5e5e5;
+  --yutu-danger: #dc2626;
+  --yutu-success: #059669;
+  --yutu-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --yutu-font-mono: 'SF Mono', 'Fira Code', Consolas, monospace;
+  --yutu-radius-sm: 4px;
+  --yutu-radius-md: 8px;
+  --yutu-radius-pill: 999px;
+  --yutu-duration: 0.2s;
+}
+
 /* ===== Open Button — always visible on thumbnails ===== */
 .yutu-pip-btn {
   position: absolute;
   top: 8px;
   left: 8px;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgb(0, 0, 0, 0.7);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--yutu-radius-sm);
   padding: 4px 6px;
   cursor: pointer;
   font-size: 0;
   line-height: 1;
   opacity: 0.75;
-  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  transition: opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, background var(--yutu-duration) ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,7 +41,7 @@
 
 .yutu-pip-btn:hover {
   opacity: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--yutu-brand-gradient);
   transform: scale(1.1);
 }
 
@@ -47,7 +64,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--yutu-brand-gradient);
   flex-shrink: 0;
   align-self: center;
   margin-left: auto;
@@ -81,11 +98,11 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
 
 .yutu-picker-highlight {
   position: fixed;
-  border: 2px solid #667eea;
-  background: rgba(102, 126, 234, 0.15);
+  border: 2px solid var(--yutu-brand);
+  background: rgb(102, 126, 234, 0.15);
   z-index: 99998;
   pointer-events: none;
-  border-radius: 4px;
+  border-radius: var(--yutu-radius-sm);
   transition: all 0.1s ease;
 }
 
@@ -93,14 +110,14 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   position: fixed;
   z-index: 100000;
   background: #1a1a2e;
-  color: #667eea;
-  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--yutu-brand);
+  font-family: var(--yutu-font-mono);
   font-size: 11px;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--yutu-radius-sm);
   pointer-events: none;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.4);
 }
 
 .yutu-picker-banner {
@@ -109,13 +126,13 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   left: 0;
   right: 0;
   z-index: 100001;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--yutu-brand-gradient);
   color: white;
   text-align: center;
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 600;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--yutu-font);
 }
 
 .yutu-inline-open-btn {
@@ -126,7 +143,7 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   padding: 1px 6px;
   border: none;
   border-radius: 6px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--yutu-brand-gradient);
   color: #fff;
   font-size: 9px;
   font-weight: 500;
@@ -136,8 +153,8 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   width: auto !important;
   max-width: max-content;
   opacity: 0.9;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgb(0, 0, 0, 0.2);
+  transition: all var(--yutu-duration) ease;
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
   white-space: nowrap;
@@ -146,7 +163,7 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
 .yutu-inline-open-btn:hover {
   opacity: 1;
   transform: scale(1.03);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 2px 8px rgb(102, 126, 234, 0.35);
 }
 
 .yutu-inline-open-btn:active {
@@ -162,13 +179,13 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   max-width: 400px;
   min-width: 300px;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-radius: var(--yutu-radius-md);
+  box-shadow: 0 8px 32px rgb(0, 0, 0, 0.3);
   z-index: 9999;
   opacity: 0;
   transform: translateX(100%);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--yutu-font);
 }
 
 .yutu-modal--visible {
@@ -190,15 +207,15 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
 }
 
 .yutu-modal--error .yutu-modal__icon {
-  color: #ff0000;
+  color: var(--yutu-danger);
 }
 
 .yutu-modal--success .yutu-modal__icon {
-  color: #00aa00;
+  color: var(--yutu-success);
 }
 
 .yutu-modal--info .yutu-modal__icon {
-  color: #0066cc;
+  color: var(--yutu-brand);
 }
 
 .yutu-modal__text {
@@ -210,12 +227,12 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   font-weight: 600;
   font-size: 14px;
   margin-bottom: 4px;
-  color: #333;
+  color: var(--yutu-text);
 }
 
 .yutu-modal__message {
   font-size: 13px;
-  color: #666;
+  color: var(--yutu-text-muted);
   line-height: 1.4;
 }
 
@@ -229,19 +246,19 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   background: transparent;
   font-size: 20px;
   cursor: pointer;
-  color: #999;
-  border-radius: 4px;
+  color: var(--yutu-text-subtle);
+  border-radius: var(--yutu-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, color 0.2s;
+  transition: background var(--yutu-duration), color var(--yutu-duration);
   padding: 0;
   line-height: 1;
 }
 
 .yutu-modal__close:hover {
   background: #f0f0f0;
-  color: #333;
+  color: var(--yutu-text);
 }
 
 .yutu-modal__close:active {
@@ -266,9 +283,9 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(20, 20, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
+  background: rgb(20, 20, 20, 0.82);
+  border: 1px solid rgb(255, 255, 255, 0.18);
+  border-radius: var(--yutu-radius-pill);
   padding: 5px 8px;
   backdrop-filter: blur(6px);
 }
@@ -316,7 +333,7 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
 }
 
 .yutu-floating-speed__label {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgb(255, 255, 255, 0.78);
   font-size: 10px;
   line-height: 1;
   font-weight: 500;
@@ -343,23 +360,23 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
 
 .yutu-floating-speed__btn {
   border: none;
-  border-radius: 999px;
+  border-radius: var(--yutu-radius-pill);
   padding: 3px 7px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgb(255, 255, 255, 0.14);
   color: #fff;
   font-size: 10px;
   line-height: 1;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--yutu-duration) ease;
 }
 
 .yutu-floating-speed__btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgb(255, 255, 255, 0.22);
 }
 
 .yutu-floating-speed__btn--active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--yutu-brand-gradient);
 }
 
 .yutu-floating-speed__close-wrap {
@@ -367,14 +384,14 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   align-items: center;
   gap: 4px;
   margin-left: 4px;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgb(255, 255, 255, 0.82);
   font-size: 10px;
   cursor: pointer;
   user-select: none;
 }
 
 .yutu-floating-speed__close-input {
-  accent-color: #667eea;
+  accent-color: var(--yutu-brand);
   width: 12px;
   height: 12px;
 }
@@ -389,9 +406,9 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   position: sticky;
   top: 0;
   z-index: 10000;
-  background: rgba(15, 15, 15, 0.94);
+  background: rgb(15, 15, 15, 0.94);
   color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgb(255, 255, 255, 0.14);
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;

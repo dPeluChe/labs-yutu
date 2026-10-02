@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Test scenarios for earlier speed controls, kept as reference.
+
+---
+
 # Speed Controls Testing Guide
 
 **Date**: January 22, 2025

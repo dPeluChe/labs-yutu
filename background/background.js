@@ -3,17 +3,25 @@
 const STORAGE_KEY = 'yutuSettings';
 const EXTERNAL_SCRIPT_ID = 'yutu-external-sites';
 
-// Track floating windows
-let floatingWindowId = null;
+// MV3 workers are suspended after ~30s idle, so the window id lives in session storage
+const WINDOW_ID_KEY = 'yutuFloatingWindowId';
+
+async function getFloatingWindowId() {
+  const result = await chrome.storage.session.get(WINDOW_ID_KEY);
+  return result[WINDOW_ID_KEY] ?? null;
+}
+
+async function setFloatingWindowId(id) {
+  if (id === null) await chrome.storage.session.remove(WINDOW_ID_KEY);
+  else await chrome.storage.session.set({ [WINDOW_ID_KEY]: id });
+}
 
 // Restore dynamic content scripts on startup
 restoreExternalSiteScripts();
 
 // Listen for window close events
-chrome.windows.onRemoved.addListener((windowId) => {
-  if (windowId === floatingWindowId) {
-    floatingWindowId = null;
-  }
+chrome.windows.onRemoved.addListener(async (windowId) => {
+  if (windowId === await getFloatingWindowId()) await setFloatingWindowId(null);
 });
 
 // Listen for messages
@@ -24,8 +32,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'closeFloatingWindow') {
-    const windowId = sender.tab?.windowId || floatingWindowId;
-    handleCloseFloatingWindow(windowId).then(sendResponse);
+    (async () => handleCloseFloatingWindow(sender.tab?.windowId || await getFloatingWindowId()))().then(sendResponse);
     return true;
   }
 
@@ -40,9 +47,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function handleOpenFloatingWindow(request) {
   try {
-    if (floatingWindowId) {
-      try { await chrome.windows.remove(floatingWindowId); } catch {}
-      floatingWindowId = null;
+    const previousId = await getFloatingWindowId();
+    if (previousId) {
+      try { await chrome.windows.remove(previousId); } catch { /* already closed */ }
+      await setFloatingWindowId(null);
     }
     return await createNewWindow(request);
   } catch (error) {
@@ -55,7 +63,7 @@ async function handleCloseFloatingWindow(windowId) {
 
   try {
     await chrome.windows.remove(windowId);
-    if (windowId === floatingWindowId) floatingWindowId = null;
+    if (windowId === await getFloatingWindowId()) await setFloatingWindowId(null);
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
@@ -85,7 +93,7 @@ async function createNewWindow(request) {
     focused: true
   });
 
-  floatingWindowId = win.id;
+  await setFloatingWindowId(win.id);
   return { success: true, windowId: win.id, error: null };
 }
 

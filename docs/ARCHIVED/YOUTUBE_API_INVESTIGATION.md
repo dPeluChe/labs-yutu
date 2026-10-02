@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Transcript/AI summary investigation, still referenced by TASK_TODO.
+
+---
+
 # YouTube APIs Investigation - Internal vs External
 
 **Date**: January 22, 2025

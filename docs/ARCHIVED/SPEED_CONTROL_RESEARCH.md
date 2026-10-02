@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Research behind the speed controls, kept as reference.
+
+---
+
 # YouTube Speed Control Research
 
 **Date**: January 22, 2025

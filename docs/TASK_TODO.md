@@ -1,18 +1,15 @@
 # Task TODO List
 
 Backlog priorizado para las proximas sesiones.
-Ultima actualizacion: 2026-03-24
+Ultima actualizacion: 2026-10-01
 
 ---
 
 ## Critical - Bloquean Publicacion en Chrome Web Store
 
 ### 1) Crear Iconos de Extension
-- [ ] Disenar/generar iconos en 16x16, 48x48, 128x128 px (PNG)
-- [ ] Crear carpeta `icons/` con los 3 tamanos
-- [ ] Agregar campo `icons` en manifest.json
-- [ ] Agregar `default_icon` en `action` del manifest.json
-- [ ] Actualizar `scripts/build.mjs` para copiar iconos a `dist/`
+- [x] Iconos placeholder generados (`npm run icons`), declarados en manifest y copiados por el build
+- [ ] Reemplazar por diseno final antes de publicar
 - **Por que**: Chrome Web Store requiere iconos. Sin ellos la extension muestra un puzzle generico y no se puede publicar.
 
 ### 2) Reducir Host Permissions
@@ -23,7 +20,7 @@ Ultima actualizacion: 2026-03-24
 - **Por que**: Permisos en TODAS las webs levanta red flags en revision de Chrome Web Store y asusta a usuarios ("can read and change all your data on all websites").
 
 ### 3) Mejorar Descripcion del Manifest
-- [ ] Cambiar `"description": "Experimental enhancements for YouTube"` por algo descriptivo
+- [x] Descripcion actualizada en manifest.json
 - [ ] Ejemplo: `"Open YouTube videos in floating windows. Speed controls, auto-close, and distraction-free viewing."`
 - **Por que**: Chrome Web Store necesita descripcion clara. "Experimental" no genera confianza.
 
@@ -63,7 +60,7 @@ Ultima actualizacion: 2026-03-24
   - DOM click en "Show transcript": requiere user gesture real, panel no aparece con click programatico
 - [ ] Disenar UI: boton en barra de speed controls, panel colapsable a la derecha
 - [ ] Selector de idioma basado en captionTracks disponibles
-- [ ] Research base documentado en `docs/archives/YOUTUBE_API_INVESTIGATION.md`
+- [ ] Research base documentado en `docs/ARCHIVED/YOUTUBE_API_INVESTIGATION.md`
 
 ### 8) Preparacion Chrome Web Store
 - [ ] Preparar politica de privacidad (requerida por Chrome Web Store)
@@ -81,6 +78,6 @@ Ultima actualizacion: 2026-03-24
 ---
 
 ## References
-- Historial y research: `docs/archives/`
-- Changelog: `docs/CHANGELOG.md`
+- Historial y research: `docs/ARCHIVED/`
+- Changelog: `CHANGELOG.md`
 - Tareas completadas: `docs/TASK_COMPLETED/` (archivos mensuales YYMM.md)

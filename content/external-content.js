@@ -1,10 +1,11 @@
 import { YutuPiPManager } from './content.js';
 
 function initExternal() {
+  const isGoogle = /(^|\.)google\.com$/.test(location.hostname);
   const manager = new YutuPiPManager({
     enableYouTubeCards: false,
     enableExternalLinks: true,
-    externalScope: 'all'
+    externalScope: isGoogle ? 'google' : 'all'
   });
 
   manager.init();

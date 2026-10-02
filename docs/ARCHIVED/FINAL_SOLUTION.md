@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Describes the window.open() decision. The current implementation uses chrome.windows.create() from the service worker (see CLAUDE.md).
+
+---
+
 # Solución Final - Yutu Labs
 
 **Fecha**: 21 Enero 2026

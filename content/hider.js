@@ -22,8 +22,6 @@ function applySettings(settings) {
     return;
   }
 
-  console.log('🎨 Applying Yutu Labs settings:', settings);
-
   // Store current settings
   currentSettings = { ...settings };
   applyPopupLayoutStyles();
@@ -59,10 +57,6 @@ function applySettings(settings) {
     style.id = HIDER_STYLE_ID;
     style.textContent = cssRules.join('\n');
     document.head.appendChild(style);
-
-    console.log(`✅ Applied ${cssRules.length} CSS rules`);
-  } else {
-    console.log('ℹ️ No elements to hide');
   }
 }
 
@@ -73,7 +67,6 @@ async function loadSettings() {
   try {
     const settings = await loadConfig();
 
-    console.log('📦 Loaded settings from storage:', settings);
     applySettings(settings);
   } catch (error) {
     console.error('❌ Error loading settings:', error);
@@ -86,7 +79,6 @@ async function loadSettings() {
 function setupMessageListener() {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateHiddenElements') {
-      console.log('📨 Received settings update:', request.settings);
       applySettings(request.settings);
       sendResponse({ success: true });
     }
@@ -165,7 +157,6 @@ function setupPopupLayoutObserver() {
  * Initialize hider
  */
 function init() {
-  console.log('🚀 Yutu Labs Hider initializing...');
 
   // Only load settings and setup listeners if it's a popup window
   if (isYutuPopupWindow()) {
@@ -180,7 +171,6 @@ function init() {
     setupPopupLayoutObserver();
   }
 
-  console.log('✅ Yutu Labs Hider initialized');
 }
 
 // Initialize when DOM is ready

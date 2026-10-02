@@ -9,7 +9,8 @@ export const CARD_SELECTORS = [
   'ytd-rich-item-renderer',
   'ytd-grid-video-renderer',
   'ytd-compact-video-renderer',
-  'ytd-video-renderer'
+  'ytd-video-renderer',
+  'yt-lockup-view-model'
 ];
 
 /** Link patterns that point to a playable video inside a card */
@@ -18,12 +19,6 @@ export const VIDEO_LINK_SELECTOR = 'a[href*="/watch"], a[href*="youtu.be/"], a[h
 /** Link patterns for YouTube/Vimeo across any website */
 export const EXTERNAL_LINK_SELECTOR =
   'a[href*="youtube.com/watch"], a[href*="youtube.com/shorts/"], a[href*="youtu.be/"], a[href*="vimeo.com/"]';
-
-/**
- * @deprecated — Button container selection moved to button-factory.js THUMB_SELECTORS.
- * Kept for backwards compatibility with custom selector feature.
- */
-export const BUTTON_CONTAINER_SELECTORS = [];
 
 /** Google SERP context wrappers — used to scope injection to search results only */
 export const GOOGLE_CONTEXT_SELECTOR = '[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search';
@@ -48,7 +43,7 @@ export const HIDER_SELECTORS = {
     'ytd-watch-metadata #structured-description',
     'ytd-watch-metadata #description-wrapper',
     'ytd-watch-metadata ytd-structured-description-content-renderer',
-    'ytd-engagement-panel-section-list-renderer[target-id=\"engagement-panel-structured-description\"]'
+    'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"]'
   ].join(', '),
   header: 'ytd-masthead'
 };

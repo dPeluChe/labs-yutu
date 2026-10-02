@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Record of failed embed approaches. Kept as the historical why behind the popup-window solution.
+
+---
+
 # Reporte Técnico: Intentos de Reproducción y Alternativas
 
 Este documento detalla los enfoques técnicos probados para lograr la reproducción de video "in-page" en YouTube mediante una extensión, los errores encontrados y las posibles alternativas viables.
