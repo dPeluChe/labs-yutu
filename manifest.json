@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Yush: Calm Video Feed & Floating Player",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Open videos in floating windows with speed controls and auto-close. Quiet your feed: blur old videos, hide Shorts.",
   "permissions": [
     "storage",

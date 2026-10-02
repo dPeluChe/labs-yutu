@@ -540,14 +540,15 @@ footer {
 
 .selector-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 12px;
 }
 
 .btn-picker {
-  flex: 1;
+  flex: 1 1 100%;
   padding: 10px 12px;
-  background: #1a1a2e;
+  background: #fff;
   color: var(--yutu-brand);
   border: 1px solid var(--yutu-brand);
   border-radius: var(--yutu-radius-md);
