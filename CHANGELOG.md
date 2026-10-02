@@ -9,6 +9,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed
+- Old video filter no longer depends on YouTube's `ytd-browse[page-subtype="home"]` attribute: Home is detected by path (`/`), the effect is cleared when leaving Home and restored on return
+
 ### Added
 - Feed tab shows a "Reload YouTube tab to apply" button after any option is saved
 

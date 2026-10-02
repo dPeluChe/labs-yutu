@@ -6,7 +6,7 @@
 import { loadSettings, STORAGE_KEY } from './config.js';
 import { parseAgeInMonths } from './video-age.js';
 
-const CARD_SELECTOR = 'ytd-browse[page-subtype="home"] ytd-rich-item-renderer';
+const CARD_SELECTOR = 'ytd-rich-item-renderer';
 const DATE_CANDIDATES = '.ytContentMetadataViewModelMetadataText, #metadata-line span';
 const AGE_ATTR = 'data-yutu-age';
 const OLD_ATTR = 'data-yutu-old';
@@ -30,6 +30,7 @@ export class OldVideoFilter {
   async init() {
     this.config = (await loadSettings()).oldVideoFilter;
     this.manager.onMutation(() => this.scan());
+    window.addEventListener('yt-navigate-finish', () => setTimeout(() => this.refresh(), 250));
     chrome.storage.onChanged.addListener((changes, areaName) => {
       const next = changes[STORAGE_KEY]?.newValue?.oldVideoFilter;
       if (areaName !== 'local' || !next) return;
@@ -39,8 +40,13 @@ export class OldVideoFilter {
     this.scan();
   }
 
+  /** Home is the only feed with resurfaced old videos; detected by path, not by YouTube's markup. */
+  isHome() {
+    return window.location.pathname === '/';
+  }
+
   scan() {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled || !this.isHome()) return;
     for (const card of document.querySelectorAll(`${CARD_SELECTOR}:not([${AGE_ATTR}])`)) {
       const months = readAgeMonths(card);
       if (months === null) {
@@ -64,7 +70,7 @@ export class OldVideoFilter {
 
   /** Re-evaluate already-measured cards after a settings change. */
   refresh() {
-    if (!this.config.enabled) {
+    if (!this.config.enabled || !this.isHome()) {
       for (const card of document.querySelectorAll(`[${OLD_ATTR}]`)) card.removeAttribute(OLD_ATTR);
       return;
     }
