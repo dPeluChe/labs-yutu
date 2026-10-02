@@ -14,6 +14,18 @@ async function save() {
   };
   await saveConfig(settings);
   flashStatus($('feed-status'), 'Saved', 'success');
+  $('feed-reload-btn').classList.remove('is-hidden');
+}
+
+async function reloadYouTubeTab() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.url?.includes('youtube.com')) {
+    flashStatus($('feed-status'), 'Open YouTube first', 'error');
+    return;
+  }
+  await chrome.tabs.reload(tab.id);
+  $('feed-reload-btn').classList.add('is-hidden');
+  flashStatus($('feed-status'), 'Page reloaded', 'success');
 }
 
 export async function setupFeed() {
@@ -25,4 +37,5 @@ export async function setupFeed() {
   for (const id of ['old-enabled', 'old-months', 'old-mode']) {
     $(id).addEventListener('change', save);
   }
+  $('feed-reload-btn').addEventListener('click', reloadYouTubeTab);
 }
