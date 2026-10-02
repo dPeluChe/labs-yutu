@@ -457,14 +457,14 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   }
 }
 
-/* Old Home videos (Yutu filter): thumbnail blurred until hovered, title and date stay readable; or hidden */
+/* Old Home videos (Yutu filter): thumbnail blurred and title muted until hovered; channel and date stay fully readable; or hidden */
 [data-yutu-old="blur"] :is(yt-thumbnail-view-model, ytd-thumbnail) {
   filter: blur(12px) grayscale(0.7);
   transition: filter var(--yutu-duration) ease;
 }
 
-[data-yutu-old="blur"] :is(.ytLockupViewModelMetadata, #details) {
-  opacity: 0.6;
+[data-yutu-old="blur"] :is(.ytLockupMetadataViewModelHeadingReset, #video-title) {
+  opacity: 0.45;
   transition: opacity var(--yutu-duration) ease;
 }
 
@@ -472,7 +472,7 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   filter: none;
 }
 
-[data-yutu-old="blur"]:hover :is(.ytLockupViewModelMetadata, #details) {
+[data-yutu-old="blur"]:hover :is(.ytLockupMetadataViewModelHeadingReset, #video-title) {
   opacity: 1;
 }
 
