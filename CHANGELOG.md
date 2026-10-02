@@ -14,6 +14,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Old video filter no longer depends on YouTube's `ytd-browse[page-subtype="home"]` attribute: Home is detected by path (`/`), the effect is cleared when leaving Home and restored on return
 
 ### Added
+- "Hide Shorts shelf" toggle for the Home feed (Feed tab, off by default): hides the whole Shorts block (`:has()` on the shorts lockup), scoped to `/` via `html[data-yutu-home]`
 - Feed tab shows a "Reload YouTube tab to apply" button after any option is saved
 
 ## [1.4.0] - 2026-10-02

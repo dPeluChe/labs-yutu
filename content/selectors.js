@@ -52,3 +52,11 @@ export const HIDER_SELECTORS = {
   ],
   merch: ['ytd-merch-shelf-renderer', '#merch-shelf', '#below ytd-merch-shelf-renderer']
 };
+
+/** Home Shorts shelf: whole section/shelf (and stray items) that contain a Shorts lockup */
+const SHORTS_LOCKUP = 'ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2';
+export const HOME_SHORTS_SELECTORS = [
+  'ytd-rich-section-renderer',
+  'ytd-rich-shelf-renderer',
+  'ytd-rich-item-renderer'
+].map((tag) => `${tag}:has(${SHORTS_LOCKUP})`);

@@ -27,6 +27,8 @@ export const DEFAULT_SETTINGS = {
   customButtonSelector: '',
   // Same hide flags as the floating window, applied on regular /watch pages
   watchPage: { ...HIDE_FLAGS_OFF },
+  // Hide the Shorts shelf on the Home feed
+  hideHomeShorts: false,
   // Dim or hide Home cards older than `months` (YouTube resurfaces old videos)
   oldVideoFilter: { enabled: false, months: 6, mode: 'blur' }
 };

@@ -3,7 +3,7 @@
  * Builds the CSS that hides YouTube elements from a set of hide flags.
  */
 
-import { HIDER_SELECTORS } from './selectors.js';
+import { HIDER_SELECTORS, HOME_SHORTS_SELECTORS } from './selectors.js';
 
 export const HIDE_OPTIONS = [
   { key: 'hideReels', selectors: 'reels', title: 'Reels / Shorts', description: 'Hide short videos section' },
@@ -27,4 +27,11 @@ export function buildHideCss(flags, scope = '') {
       return `${selector} { display: none !important; }`;
     })
     .join('\n');
+}
+
+/** Hides the Shorts shelf on Home; `scope` limits it to the Home page (`html[data-yutu-home]`). */
+export function buildHomeShortsCss(enabled, scope = '') {
+  if (!enabled) return '';
+  const prefix = scope ? `${scope} ` : '';
+  return `${HOME_SHORTS_SELECTORS.map((s) => `${prefix}${s}`).join(', ')} { display: none !important; }`;
 }

@@ -23,6 +23,7 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
 *   **Controles de velocidad en Shorts:** también disponibles en la página del reproductor de Shorts.
 *   **Sitios externos (opt-in):** el popup permite activar la extensión en dominios concretos; los permisos se piden solo para esos dominios.
 *   **Filtro de videos antiguos (Home):** difumina (se aclara al pasar el cursor) u oculta las tarjetas con más de 1 mes a 2 años (por defecto 6 meses). Desactivado por defecto; pestaña "Feed" del popup. Lee fechas en inglés y español.
+*   **Shorts en Home:** opción para ocultar el bloque completo de Shorts del Home (pestaña "Feed").
 *   **Limpieza Visual:** ocultado independiente para la ventana flotante y para la página de reproducción normal (`Floating window` / `Watch page` en el popup).
 *   **Limpieza Visual del Popup:**
     *   Permite ocultar descripción, recomendaciones, header, acciones y merch shelf.

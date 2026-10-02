@@ -5,11 +5,12 @@
  */
 
 import { loadSettings, STORAGE_KEY, isYutuPopupWindow } from './config.js';
-import { buildHideCss } from './hide-rules.js';
+import { buildHideCss, buildHomeShortsCss } from './hide-rules.js';
 
 const HIDER_STYLE_ID = 'yutu-hider-styles';
 const POPUP_TITLE_ID = 'yutu-popup-floating-title';
 const WATCH_SCOPE = 'html[data-yutu-watch]';
+const HOME_SCOPE = 'html[data-yutu-home]';
 const POPUP_ONLY_CSS = 'ytd-watch-metadata #title { display: none !important; }';
 
 const isPopup = isYutuPopupWindow();
@@ -34,12 +35,17 @@ function applySettings(settings) {
   if (isPopup) {
     setStyle([buildHideCss(settings), POPUP_ONLY_CSS].join('\n'));
   } else {
-    setStyle(buildHideCss(settings.watchPage, WATCH_SCOPE));
+    setStyle([
+      buildHideCss(settings.watchPage, WATCH_SCOPE),
+      buildHomeShortsCss(settings.hideHomeShorts, HOME_SCOPE)
+    ].join('\n').trim());
   }
 }
 
-function syncWatchFlag() {
-  document.documentElement.toggleAttribute('data-yutu-watch', location.pathname === '/watch');
+function syncPageFlags() {
+  const root = document.documentElement;
+  root.toggleAttribute('data-yutu-watch', location.pathname === '/watch');
+  root.toggleAttribute('data-yutu-home', location.pathname === '/');
 }
 
 function syncPopupTopTitle() {
@@ -67,7 +73,7 @@ async function reload() {
 }
 
 function onNavigate() {
-  syncWatchFlag();
+  syncPageFlags();
   if (!isPopup) return;
   // YouTube re-renders the watch page late after SPA navigation
   for (const delay of [250, 1200]) {
@@ -79,7 +85,7 @@ function onNavigate() {
 }
 
 function init() {
-  syncWatchFlag();
+  syncPageFlags();
   reload();
   if (isPopup) syncPopupTopTitle();
 

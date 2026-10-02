@@ -26,7 +26,7 @@ WHAT YOU GET
 - Speed controls: 1x, 1.15x, 1.25x, 1.5x and 2x buttons, plus Alt/Option + 1..5 shortcuts. Also available on regular watch pages and Shorts.
 - Close on finish: the floating window closes itself when the video ends.
 - Distraction-free viewing: hide the description, recommendations, header, action buttons and merch shelf, separately for the floating window and for regular watch pages.
-- Calm Home feed: optionally blur (or hide) old videos that YouTube resurfaces as reminders. Blurred cards clear on hover.
+- Calm Home feed: optionally blur (or hide) old videos that YouTube resurfaces as reminders. Blurred cards clear on hover. You can also remove the Shorts shelf from Home.
 - Works beyond YouTube: a "View" button appears next to YouTube and Vimeo links in Google results and on websites you choose to enable.
 - Button position picker: if YouTube changes its layout, point at the thumbnail area with the visual picker and the button follows.
 
