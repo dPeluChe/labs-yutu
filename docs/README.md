@@ -5,9 +5,11 @@ Structure declared in [`.doctos.yml`](../.doctos.yml) (the table below derives f
 
 | Path | Purpose |
 |------|---------|
+| `ARCHITECTURE/` | `HOW_IT_WORKS.md`: pieces, flows, settings schema, which code depends on YouTube's markup |
+| `GUIDES/` | `DEVELOPMENT.md`: build and load, checks, debugging, releasing |
 | `TASK_TODO.md` | Prioritized backlog |
 | `TASK_COMPLETED/` | Monthly logs of finished work (`YYMM.md`, index in its `README.md`) |
-| `STORE/` | Chrome Web Store: `LISTING.md` (texts to paste), `PRIVACY_POLICY.md`. Package with `npm run package` |
+| `STORE/` | Chrome Web Store: `LISTING.md` (texts to paste), `NAMING.md` (rename proposal), `PRIVACY_POLICY.md`. Package with `npm run package` |
 | `ARCHIVED/` | Obsolete docs with an archival note. Index in its `README.md` |
 
 ## Writing rules

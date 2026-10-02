@@ -7,12 +7,13 @@ Los limites son los del dashboard (verificar al subir, pueden cambiar).
 
 | Campo | Valor | Limite |
 |-------|-------|--------|
-| Name | `Yutu Labs - Floating YouTube Player` | 75 |
+| Name | Pendiente de naming, ver `NAMING.md` (provisional: `Yutu Labs - Floating Video Player`) | 75 |
 | Summary | `Open YouTube videos in floating windows. Speed controls, auto-close, and distraction-free viewing.` | 132 (igual a `manifest.json` `description`) |
 | Category | Productivity | |
 | Language | English | |
 | Privacy policy URL | https://github.com/dPeluChe/labs-yutu/blob/main/docs/STORE/PRIVACY_POLICY.md | |
 | Homepage / support URL | https://github.com/dPeluChe/labs-yutu | |
+| Developer / publisher site | https://dpeluche.dev (peluche) | |
 
 ## Detailed description
 
@@ -38,7 +39,7 @@ HOW TO USE
 2. Click the Yutu icon on any video thumbnail.
 3. Use the toolbar popup to tune speed, hidden elements and extra websites.
 
-Not affiliated with or endorsed by YouTube or Google.
+Made by peluche (https://dpeluche.dev). Not affiliated with or endorsed by YouTube or Google.
 ```
 
 ## Single purpose

@@ -1,6 +1,8 @@
 docs_root: docs
 naming: UPPERCASE_SNAKE
 folders:
+  ARCHITECTURE: how the extension works, settings schema, YouTube markup dependencies
+  GUIDES: development workflow, debugging, release steps
   STORE: Chrome Web Store listing texts, privacy policy, publishing checklist
   TASK_COMPLETED: monthly logs of finished work (managed by pm-tasks)
   ARCHIVED: obsolete docs, each with an archival note

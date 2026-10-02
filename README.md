@@ -1,116 +1,60 @@
-# Yutu Labs Extension
+# Yutu Labs
 
-Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotantes, sin salir de la página actual.
+[Español](./README.es.md)
 
-## Características Principales
+A Chrome extension that opens YouTube and Vimeo videos in a small floating window, adds playback speed controls, and calms down your YouTube feed. Made by [peluche](https://dpeluche.dev).
 
-*   **Botones en Miniaturas:**
-    *   Icono siempre visible sobre la miniatura y botón "Open" al pasar el cursor por la fila de metadata (Home, Feed, Sidebar, Búsqueda, Shorts).
-    *   Pestaña "Selector" del popup: elige con el cursor (selector visual) dónde se coloca el botón si YouTube cambia su estructura.
-*   **Botón "View" en Enlaces Externos:**
-    *   Detecta enlaces de YouTube/Vimeo en Google y otras webs.
-    *   Inyecta un botón compacto y discreto junto al enlace.
-*   **Ventana Flotante:**
-    *   Al hacer clic en "Open/View", se abre el video en una ventana nueva pequeña (854x480).
-    *   Posicionada en la esquina inferior derecha de tu pantalla.
-    *   Soporta URLs de YouTube y Vimeo.
-    *   Puedes redimensionar y mover la ventana libremente.
-*   **Controles Inline de Velocidad (Popup):**
-    *   Incluye botones rápidos `1x`, `1.15x`, `1.25x`, `1.5x`, `2x` dentro de la ventana flotante.
-    *   El widget se centra en la fila superior del popup y se adapta al espacio disponible.
-    *   Soporta hotkeys (`⌥/Alt + 1..5`).
-    *   Incluye opción `Close on finish` para cerrar automáticamente al terminar el video.
-*   **Controles de velocidad en Shorts:** también disponibles en la página del reproductor de Shorts.
-*   **Sitios externos (opt-in):** el popup permite activar la extensión en dominios concretos; los permisos se piden solo para esos dominios.
-*   **Filtro de videos antiguos (Home):** difumina (se aclara al pasar el cursor) u oculta las tarjetas con más de 1 mes a 2 años (por defecto 6 meses). Desactivado por defecto; pestaña "Feed" del popup. Lee fechas en inglés y español.
-*   **Shorts en Home:** opción para ocultar el bloque completo de Shorts del Home (pestaña "Feed").
-*   **Limpieza Visual:** ocultado independiente para la ventana flotante y para la página de reproducción normal (`Floating window` / `Watch page` en el popup).
-*   **Limpieza Visual del Popup:**
-    *   Permite ocultar descripción, recomendaciones, header, acciones y merch shelf.
-    *   Los hide rules se reaplican después de navegación SPA dentro del popup.
+> The name is provisional. The naming proposal lives in [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
 
-## Instalación (Modo Desarrollador)
+## What it does
 
-1.  Clona o descarga este repositorio y ejecuta `npm install && npm run build` (genera `dist/`).
-2.  Abre Google Chrome y ve a `chrome://extensions/`.
-3.  Activa el "Modo de desarrollador" (esquina superior derecha).
-4.  Haz clic en "Cargar descomprimida" (Load unpacked).
-5.  Selecciona la carpeta `labs-yutu/dist` dentro del proyecto.
+- **Floating player.** A button on every video card (Home, Search, sidebar, Shorts) opens the video in its own window, parked in the bottom-right corner of your screen. Move and resize it freely.
+- **Speed controls.** Presets of 1x, 1.15x, 1.25x, 1.5x and 2x, with Alt/Option + 1 to 5 shortcuts. They work in the floating window, on regular watch pages and on Shorts.
+- **Close on finish.** The floating window closes itself when the video ends.
+- **Hide clutter.** Hide the description, recommendations, header, like/more buttons, merch shelf and Shorts, with separate settings for the floating window and for regular watch pages.
+- **Calm Home feed.** Optionally blur the old videos that YouTube resurfaces as reminders. The thumbnail is blurred and the title muted, while channel and date stay readable, so you see who and how long ago at a glance. Hovering clears the effect. You can also hide those cards entirely, or remove the Shorts shelf from Home.
+- **Links outside YouTube.** A "View" button appears next to YouTube and Vimeo links in Google results and on websites you choose to enable.
+- **Button position picker.** If YouTube changes its layout, point at the right spot on the page and the button follows.
 
-## Requisitos del Sistema
+## Install
 
-*   **Google Chrome** (cualquier versión moderna)
-*   **Node.js 18+** (necesario para generar `dist/`)
-*   **NPM** (solo para desarrollo)
+When it is published, install it from the Chrome Web Store. Until then, build it from source and load the generated `dist/` folder as an unpacked extension. The steps are in the [development guide](./docs/GUIDES/DEVELOPMENT.md).
 
-## Desarrollo
+## Using the popup
 
-### Comandos
+The toolbar popup has four tabs.
 
-```bash
-# Instalar dependencias
-npm install
+- **Settings:** playback speed for the active tab, "close on finish", and the hide options (floating window / watch page).
+- **Feed:** hide the Shorts shelf and filter old videos on Home. After saving, a button reloads the YouTube tab.
+- **Selector:** choose where the open button goes, either with a CSS selector or by picking an element on the page.
+- **Sites:** websites where the "View" button should appear. Each one is requested only when you add it.
 
-# Construir la extensión (genera carpeta dist/)
-npm run build
+## How it works
 
-# Desarrollo (reconstrucción automática)
-npm run watch
-```
+A content script scans the video cards YouTube renders, adds the open button, and watches the page for new cards as you scroll or navigate. Clicking the button asks the extension's background worker to open the video in a popup window with YouTube's own player. The Home filter reads the relative date shown on each card ("3 months ago", "hace 2 años") and marks the old ones so a stylesheet can blur them. All preferences are stored locally in the browser.
 
-## Estructura del Proyecto
+The technical details, including the settings schema and which parts depend on YouTube's markup, are in [docs/ARCHITECTURE/HOW_IT_WORKS.md](./docs/ARCHITECTURE/HOW_IT_WORKS.md).
 
-*   `/content`: Scripts y estilos inyectados por contexto.
-    *   `content.js`: Núcleo compartido (YutuPiPManager)
-    *   `youtube-content.js`: Inyección para cards de YouTube + speed control messages
-    *   `external-content.js`: Inyección en Google (alcance `google`) y sitios opt-in con enlaces YouTube/Vimeo
-    *   `content.css`: Estilos del botón PiP
-*   `/background`: Service worker de la extensión.
-*   `/popup`: Interfaz del popup de la extensión (icono en la barra).
-*   `/scripts`: Scripts de construcción (esbuild).
-*   `/icons`: Iconos PNG (`npm run icons` los regenera)
-*   `/dist`: Carpeta de salida (cargar esta carpeta en `chrome://extensions`) del build (generada automáticamente).
+## Privacy
 
-## Tecnología
-
-*   **chrome.windows.create()**: Abre videos en ventanas popup nativas desde el service worker
-*   **Vanilla JavaScript**: Sin frameworks, bundle mínimo
-*   **esbuild**: Build system ultra-rápido
-*   **Chrome Manifest V3**: Última versión del sistema de extensiones
-
-## Cómo Funciona
-
-1. **Inyección Segmentada**: La extensión usa content scripts separados para YouTube, Google y otras webs.
-2. **Detección de Enlaces**: En sitios externos detecta enlaces YouTube/Vimeo y añade botón `View`.
-3. **Observer con Debounce**: Reduce reinyecciones en páginas dinámicas.
-4. **Apertura de Ventana**: Al hacer clic, usa la API de extensión para abrir el video en ventana flotante.
-5. **Posicionamiento**: La ventana se abre en esquina inferior derecha (854x480, aspecto 16:9).
-6. **Modo Popup Persistente**: La ventana marcada con `yutu_popup=true` conserva su comportamiento aun si YouTube rehidrata o navega internamente.
+No accounts, no analytics, no servers. Preferences stay in your browser, and extra websites are requested one at a time. See the [privacy policy](./docs/STORE/PRIVACY_POLICY.md).
 
 ## Troubleshooting
 
-### Ventana no se abre
+- **The window does not open.** Reload the extension, refresh the YouTube tab, and check that you loaded the `dist/` folder rather than the repository root. The extension's service worker console shows window errors.
+- **No buttons on the cards.** Refresh the YouTube tab after reloading the extension. If YouTube changed its layout, use the Selector tab to point the button at the right place.
+- **The Home filter does nothing.** Refresh the YouTube tab, and check that the filter is on in the Feed tab. Dates are read only when YouTube is set to English or Spanish.
 
-1. Recarga la extensión en `chrome://extensions/` y refresca la pestaña de YouTube
-2. Confirma que cargaste la carpeta `dist/` (no la raíz del repo) y que el build terminó sin errores
-3. Revisa "Inspect service worker" en `chrome://extensions/` para ver errores de `chrome.windows.create`
+## Documentation
 
-### Botones no aparecen
+The index is [docs/README.md](./docs/README.md). Highlights:
 
-1. Verifica que la extensión está activa en `chrome://extensions/`
-2. Refresca la página de YouTube (F5)
-3. Revisa la consola (F12) para errores
-4. Si YouTube cambió su estructura, los selectores pueden necesitar actualización
+- [How it works](./docs/ARCHITECTURE/HOW_IT_WORKS.md)
+- [Development guide](./docs/GUIDES/DEVELOPMENT.md)
+- [Chrome Web Store listing and naming](./docs/STORE/LISTING.md)
+- [Changelog](./CHANGELOG.md)
+- [Backlog](./docs/TASK_TODO.md)
 
-## Calidad
+## Credits
 
-```bash
-npm run lint    # eslint + stylelint
-npm test        # node:test (url-utils, manifest)
-npm run check   # lint + test + build
-npm run package # build + builds/yutu-labs-v<version>.zip (Chrome Web Store)
-```
-
-## Documentación
-
-Estructura declarada en [`.doctos.yml`](./.doctos.yml), índice en [docs/README.md](./docs/README.md). Textos del Chrome Web Store en `docs/STORE/`, historial de embeds descartados en `docs/ARCHIVED/`.
+Made by [peluche](https://dpeluche.dev) · [dpeluche.dev](https://dpeluche.dev). Not affiliated with or endorsed by YouTube or Google.

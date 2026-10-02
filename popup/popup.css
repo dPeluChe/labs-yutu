@@ -647,3 +647,15 @@ footer {
 .feed-heading {
   margin-top: 20px;
 }
+
+.credit {
+  padding: 10px 20px 14px;
+  font-size: 11px;
+  text-align: center;
+  color: var(--yutu-text-subtle);
+}
+
+.credit a {
+  color: var(--yutu-brand);
+  text-decoration: none;
+}
