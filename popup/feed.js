@@ -7,6 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 async function save() {
   const settings = await loadConfig();
+  settings.hideHomeShorts = $('hide-home-shorts').checked;
   settings.oldVideoFilter = {
     enabled: $('old-enabled').checked,
     months: Number($('old-months').value),
@@ -29,12 +30,13 @@ async function reloadYouTubeTab() {
 }
 
 export async function setupFeed() {
-  const { oldVideoFilter } = await loadConfig();
+  const { oldVideoFilter, hideHomeShorts } = await loadConfig();
+  $('hide-home-shorts').checked = hideHomeShorts;
   $('old-enabled').checked = oldVideoFilter.enabled;
   $('old-months').value = String(oldVideoFilter.months);
   $('old-mode').value = oldVideoFilter.mode;
 
-  for (const id of ['old-enabled', 'old-months', 'old-mode']) {
+  for (const id of ['hide-home-shorts', 'old-enabled', 'old-months', 'old-mode']) {
     $(id).addEventListener('change', save);
   }
   $('feed-reload-btn').addEventListener('click', reloadYouTubeTab);

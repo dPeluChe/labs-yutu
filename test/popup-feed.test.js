@@ -43,6 +43,15 @@ test('any other option also reveals the reload button', async () => {
   assert.equal($('feed-reload-btn').classList.contains('is-hidden'), false);
 });
 
+test('the Shorts toggle is saved and also reveals the reload button', async () => {
+  $('feed-reload-btn').classList.add('is-hidden');
+  $('hide-home-shorts').checked = true;
+  change($('hide-home-shorts'));
+  await tick();
+  assert.equal(store.yutuSettings.hideHomeShorts, true);
+  assert.equal($('feed-reload-btn').classList.contains('is-hidden'), false);
+});
+
 test('clicking reload refreshes the active YouTube tab and hides the button', async () => {
   $('feed-reload-btn').click();
   await tick();

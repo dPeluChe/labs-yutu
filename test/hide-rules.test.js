@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildHideCss, HIDE_OPTIONS } from '../content/hide-rules.js';
+import { buildHideCss, buildHomeShortsCss, HIDE_OPTIONS } from '../content/hide-rules.js';
+import { JSDOM } from 'jsdom';
 import { DEFAULT_SETTINGS } from '../content/config.js';
+import { HOME_SHORTS_SELECTORS } from '../content/selectors.js';
 
 test('only enabled flags produce rules', () => {
   const css = buildHideCss({ hideHeader: true });
@@ -31,4 +33,29 @@ test('every option maps to selectors and a default flag', () => {
 test('watch page hiding is off by default', () => {
   assert.ok(Object.values(DEFAULT_SETTINGS.watchPage).every((v) => v === false));
   assert.equal(DEFAULT_SETTINGS.oldVideoFilter.enabled, false);
+});
+
+test('home shorts rule is empty when disabled and scoped to Home when enabled', () => {
+  assert.equal(buildHomeShortsCss(false, 'html[data-yutu-home]'), '');
+  const css = buildHomeShortsCss(true, 'html[data-yutu-home]');
+  const scoped = css.match(/html\[data-yutu-home\] ytd-rich-(section|shelf|item)-renderer:has\(/g);
+  assert.equal(scoped.length, 3);
+  assert.match(css, /ytm-shorts-lockup-view-model/);
+});
+
+test('home shorts hiding is off by default', () => {
+  assert.equal(DEFAULT_SETTINGS.hideHomeShorts, false);
+});
+
+test('home shorts selectors match the Shorts block but not regular video cards', () => {
+  const { document } = new JSDOM(`<ytd-rich-grid-renderer>
+    <ytd-rich-item-renderer id="video"><yt-lockup-view-model></yt-lockup-view-model></ytd-rich-item-renderer>
+    <ytd-rich-section-renderer id="section"><ytd-rich-shelf-renderer id="shelf">
+      <ytd-rich-item-renderer id="short"><ytm-shorts-lockup-view-model-v2>
+        <ytm-shorts-lockup-view-model></ytm-shorts-lockup-view-model>
+      </ytm-shorts-lockup-view-model-v2></ytd-rich-item-renderer>
+    </ytd-rich-shelf-renderer></ytd-rich-section-renderer>
+  </ytd-rich-grid-renderer>`).window;
+  const ids = [...document.querySelectorAll(HOME_SHORTS_SELECTORS.join(','))].map((el) => el.id);
+  assert.deepEqual(ids, ['section', 'shelf', 'short']);
 });
