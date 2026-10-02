@@ -63,4 +63,4 @@ If this policy changes, the updated version will be published in the extension's
 
 ## Contact
 
-For questions or concerns about this privacy policy, please open an issue at https://github.com/dPeluChe/labs-yutu/issues.
+For questions or concerns about this privacy policy, please open an issue at https://github.com/dPeluChe/yush/issues.

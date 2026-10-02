@@ -11,8 +11,8 @@ Los limites son los del dashboard (verificar al subir, pueden cambiar).
 | Summary | `Open videos in floating windows with speed controls and auto-close. Quiet your feed: blur old videos, hide Shorts.` | 132 (igual a `manifest.json` `description`) |
 | Category | Productivity | |
 | Language | English | |
-| Privacy policy URL | https://github.com/dPeluChe/labs-yutu/blob/main/docs/STORE/PRIVACY_POLICY.md | |
-| Homepage / support URL | https://github.com/dPeluChe/labs-yutu | |
+| Privacy policy URL | https://github.com/dPeluChe/yush/blob/main/docs/STORE/PRIVACY_POLICY.md | |
+| Homepage / support URL | https://github.com/dPeluChe/yush | |
 | Developer / publisher site | https://dpeluche.dev (peluche) | |
 
 ## Detailed description
