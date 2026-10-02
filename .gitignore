@@ -43,4 +43,3 @@ yarn-error.log*
 temp/
 tmp/
 .claude/settings.local.json
-.crush/

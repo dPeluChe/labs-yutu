@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Yutu Labs** is a Chrome extension (Manifest V3) that enhances the YouTube browsing experience by opening videos in floating windows. Users can click an "Abrir" button on video thumbnails to open videos in a small floating window without navigating away from their current page (Home, Search, Sidebar).
+**Yutu Labs** is a Chrome extension (Manifest V3) that enhances the YouTube browsing experience by opening videos in floating windows. Users can click the Yutu icon/"Open" button on video cards to open videos in a small floating window without navigating away from their current page (Home, Search, Sidebar).
 
 ### Technology Stack
 - **Core Solution**: `chrome.windows.create({type:'popup'})` from the service worker
@@ -55,7 +55,7 @@ npm run watch
 **Core Class**: `YutuPiPManager` (`content/content.js`, entry is `youtube-content.js`)
 
 Responsibilities:
-- Injects "Abrir" buttons onto YouTube video thumbnails across different page types
+- Injects open buttons onto YouTube video cards across different page types
 - Asks the service worker to open floating windows (`messaging.js`)
 - Uses MutationObserver to handle YouTube's dynamic DOM updates
 - Manages floating window lifecycle (open, track, cleanup)
@@ -86,9 +86,10 @@ Opens/closes the floating window, tracks its id in `chrome.storage.session`, and
 Extension toolbar popup with basic HTML/CSS/JS interface.
 
 #### 4. Styling (`content/content.css`)
-- `.yutu-play-btn`: Positioned absolutely on thumbnails, appears on hover with fade transition
-- `.yutu-inline-player-container`: Full-width dark container with slideDown animation
-- `.yutu-player-wrapper`: 16:9 aspect ratio wrapper, max 1200px width, centered
+- `.yutu-pip-btn` / `.yutu-pip-btn--meta`: thumbnail icon and metadata "Open" button
+- `.yutu-floating-speed*`: speed controls in popup windows and Shorts
+- `.yutu-picker-*`, `.yutu-modal*`: element picker overlay and notifications
+- Design tokens: `--yutu-*` in `:root` (mirrored in `popup/popup.css`)
 
 ---
 

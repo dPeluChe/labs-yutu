@@ -4,9 +4,9 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
 
 ## Características Principales
 
-*   **Botón "Abrir" en Miniaturas:**
-    *   Inyecta automáticamente un botón en las miniaturas de los videos (Home, Feed, Sidebar, Búsqueda).
-    *   Permite visualizar el video sin salir de la página actual.
+*   **Botones en Miniaturas:**
+    *   Icono siempre visible sobre la miniatura y botón "Open" al pasar el cursor por la fila de metadata (Home, Feed, Sidebar, Búsqueda, Shorts).
+    *   Pestaña "Selector" del popup: elige con el cursor (selector visual) dónde se coloca el botón si YouTube cambia su estructura.
 *   **Botón "View" en Enlaces Externos:**
     *   Detecta enlaces de YouTube/Vimeo en Google y otras webs.
     *   Inyecta un botón compacto y discreto junto al enlace.
@@ -20,13 +20,15 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
     *   El widget se centra en la fila superior del popup y se adapta al espacio disponible.
     *   Soporta hotkeys (`⌥/Alt + 1..4`).
     *   Incluye opción `Close on finish` para cerrar automáticamente al terminar el video.
+*   **Controles de velocidad en Shorts:** también disponibles en la página del reproductor de Shorts.
+*   **Sitios externos (opt-in):** el popup permite activar la extensión en dominios concretos; los permisos se piden solo para esos dominios.
 *   **Limpieza Visual del Popup:**
     *   Permite ocultar descripción, recomendaciones, header, acciones y merch shelf.
     *   Los hide rules se reaplican después de navegación SPA dentro del popup.
 
 ## Instalación (Modo Desarrollador)
 
-1.  Clona o descarga este repositorio.
+1.  Clona o descarga este repositorio y ejecuta `npm install && npm run build` (genera `dist/`).
 2.  Abre Google Chrome y ve a `chrome://extensions/`.
 3.  Activa el "Modo de desarrollador" (esquina superior derecha).
 4.  Haz clic en "Cargar descomprimida" (Load unpacked).
@@ -35,7 +37,7 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
 ## Requisitos del Sistema
 
 *   **Google Chrome** (cualquier versión moderna)
-*   **Node.js 16+** (solo para desarrollo)
+*   **Node.js 18+** (necesario para generar `dist/`)
 *   **NPM** (solo para desarrollo)
 
 ## Desarrollo
@@ -86,12 +88,9 @@ npm run watch
 
 ### Ventana no se abre
 
-**Causa**: Ventanas emergentes bloqueadas por Chrome
-
-**Solución**:
-1. Ve a `chrome://settings/content/popups`
-2. Agrega `youtube.com` a la lista de permitidos
-3. O haz click en el ícono de bloqueo en la barra de direcciones y permite popups
+1. Recarga la extensión en `chrome://extensions/` y refresca la pestaña de YouTube
+2. Confirma que cargaste la carpeta `dist/` (no la raíz del repo) y que el build terminó sin errores
+3. Revisa "Inspect service worker" en `chrome://extensions/` para ver errores de `chrome.windows.create`
 
 ### Botones no aparecen
 
