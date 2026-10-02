@@ -1,8 +1,8 @@
 # Archived docs
 
-Historical documents, kept for context. For the current state see the code, `CLAUDE.md`, `docs/TASK_TODO.md` and `CHANGELOG.md`.
+Historical documents, kept for context. For the current state see the code, `CLAUDE.md`, `docs/ARCHITECTURE/HOW_IT_WORKS.md`, `docs/TASK_TODO.md` and `CHANGELOG.md`.
 
-## Read first: why embeds were abandoned
+## Why embeds were abandoned
 
 | Doc | What it records |
 |-----|-----------------|
@@ -18,6 +18,10 @@ Takeaway: YouTube blocks every embed when origin matches the embedder, so the ex
 - `YOUTUBE_API_INVESTIGATION.md`: transcript / AI summary investigation, linked from `TASK_TODO.md` (task 4).
 - `SPEED_CONTROL_RESEARCH.md`: approaches considered for playback speed.
 
-## Low reread value (candidates for deletion)
+## Decisions
 
-`REFACTORING_RECOMMENDATIONS.md`, `REFACTOR_SUMMARY.md`, `BUILD_VERIFICATION.md`, `TESTING.md`, `SPEED_CONTROLS_TESTING.md`, `TASK_COMPLETED_2025.md`: they describe the old `window.open()` layout and test flows that no longer exist. Kept only until someone confirms they are not needed.
+- `NAMING_DECISION.md`: why the product is called Yush and which names were discarded.
+
+## Removed
+
+Docs for the old `window.open()` layout (refactor plans and summaries, build and speed-control test guides, the 2025 task log) were deleted on 2026-10-02. They stay in git history, e.g. `git log --diff-filter=D -- docs/ARCHIVED`.

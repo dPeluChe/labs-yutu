@@ -19,4 +19,3 @@ Cada archivo mensual sigue el formato `YYMM.md`:
 ---
 
 ## Historical Logs
-- `docs/ARCHIVED/TASK_COMPLETED_2025.md` - Log detallado original de enero 2025

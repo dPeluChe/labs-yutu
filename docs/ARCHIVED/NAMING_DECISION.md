@@ -1,4 +1,9 @@
-# Naming: decision
+> **ARCHIVED**: 2026-10-02
+> The naming is settled (Yush). This is the decision record: why the product was renamed and which names were discarded. Do not reopen unless the name changes.
+
+---
+
+# Naming: decision record
 
 **Nombre elegido: Yush** (antes "Yutu Labs"). Viene de "YouTube" + "hush". Eslogan: "Hush the algorithm". Titulo del listing: `Yush: Calm Video Feed & Floating Player`.
 

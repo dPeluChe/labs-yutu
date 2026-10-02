@@ -4,7 +4,7 @@
 
 Hush the algorithm. Yush is a Chrome extension that opens YouTube and Vimeo videos in a small floating window, adds playback speed controls, and quiets your YouTube feed. Made by [peluche](https://dpeluche.dev).
 
-The name comes from "YouTube" plus "hush". How it was chosen is in [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
+The name comes from "YouTube" plus "hush". How it was chosen is in [docs/ARCHIVED/NAMING_DECISION.md](./docs/ARCHIVED/NAMING_DECISION.md).
 
 ## What it does
 
@@ -44,6 +44,10 @@ No accounts, no analytics, no servers. Preferences stay in your browser, and ext
 - **The window does not open.** Reload the extension, refresh the YouTube tab, and check that you loaded the `dist/` folder rather than the repository root. The extension's service worker console shows window errors.
 - **No buttons on the cards.** Refresh the YouTube tab after reloading the extension. If YouTube changed its layout, use the Selector tab to point the button at the right place.
 - **The Home filter does nothing.** Refresh the YouTube tab, and check that the filter is on in the Feed tab. Dates are read only when YouTube is set to English or Spanish.
+
+## Reporting bugs
+
+Found something broken? Use "Report a bug" at the bottom of the popup, or [open an issue](https://github.com/dPeluChe/yush/issues/new?template=bug_report.yml) on GitHub. The repository is public, so you can also follow along and see what is being worked on. Mention your Yush and browser versions and where it happened.
 
 ## Documentation
 

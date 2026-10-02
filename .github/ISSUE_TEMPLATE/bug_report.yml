@@ -1,0 +1,65 @@
+name: Bug report
+description: Something in Yush does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping. Yush collects no data, so everything here is what you choose to share. Please do not paste personal information.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open youtube.com
+        2. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - Home feed
+        - Search results
+        - Watch page
+        - Floating window
+        - Shorts
+        - Popup (settings)
+        - Google results or another website
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Yush version
+      description: Shown on chrome://extensions
+      placeholder: "1.6.1"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 130 on macOS
+    validations:
+      required: true
+  - type: input
+    id: language
+    attributes:
+      label: YouTube interface language
+      description: The old-video filter only reads English and Spanish dates.
+      placeholder: English
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or console errors
+      description: Optional. A screenshot or the red errors from the page console (F12) help a lot.
