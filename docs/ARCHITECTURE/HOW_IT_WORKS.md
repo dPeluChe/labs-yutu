@@ -18,7 +18,7 @@ El manager (`content/content.js`) observa el DOM de `ytd-page-manager` y, con un
 
 **Abrir el video.** El boton de la tarjeta llama a `messaging.js`, que envia `openFloatingWindow` al service worker. Este cierra la ventana anterior, calcula la esquina inferior derecha con `system.display` y crea un popup de 854x480 con `autoplay=1&yutu_popup=true`. El parametro `yutu_popup` hace que los content scripts sepan que estan dentro de la ventana flotante.
 
-**Ajustes.** Todo vive en `chrome.storage.local` bajo la clave `yutuSettings`. Quien escribe (popup o selector visual) solo guarda; los content scripts reaccionan con `chrome.storage.onChanged`. No hay mensajes entre popup y paginas para aplicar ajustes.
+**Ajustes.** Todo vive en `chrome.storage.local` bajo la clave `yutuSettings`. Quien escribe (popup o selector visual) solo guarda; los content scripts reaccionan con `subscribeSettings()` (`content/config.js`), un unico listener de `chrome.storage.onChanged` que entrega los ajustes ya mezclados con los valores por defecto. No hay mensajes entre popup y paginas para aplicar ajustes.
 
 **Contextos de ocultado.** `hider.js` decide segun donde corre:
 - ventana flotante: banderas `hideReels`, `hideSidebar`, `hideDescription`, `hideHeader`, `hideActions`, `hideMerchShelf`, mas una barra de titulo propia;

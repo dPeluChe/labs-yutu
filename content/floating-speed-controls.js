@@ -3,7 +3,7 @@
  * Injects quick playback controls inside yutu popup windows.
  */
 
-import { loadSettings, saveSettings, isFloatingWindow, STORAGE_KEY } from './config.js';
+import { loadSettings, saveSettings, isFloatingWindow, subscribeSettings } from './config.js';
 import { SHORTCUTS_BY_CODE, isTypingContext } from './speed-shortcuts.js';
 import { CONTROL_ID, CLOSE_INPUT_ID, buildSpeedControls } from './speed-controls-ui.js';
 import { POPUP_ROW_SLOT_ID, getControlsAnchor } from './speed-anchor.js';
@@ -223,11 +223,7 @@ export class FloatingSpeedControls {
   }
 
   setupStorageListener() {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName !== 'local' || !changes[STORAGE_KEY]?.newValue) return;
-      const closeOnFinish = changes[STORAGE_KEY].newValue.closeOnFinish;
-      this.updateCloseOnFinish(closeOnFinish !== false);
-    });
+    subscribeSettings((settings) => this.updateCloseOnFinish(settings.closeOnFinish !== false));
   }
 
   async requestCloseFloatingWindow() {

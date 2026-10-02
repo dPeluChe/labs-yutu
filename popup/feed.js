@@ -2,6 +2,7 @@
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { flashStatus } from './status.js';
+import { getActiveYouTubeTab } from './active-tab.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -19,8 +20,8 @@ async function save() {
 }
 
 async function reloadYouTubeTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.url?.includes('youtube.com')) {
+  const tab = await getActiveYouTubeTab();
+  if (!tab) {
     flashStatus($('feed-status'), 'Open YouTube first', 'error');
     return;
   }

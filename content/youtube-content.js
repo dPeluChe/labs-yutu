@@ -1,4 +1,4 @@
-import { isFloatingWindow, loadSettings, STORAGE_KEY } from './config.js';
+import { isFloatingWindow, loadSettings, subscribeSettings } from './config.js';
 import { YushManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
 import { OldVideoFilter } from './old-video-filter.js';
@@ -25,17 +25,14 @@ async function initYouTube() {
   });
   floatingSpeedControls.init();
 
-  if (!isPopup) new OldVideoFilter({ manager }).init();
+  if (!isPopup) new OldVideoFilter({ manager, config: settings.oldVideoFilter }).init();
 
   window.addEventListener('yt-navigate-finish', () => {
     setTimeout(() => manager.injectButtons(), 250);
   });
 
   // Popup and element picker both persist the selector, so storage is the single source
-  chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== 'local' || !changes[STORAGE_KEY]?.newValue) return;
-    manager.setCustomSelector(changes[STORAGE_KEY].newValue.customButtonSelector);
-  });
+  subscribeSettings((next) => manager.setCustomSelector(next.customButtonSelector));
 }
 
 if (document.readyState === 'loading') {

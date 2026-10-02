@@ -57,6 +57,30 @@ export function isFloatingWindow() {
   return _isPopupCached;
 }
 
+const NESTED_KEYS = Object.keys(DEFAULT_SETTINGS).filter(
+  (key) => DEFAULT_SETTINGS[key] && typeof DEFAULT_SETTINGS[key] === 'object'
+);
+
+/** Defaults overlaid with stored values, merging one level deep for object settings. */
+export function mergeSettings(stored = {}) {
+  const merged = { ...DEFAULT_SETTINGS, ...stored };
+  for (const key of NESTED_KEYS) merged[key] = { ...DEFAULT_SETTINGS[key], ...stored[key] };
+  return merged;
+}
+
+const subscribers = new Set();
+
+/** Calls `callback` with the complete (merged) settings whenever they change in storage. */
+export function subscribeSettings(callback) {
+  subscribers.add(callback);
+  if (subscribers.size > 1) return;
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== 'local' || !changes[STORAGE_KEY]) return;
+    const settings = mergeSettings(changes[STORAGE_KEY].newValue);
+    for (const notify of subscribers) notify(settings);
+  });
+}
+
 /**
  * Load settings from chrome.storage.local
  * @returns {Promise<Object>} Settings object
@@ -64,17 +88,7 @@ export function isFloatingWindow() {
 export async function loadSettings() {
   try {
     const result = await chrome.storage.local.get(STORAGE_KEY);
-    const stored = result[STORAGE_KEY] || {};
-    return {
-      ...DEFAULT_SETTINGS,
-      ...stored,
-      externalSites: {
-        ...DEFAULT_SETTINGS.externalSites,
-        ...(stored.externalSites || {})
-      },
-      watchPage: { ...DEFAULT_SETTINGS.watchPage, ...(stored.watchPage || {}) },
-      oldVideoFilter: { ...DEFAULT_SETTINGS.oldVideoFilter, ...(stored.oldVideoFilter || {}) }
-    };
+    return mergeSettings(result[STORAGE_KEY]);
   } catch (error) {
     console.error('Error loading settings from storage:', error);
     return { ...DEFAULT_SETTINGS };

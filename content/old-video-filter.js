@@ -3,7 +3,8 @@
  * Marks Home cards older than N months so CSS can blur them (clears on hover) or hide them.
  */
 
-import { loadSettings, STORAGE_KEY } from './config.js';
+import { DEFAULT_SETTINGS, subscribeSettings } from './config.js';
+import { isHomePath } from './url-utils.js';
 import { parseAgeInMonths } from './video-age.js';
 
 const CARD_SELECTOR = 'ytd-rich-item-renderer';
@@ -22,31 +23,23 @@ function readAgeMonths(card) {
 }
 
 export class OldVideoFilter {
-  constructor({ manager }) {
+  constructor({ manager, config = DEFAULT_SETTINGS.oldVideoFilter }) {
     this.manager = manager;
-    this.config = { enabled: false, months: 6, mode: 'blur' };
+    this.config = { ...config };
   }
 
-  async init() {
-    this.config = (await loadSettings()).oldVideoFilter;
+  init() {
     this.manager.onMutation(() => this.scan());
     window.addEventListener('yt-navigate-finish', () => setTimeout(() => this.refresh(), 250));
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      const next = changes[STORAGE_KEY]?.newValue?.oldVideoFilter;
-      if (areaName !== 'local' || !next) return;
-      this.config = { ...this.config, ...next };
+    subscribeSettings((settings) => {
+      this.config = settings.oldVideoFilter;
       this.refresh();
     });
     this.scan();
   }
 
-  /** Home is the only feed with resurfaced old videos; detected by path, not by YouTube's markup. */
-  isHome() {
-    return window.location.pathname === '/';
-  }
-
   scan() {
-    if (!this.config.enabled || !this.isHome()) return;
+    if (!this.config.enabled || !isHomePath()) return;
     for (const card of document.querySelectorAll(`${CARD_SELECTOR}:not([${AGE_ATTR}])`)) {
       const months = readAgeMonths(card);
       if (months === null) {
@@ -64,13 +57,15 @@ export class OldVideoFilter {
   classify(card) {
     const measured = card.getAttribute(AGE_ATTR);
     const isOld = this.config.enabled && measured !== '' && Number(measured) >= this.config.months;
-    if (isOld) card.setAttribute(OLD_ATTR, this.config.mode);
+    const next = isOld ? this.config.mode : null;
+    if (card.getAttribute(OLD_ATTR) === next) return;
+    if (next) card.setAttribute(OLD_ATTR, next);
     else card.removeAttribute(OLD_ATTR);
   }
 
-  /** Re-evaluate already-measured cards after a settings change. */
+  /** Re-evaluate already-measured cards after a settings or page change. */
   refresh() {
-    if (!this.config.enabled || !this.isHome()) {
+    if (!this.config.enabled || !isHomePath()) {
       for (const card of document.querySelectorAll(`[${OLD_ATTR}]`)) card.removeAttribute(OLD_ATTR);
       return;
     }

@@ -12,7 +12,7 @@ Read `docs/ARCHITECTURE/HOW_IT_WORKS.md` before changing behavior: it covers the
 
 - Chrome only loads `dist/`. After a build, reload the extension and refresh the YouTube tab (open tabs keep the old content script).
 - `npm run check` (lint, tests, build) must pass before a PR. Tests use jsdom with sample YouTube markup; when YouTube changes its DOM, update the sample markup from a real example first, then the selector.
-- Settings flow through `chrome.storage.local`. The popup and the element picker only save; content scripts react via `chrome.storage.onChanged`. Do not add popup-to-page messages for settings.
+- Settings flow through `chrome.storage.local`. The popup and the element picker only save; content scripts react through `subscribeSettings()` in `content/config.js` (one shared `chrome.storage.onChanged` listener that delivers merged settings). Do not add popup-to-page messages for settings.
 - Defaults and merging of stored settings live in `content/config.js`; new settings need a default there.
 - YouTube selectors are centralized in `content/selectors.js`, plus `THUMB_SELECTORS`/`META_SELECTORS` in `content/button-factory.js` and `DATE_CANDIDATES` in `content/old-video-filter.js`.
 - The CSS prefix `yutu-`, the `data-yutu-*` attributes, the `yutu_popup` URL parameter and the `yutuSettings` key are legacy internals from the previous name and stay as they are (renaming them would wipe users' settings).

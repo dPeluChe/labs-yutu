@@ -3,6 +3,9 @@
  * Detection and parsing of YouTube/Vimeo video URLs.
  */
 
+export const isHomePath = () => window.location.pathname === '/';
+export const isWatchPath = () => window.location.pathname === '/watch';
+
 export function isYouTubeUrl(parsedUrl) {
   return parsedUrl.hostname.includes('youtube.com') || parsedUrl.hostname === 'youtu.be';
 }

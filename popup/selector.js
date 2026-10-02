@@ -2,6 +2,7 @@
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { flashStatus } from './status.js';
+import { getActiveYouTubeTab } from './active-tab.js';
 
 const $ = (id) => document.getElementById(id);
 const elements = {
@@ -51,14 +52,14 @@ async function resetCustomSelector() {
 
 async function startElementPicker() {
   try {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tabs.length || !tabs[0].url?.includes('youtube.com')) {
+    const tab = await getActiveYouTubeTab();
+    if (!tab) {
       flashStatus(elements.selectorSaveStatus, 'Open YouTube first', 'error');
       return;
     }
 
     // The picker saves the selector itself (storage), so the popup can close right away
-    await chrome.tabs.sendMessage(tabs[0].id, { action: 'startElementPicker' });
+    await chrome.tabs.sendMessage(tab.id, { action: 'startElementPicker' });
     window.close();
   } catch (error) {
     flashStatus(elements.selectorSaveStatus, 'Error starting picker', 'error');

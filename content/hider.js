@@ -4,7 +4,8 @@
  * Regular tabs use `watchPage` flags, scoped to /watch via html[data-yutu-watch].
  */
 
-import { loadSettings, STORAGE_KEY, isFloatingWindow } from './config.js';
+import { loadSettings, subscribeSettings, isFloatingWindow } from './config.js';
+import { isHomePath, isWatchPath } from './url-utils.js';
 import { buildHideCss, buildHomeShortsCss } from './hide-rules.js';
 
 const HIDER_STYLE_ID = 'yutu-hider-styles';
@@ -16,8 +17,12 @@ const POPUP_ONLY_CSS = 'ytd-watch-metadata #title { display: none !important; }'
 const isPopup = isFloatingWindow();
 let currentSettings = null;
 
+let lastCss = null;
+
 function setStyle(css) {
   let style = document.getElementById(HIDER_STYLE_ID);
+  if (css === lastCss && Boolean(style) === Boolean(css)) return;
+  lastCss = css;
   if (!css) {
     style?.remove();
     return;
@@ -33,19 +38,19 @@ function setStyle(css) {
 function applySettings(settings) {
   currentSettings = settings;
   if (isPopup) {
-    setStyle([buildHideCss(settings), POPUP_ONLY_CSS].join('\n'));
+    setStyle([buildHideCss(settings), POPUP_ONLY_CSS].filter(Boolean).join('\n'));
   } else {
     setStyle([
       buildHideCss(settings.watchPage, WATCH_SCOPE),
       buildHomeShortsCss(settings.hideHomeShorts, HOME_SCOPE)
-    ].join('\n').trim());
+    ].filter(Boolean).join('\n'));
   }
 }
 
 function syncPageFlags() {
   const root = document.documentElement;
-  root.toggleAttribute('data-yutu-watch', location.pathname === '/watch');
-  root.toggleAttribute('data-yutu-home', location.pathname === '/');
+  root.toggleAttribute('data-yutu-watch', isWatchPath());
+  root.toggleAttribute('data-yutu-home', isHomePath());
 }
 
 function syncPopupTopTitle() {
@@ -89,9 +94,7 @@ function init() {
   reload();
   if (isPopup) syncPopupTopTitle();
 
-  chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === 'local' && changes[STORAGE_KEY]) reload();
-  });
+  subscribeSettings(applySettings);
   window.addEventListener('yt-navigate-finish', onNavigate);
 }
 

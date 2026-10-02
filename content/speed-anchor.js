@@ -3,6 +3,8 @@
  * Finds where the speed widget mounts for popup windows, watch pages and Shorts.
  */
 
+import { isWatchPath } from './url-utils.js';
+
 export const POPUP_ROW_SLOT_ID = 'yutu-popup-speed-slot';
 
 export function getControlsAnchor(isPopupWindow) {
@@ -27,7 +29,7 @@ export function getControlsAnchor(isPopupWindow) {
   }
 
   // Only mount speed controls on watch and shorts pages (not home/browse/search)
-  const isWatchPage = location.pathname === '/watch';
+  const isWatchPage = isWatchPath();
   const isShortsPage = location.pathname.startsWith('/shorts/');
   if (!isWatchPage && !isShortsPage) return null;
 
