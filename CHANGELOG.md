@@ -7,15 +7,21 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
-## [Unreleased]
-
-### Fixed
-- Old video filter: thumbnail blurred and title muted; channel and date row stay at full color; everything clears on hover
-- Old video filter no longer depends on YouTube's `ytd-browse[page-subtype="home"]` attribute: Home is detected by path (`/`), the effect is cleared when leaving Home and restored on return
+## [1.5.0] - 2026-10-02
 
 ### Added
 - "Hide Shorts shelf" toggle for the Home feed (Feed tab, off by default): hides the whole Shorts block (`:has()` on the shorts lockup), scoped to `/` via `html[data-yutu-home]`
 - Feed tab shows a "Reload YouTube tab to apply" button after any option is saved
+- `README.md` rewritten in English and `README.es.md` in Spanish, explanation only (commands moved to `docs/GUIDES/DEVELOPMENT.md`)
+- `docs/ARCHITECTURE/HOW_IT_WORKS.md`, `docs/GUIDES/DEVELOPMENT.md`, `docs/STORE/NAMING.md` (rename proposal)
+- Creator credit (peluche, dpeluche.dev) in the popup, READMEs, listing and `package.json`
+
+### Changed
+- `CLAUDE.md` rewritten lean: stale sections removed, pointers to `docs/`
+
+### Fixed
+- Old video filter: thumbnail blurred and title muted; channel and date row stay at full color; everything clears on hover
+- Old video filter no longer depends on YouTube's `ytd-browse[page-subtype="home"]` attribute: Home is detected by path (`/`), the effect is cleared when leaving Home and restored on return
 
 ## [1.4.0] - 2026-10-02
 

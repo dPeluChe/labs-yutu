@@ -49,6 +49,7 @@ El resto del trabajo de publicacion esta en la tarea 5.
 - [ ] Research base documentado en `docs/ARCHIVED/YOUTUBE_API_INVESTIGATION.md`
 
 ### 5) Preparacion Chrome Web Store `added: 2026-03-24`
+- [ ] Decidir el nombre (propuesta en `docs/STORE/NAMING.md`: Perch recomendado), buscarlo en la tienda y aplicar el renombrado en un PR
 - [ ] Subir `builds/yutu-labs-v<version>.zip` (`npm run package`) y completar el listing con `docs/STORE/LISTING.md` (la politica de privacidad ya tiene URL en el repo publico)
 - [ ] Crear screenshots para la tienda (al menos 1)
 - [ ] Crear promotional tile (440x280)
