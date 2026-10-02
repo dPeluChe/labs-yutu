@@ -24,8 +24,7 @@ const card = (age) => `
     <span class="ytContentMetadataViewModelMetadataText" aria-label="${age}">${age}</span>
   </ytd-rich-item-renderer>`;
 
-const page = (subtype, ...ages) =>
-  `<ytd-browse page-subtype="${subtype}">${ages.map(card).join('')}</ytd-browse>`;
+const page = (_name, ...ages) => `<ytd-browse>${ages.map(card).join('')}</ytd-browse>`;
 
 const oldCards = () => [...document.querySelectorAll('[data-yutu-old]')];
 
@@ -38,6 +37,7 @@ async function start(oldVideoFilter) {
 }
 
 beforeEach(() => {
+  dom.reconfigure({ url: 'https://www.youtube.com/' });
   document.body.innerHTML = '';
 });
 
@@ -55,6 +55,7 @@ test('does nothing while disabled', async () => {
 });
 
 test('ignores cards outside the Home feed', async () => {
+  dom.reconfigure({ url: 'https://www.youtube.com/@channel/videos' });
   document.body.innerHTML = page('channels', '2 years ago');
   await start({ enabled: true, months: 6, mode: 'blur' });
   assert.equal(oldCards().length, 0);
@@ -81,6 +82,29 @@ test('settings changes re-evaluate measured cards without rescanning dates', asy
 
   onChanged({ yutuSettings: { newValue: { oldVideoFilter: { enabled: false } } } }, 'local');
   assert.equal(oldCards().length, 0);
+});
+
+test('leaving Home clears the effect and coming back restores it', async () => {
+  document.body.innerHTML = page('home', '2 years ago');
+  const { filter } = await start({ enabled: true, months: 6, mode: 'blur' });
+  assert.equal(oldCards().length, 1);
+
+  dom.reconfigure({ url: 'https://www.youtube.com/@channel/videos' });
+  filter.refresh();
+  assert.equal(oldCards().length, 0);
+
+  dom.reconfigure({ url: 'https://www.youtube.com/' });
+  filter.refresh();
+  assert.equal(oldCards().length, 1);
+});
+
+test('works on the real lockup markup (aria-label on the last metadata part)', async () => {
+  document.body.innerHTML = `<ytd-browse><ytd-rich-item-renderer><yt-lockup-view-model>
+    <span class="ytAttributedStringHost ytContentMetadataViewModelMetadataText" aria-label="131 thousand views" role="text">131K</span>
+    <span class="ytAttributedStringHost ytContentMetadataViewModelMetadataText ytContentMetadataViewModelMetadataTextLastPart" aria-label="2 months ago" role="text">2mo ago</span>
+  </yt-lockup-view-model></ytd-rich-item-renderer></ytd-browse>`;
+  await start({ enabled: true, months: 1, mode: 'blur' });
+  assert.equal(oldCards().length, 1);
 });
 
 test('cards without a parsable date are skipped and eventually given up on', async () => {
