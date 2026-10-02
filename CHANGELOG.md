@@ -7,6 +7,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [1.6.0] - 2026-10-02
+
+### Changed
+- Product renamed from "Yutu Labs" to **Yush** (manifest name `Yush: Calm Video Feed & Floating Player`, popup, READMEs, docs, log prefixes, zip name `yush-v<version>.zip`). Legacy internals (`yutu-` CSS prefix, `data-yutu-*`, `yutu_popup`, `yutuSettings`) are unchanged so saved settings survive
+- Manifest description now mentions the calm-feed features
+- `YutuPiPManager` renamed `YushManager`, `isYutuPopupWindow` renamed `isFloatingWindow`
+- `docs/STORE/NAMING.md` rewritten as the naming decision record
+- Simplify pass: `mergeSettings()` and a single shared `subscribeSettings()` listener in `content/config.js` replace four hand-written `storage.onChanged` listeners (and a redundant storage read in the hider); `isHomePath()`/`isWatchPath()` helpers; `getActiveYouTubeTab()` shared by the popup modules; the hider skips identical style rewrites and the old-video filter skips attribute writes that change nothing; 48 tests
+
 ## [1.5.0] - 2026-10-02
 
 ### Added

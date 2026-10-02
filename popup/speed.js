@@ -1,14 +1,16 @@
-// Yutu Labs - Popup playback speed controls
+// Yush - Popup playback speed controls
+
+import { getActiveYouTubeTab } from './active-tab.js';
 
 const speedButtons = document.querySelectorAll('.speed-btn');
 const speedStatus = document.getElementById('speed-status');
 
 export async function syncCurrentSpeed() {
   try {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tabs.length === 0 || !tabs[0].url?.includes('youtube.com')) return;
+    const tab = await getActiveYouTubeTab();
+    if (!tab) return;
 
-    const response = await chrome.tabs.sendMessage(tabs[0].id, {
+    const response = await chrome.tabs.sendMessage(tab.id, {
       action: 'getPlaybackSpeed'
     });
 
@@ -33,15 +35,15 @@ export function setupSpeedControls() {
       speedStatus.className = 'speed-status speed-status--loading';
 
       try {
-        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+        const tab = await getActiveYouTubeTab();
 
-        if (tabs.length === 0 || !tabs[0].url.includes('youtube.com')) {
+        if (!tab) {
           speedStatus.textContent = 'Please open YouTube first';
           speedStatus.className = 'speed-status speed-status--error';
           return;
         }
 
-        const response = await chrome.tabs.sendMessage(tabs[0].id, {
+        const response = await chrome.tabs.sendMessage(tab.id, {
           action: 'setPlaybackSpeed',
           speed
         });

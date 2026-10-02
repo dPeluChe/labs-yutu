@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - DOM Selectors
+ * Yush - DOM Selectors
  * Centralized CSS selectors for YouTube and Google DOM structures.
  * Update these when YouTube/Google change their markup.
  */

@@ -7,8 +7,8 @@ Los limites son los del dashboard (verificar al subir, pueden cambiar).
 
 | Campo | Valor | Limite |
 |-------|-------|--------|
-| Name | Pendiente de naming, ver `NAMING.md` (provisional: `Yutu Labs - Floating Video Player`) | 75 |
-| Summary | `Open YouTube videos in floating windows. Speed controls, auto-close, and distraction-free viewing.` | 132 (igual a `manifest.json` `description`) |
+| Name | `Yush: Calm Video Feed & Floating Player` (igual a `manifest.json` `name`) | 75 |
+| Summary | `Open videos in floating windows with speed controls and auto-close. Quiet your feed: blur old videos, hide Shorts.` | 132 (igual a `manifest.json` `description`) |
 | Category | Productivity | |
 | Language | English | |
 | Privacy policy URL | https://github.com/dPeluChe/labs-yutu/blob/main/docs/STORE/PRIVACY_POLICY.md | |
@@ -18,9 +18,9 @@ Los limites son los del dashboard (verificar al subir, pueden cambiar).
 ## Detailed description
 
 ```text
-Watch YouTube without leaving the page you are on.
+Hush the algorithm. Watch YouTube without leaving the page you are on.
 
-Yutu Labs adds a small button to every video card on YouTube (Home, Search, sidebar and Shorts). One click opens the video in its own floating window, parked in the corner of your screen, while you keep browsing.
+Yush adds a small button to every video card on YouTube (Home, Search, sidebar and Shorts). One click opens the video in its own floating window, parked in the corner of your screen, while you keep browsing.
 
 WHAT YOU GET
 - One-click floating player: opens in a compact 854x480 window in the bottom-right corner. Move and resize it freely.
@@ -36,7 +36,7 @@ No accounts, no analytics, no servers. Your preferences stay in your browser. Ex
 
 HOW TO USE
 1. Install the extension and open YouTube.
-2. Click the Yutu icon on any video thumbnail.
+2. Click the Yush icon on any video thumbnail.
 3. Use the toolbar popup to tune speed, hidden elements and extra websites.
 
 Made by peluche (https://dpeluche.dev). Not affiliated with or endorsed by YouTube or Google.
@@ -84,7 +84,7 @@ Capturas sugeridas, en orden:
 ## Antes de subir
 
 ```bash
-npm run package   # genera builds/yutu-labs-v<version>.zip
+npm run package   # genera builds/yush-v<version>.zip
 ```
 
 Subir el `.zip`, no la carpeta. Verificar que la version del manifest sea mayor que la ya publicada.

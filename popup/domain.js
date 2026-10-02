@@ -1,4 +1,4 @@
-// Yutu Labs - Domain normalization for the external-sites whitelist
+// Yush - Domain normalization for the external-sites whitelist
 
 /** Strip protocol, path and leading www; returns '' when nothing usable is left. */
 export function normalizeDomain(input) {

@@ -30,8 +30,9 @@ test('every option maps to selectors and a default flag', () => {
   }
 });
 
-test('watch page hiding is off by default', () => {
+test('watch page hiding, home shorts hiding and the old-video filter are off by default', () => {
   assert.ok(Object.values(DEFAULT_SETTINGS.watchPage).every((v) => v === false));
+  assert.equal(DEFAULT_SETTINGS.hideHomeShorts, false);
   assert.equal(DEFAULT_SETTINGS.oldVideoFilter.enabled, false);
 });
 
@@ -41,10 +42,6 @@ test('home shorts rule is empty when disabled and scoped to Home when enabled', 
   const scoped = css.match(/html\[data-yutu-home\] ytd-rich-(section|shelf|item)-renderer:has\(/g);
   assert.equal(scoped.length, 3);
   assert.match(css, /ytm-shorts-lockup-view-model/);
-});
-
-test('home shorts hiding is off by default', () => {
-  assert.equal(DEFAULT_SETTINGS.hideHomeShorts, false);
 });
 
 test('home shorts selectors match the Shorts block but not regular video cards', () => {

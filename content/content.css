@@ -1,4 +1,4 @@
-/* Yutu Labs - Floating Window Styles */
+/* Yush - Floating Window Styles */
 
 :root {
   --yutu-brand: #667eea;
@@ -457,7 +457,7 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   }
 }
 
-/* Old Home videos (Yutu filter): thumbnail blurred and title muted until hovered; channel and date stay fully readable; or hidden */
+/* Old Home videos (Yush filter): thumbnail blurred and title muted until hovered; channel and date stay fully readable; or hidden */
 [data-yutu-old="blur"] :is(yt-thumbnail-view-model, ytd-thumbnail) {
   filter: blur(12px) grayscale(0.7);
   transition: filter var(--yutu-duration) ease;

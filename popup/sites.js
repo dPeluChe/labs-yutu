@@ -1,4 +1,4 @@
-// Yutu Labs - Popup external sites whitelist
+// Yush - Popup external sites whitelist
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { flashStatus } from './status.js';

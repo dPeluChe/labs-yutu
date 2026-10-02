@@ -1,4 +1,4 @@
-// Builds dist/ and zips it into builds/yutu-labs-v<version>.zip for the Chrome Web Store.
+// Builds dist/ and zips it into builds/yush-v<version>.zip for the Chrome Web Store.
 import { execFileSync } from 'child_process';
 import { mkdir, readFile, rm } from 'fs/promises';
 import { resolve, dirname } from 'path';
@@ -16,7 +16,7 @@ if (pkg.version !== version) {
 execFileSync('node', [resolve(root, 'scripts/build.mjs')], { stdio: 'inherit' });
 
 const outDir = resolve(root, 'builds');
-const zipPath = resolve(outDir, `yutu-labs-v${version}.zip`);
+const zipPath = resolve(outDir, `yush-v${version}.zip`);
 await mkdir(outDir, { recursive: true });
 await rm(zipPath, { force: true });
 

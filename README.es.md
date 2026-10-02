@@ -1,10 +1,10 @@
-# Yutu Labs
+# Yush
 
 [English](./README.md)
 
-Una extensión de Chrome que abre videos de YouTube y Vimeo en una ventana flotante pequeña, añade controles de velocidad y calma tu feed de YouTube. Creada por [peluche](https://dpeluche.dev).
+Hazle hush al algoritmo. Yush es una extensión de Chrome que abre videos de YouTube y Vimeo en una ventana flotante pequeña, añade controles de velocidad y silencia el ruido de tu feed de YouTube. Creada por [peluche](https://dpeluche.dev).
 
-> El nombre es provisional. La propuesta de naming está en [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
+El nombre viene de "YouTube" más "hush". Cómo se eligió está en [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
 
 ## Qué hace
 

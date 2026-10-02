@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Hide rules
+ * Yush - Hide rules
  * Builds the CSS that hides YouTube elements from a set of hide flags.
  */
 
@@ -14,24 +14,21 @@ export const HIDE_OPTIONS = [
   { key: 'hideMerchShelf', selectors: 'merch', title: 'Merch shelf', description: 'Hide products/store section below video' }
 ];
 
+const hideRule = (selectors, scope) =>
+  `${selectors.map((s) => (scope ? `${scope} ${s}` : s)).join(', ')} { display: none !important; }`;
+
 /**
  * @param {Record<string, boolean>} flags hide flags (hideReels, hideSidebar, ...)
  * @param {string} scope optional selector prefix, e.g. `html[data-yutu-watch]`
  */
 export function buildHideCss(flags, scope = '') {
-  const prefix = scope ? `${scope} ` : '';
   return HIDE_OPTIONS
     .filter((option) => flags?.[option.key])
-    .map((option) => {
-      const selector = HIDER_SELECTORS[option.selectors].map((s) => `${prefix}${s}`).join(', ');
-      return `${selector} { display: none !important; }`;
-    })
+    .map((option) => hideRule(HIDER_SELECTORS[option.selectors], scope))
     .join('\n');
 }
 
 /** Hides the Shorts shelf on Home; `scope` limits it to the Home page (`html[data-yutu-home]`). */
 export function buildHomeShortsCss(enabled, scope = '') {
-  if (!enabled) return '';
-  const prefix = scope ? `${scope} ` : '';
-  return `${HOME_SHORTS_SELECTORS.map((s) => `${prefix}${s}`).join(', ')} { display: none !important; }`;
+  return enabled ? hideRule(HOME_SHORTS_SELECTORS, scope) : '';
 }

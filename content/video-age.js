@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Video age parsing
+ * Yush - Video age parsing
  * Reads YouTube's relative dates ("3 months ago", "hace 2 años") into months.
  * Only English and Spanish UIs are recognized; anything else returns null.
  */

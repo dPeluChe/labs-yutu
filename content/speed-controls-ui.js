@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Speed controls widget DOM
+ * Yush - Speed controls widget DOM
  */
 
 import { PRESET_SPEEDS, getShortcutHintText, getShortcutLabel } from './speed-shortcuts.js';

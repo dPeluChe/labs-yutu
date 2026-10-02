@@ -3,14 +3,12 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 
 const dom = new JSDOM('<!doctype html><body></body>', { url: 'https://www.youtube.com/' });
-let stored = {};
 let onChanged = null;
 Object.assign(globalThis, {
   window: dom.window,
   document: dom.window.document,
   chrome: {
     storage: {
-      local: { get: async (key) => ({ [key]: stored }) },
       onChanged: { addListener: (fn) => { onChanged = fn; } }
     }
   }
@@ -24,17 +22,19 @@ const card = (age) => `
     <span class="ytContentMetadataViewModelMetadataText" aria-label="${age}">${age}</span>
   </ytd-rich-item-renderer>`;
 
-const page = (_name, ...ages) => `<ytd-browse>${ages.map(card).join('')}</ytd-browse>`;
+const page = (...ages) => `<ytd-browse>${ages.map(card).join('')}</ytd-browse>`;
 
 const oldCards = () => [...document.querySelectorAll('[data-yutu-old]')];
 
-async function start(oldVideoFilter) {
-  stored = { oldVideoFilter };
+function start(config) {
   let mutate = () => {};
-  const filter = new OldVideoFilter({ manager: { onMutation: (cb) => { mutate = cb; } } });
-  await filter.init();
+  const filter = new OldVideoFilter({ manager: { onMutation: (cb) => { mutate = cb; } }, config });
+  filter.init();
   return { filter, mutate };
 }
+
+const change = (oldVideoFilter) =>
+  onChanged({ yutuSettings: { newValue: { oldVideoFilter } } }, 'local');
 
 beforeEach(() => {
   dom.reconfigure({ url: 'https://www.youtube.com/' });
@@ -42,51 +42,51 @@ beforeEach(() => {
 });
 
 test('marks only cards older than the threshold', async () => {
-  document.body.innerHTML = page('home', '16 hours ago', '5 months ago', '6 months ago', '2 years ago');
-  await start({ enabled: true, months: 6, mode: 'blur' });
+  document.body.innerHTML = page('16 hours ago', '5 months ago', '6 months ago', '2 years ago');
+  start({ enabled: true, months: 6, mode: 'blur' });
   const ages = oldCards().map((c) => c.getAttribute('data-yutu-old'));
   assert.deepEqual(ages, ['blur', 'blur']);
 });
 
 test('does nothing while disabled', async () => {
-  document.body.innerHTML = page('home', '2 years ago');
-  await start({ enabled: false, months: 6, mode: 'blur' });
+  document.body.innerHTML = page('2 years ago');
+  start({ enabled: false, months: 6, mode: 'blur' });
   assert.equal(oldCards().length, 0);
 });
 
 test('ignores cards outside the Home feed', async () => {
   dom.reconfigure({ url: 'https://www.youtube.com/@channel/videos' });
-  document.body.innerHTML = page('channels', '2 years ago');
-  await start({ enabled: true, months: 6, mode: 'blur' });
+  document.body.innerHTML = page('2 years ago');
+  start({ enabled: true, months: 6, mode: 'blur' });
   assert.equal(oldCards().length, 0);
 });
 
 test('cards that render later are picked up on mutation', async () => {
-  document.body.innerHTML = page('home');
-  const { mutate } = await start({ enabled: true, months: 6, mode: 'hide' });
+  document.body.innerHTML = page();
+  const { mutate } = start({ enabled: true, months: 6, mode: 'hide' });
   document.querySelector('ytd-browse').insertAdjacentHTML('beforeend', card('1 year ago'));
   mutate();
   assert.equal(oldCards()[0].getAttribute('data-yutu-old'), 'hide');
 });
 
 test('settings changes re-evaluate measured cards without rescanning dates', async () => {
-  document.body.innerHTML = page('home', '3 months ago', '1 year ago');
-  await start({ enabled: true, months: 6, mode: 'blur' });
+  document.body.innerHTML = page('3 months ago', '1 year ago');
+  start({ enabled: true, months: 6, mode: 'blur' });
   assert.equal(oldCards().length, 1);
 
-  onChanged({ yutuSettings: { newValue: { oldVideoFilter: { enabled: true, months: 1, mode: 'blur' } } } }, 'local');
+  change({ enabled: true, months: 1, mode: 'blur' });
   assert.equal(oldCards().length, 2);
 
-  onChanged({ yutuSettings: { newValue: { oldVideoFilter: { enabled: true, months: 1, mode: 'hide' } } } }, 'local');
+  change({ enabled: true, months: 1, mode: 'hide' });
   assert.deepEqual(oldCards().map((c) => c.getAttribute('data-yutu-old')), ['hide', 'hide']);
 
-  onChanged({ yutuSettings: { newValue: { oldVideoFilter: { enabled: false } } } }, 'local');
+  change({ enabled: false });
   assert.equal(oldCards().length, 0);
 });
 
 test('leaving Home clears the effect and coming back restores it', async () => {
-  document.body.innerHTML = page('home', '2 years ago');
-  const { filter } = await start({ enabled: true, months: 6, mode: 'blur' });
+  document.body.innerHTML = page('2 years ago');
+  const { filter } = start({ enabled: true, months: 6, mode: 'blur' });
   assert.equal(oldCards().length, 1);
 
   dom.reconfigure({ url: 'https://www.youtube.com/@channel/videos' });
@@ -103,13 +103,13 @@ test('works on the real lockup markup (aria-label on the last metadata part)', a
     <span class="ytAttributedStringHost ytContentMetadataViewModelMetadataText" aria-label="131 thousand views" role="text">131K</span>
     <span class="ytAttributedStringHost ytContentMetadataViewModelMetadataText ytContentMetadataViewModelMetadataTextLastPart" aria-label="2 months ago" role="text">2mo ago</span>
   </yt-lockup-view-model></ytd-rich-item-renderer></ytd-browse>`;
-  await start({ enabled: true, months: 1, mode: 'blur' });
+  start({ enabled: true, months: 1, mode: 'blur' });
   assert.equal(oldCards().length, 1);
 });
 
 test('cards without a parsable date are skipped and eventually given up on', async () => {
   document.body.innerHTML = '<ytd-browse page-subtype="home"><ytd-rich-item-renderer><span class="ytContentMetadataViewModelMetadataText">LIVE</span></ytd-rich-item-renderer></ytd-browse>';
-  const { filter } = await start({ enabled: true, months: 6, mode: 'blur' });
+  const { filter } = start({ enabled: true, months: 6, mode: 'blur' });
   for (let i = 0; i < 5; i++) filter.scan();
   const el = document.querySelector('ytd-rich-item-renderer');
   assert.equal(el.hasAttribute('data-yutu-old'), false);

@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Speed presets and keyboard shortcuts (Alt/Option + 1..5)
+ * Yush - Speed presets and keyboard shortcuts (Alt/Option + 1..5)
  */
 
 export const PRESET_SPEEDS = [1, 1.15, 1.25, 1.5, 2];

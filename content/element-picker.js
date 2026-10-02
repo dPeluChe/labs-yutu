@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Visual Element Picker
+ * Yush - Visual Element Picker
  * Lets users click on a YouTube element to generate a CSS selector.
  * Activated from the popup "Selector" tab.
  */

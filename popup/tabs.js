@@ -1,4 +1,4 @@
-// Yutu Labs - Popup tabs
+// Yush - Popup tabs
 
 export function setupTabs() {
   document.querySelectorAll('.tab-btn').forEach(btn => {

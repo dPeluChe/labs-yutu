@@ -28,7 +28,7 @@ Los tests usan jsdom con marcado de YouTube de ejemplo. No hay forma de ejecutar
 
 ## Depurar
 
-- **Content script:** consola de la pagina de YouTube; los mensajes llevan el prefijo "Yutu Labs".
+- **Content script:** consola de la pagina de YouTube; los mensajes llevan el prefijo "Yush".
 - **Service worker:** `chrome://extensions`, "Inspect service worker".
 - **Popup:** clic derecho sobre el popup, "Inspeccionar".
 - **Atributos de depuracion en las tarjetas:** `data-yutu-injected` (botones puestos), `data-yutu-age` (meses medidos) y `data-yutu-old` (efecto aplicado). Si una tarjeta no tiene ninguno, el script correspondiente no esta corriendo en esa pagina.
@@ -41,7 +41,7 @@ El vector de referencia es `icons/icon.svg`. Los PNG de 16, 48 y 128 px se regen
 
 1. Sube la version en `manifest.json` y `package.json` (deben coincidir; `npm run package` falla si no).
 2. Anota los cambios en `CHANGELOG.md`.
-3. `npm run package` genera `builds/yutu-labs-v<version>.zip` listo para el Developer Dashboard.
+3. `npm run package` genera `builds/yush-v<version>.zip` listo para el Developer Dashboard.
 4. Los textos del listing estan en `docs/STORE/LISTING.md`.
 
 ## Flujo de trabajo
