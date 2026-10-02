@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Manual test guide for the old window.open() flow. Current checks: npm run check.
+
+---
+
 # Guía de Pruebas - Yutu Labs
 
 ## Pre-requisitos

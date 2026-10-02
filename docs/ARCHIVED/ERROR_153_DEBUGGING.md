@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Debugging of YouTube embed Error 153. Kept so the dead end is not retried.
+
+---
+
 # Debugging Error 153 - embedder.identity.missing.referrer
 
 ## Estado Actual

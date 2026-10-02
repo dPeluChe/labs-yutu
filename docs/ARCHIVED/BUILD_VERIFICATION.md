@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Checklist for the old build layout. Current build: scripts/build.mjs.
+
+---
+
 # Build Verification Guide
 
 ## Current Build Status

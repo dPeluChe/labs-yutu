@@ -1,5 +1,5 @@
 import { context } from 'esbuild';
-import { cp, mkdir, watch as fsWatch } from 'fs/promises';
+import { cp, mkdir, rm, watch as fsWatch } from 'fs/promises';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,14 +14,19 @@ const staticFiles = [
   ['manifest.json', 'manifest.json'],
   ['content/content.css', 'content/content.css'],
   ['popup/popup.html', 'popup/popup.html'],
-  ['popup/popup.css', 'popup/popup.css']
+  ['popup/popup.css', 'popup/popup.css'],
+  ['icons/icon16.png', 'icons/icon16.png'],
+  ['icons/icon48.png', 'icons/icon48.png'],
+  ['icons/icon128.png', 'icons/icon128.png']
 ];
 
 async function copyStaticFiles() {
   await Promise.all(
-    staticFiles.map(([src, dest]) =>
-      cp(resolve(projectRoot, src), resolve(distDir, dest))
-    )
+    staticFiles.map(async ([src, dest]) => {
+      const target = resolve(distDir, dest);
+      await mkdir(dirname(target), { recursive: true });
+      await cp(resolve(projectRoot, src), target);
+    })
   );
 }
 
@@ -49,13 +54,13 @@ async function watchStaticFiles() {
 }
 
 async function main() {
+  await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
 
   const ctx = await context({
     entryPoints: {
       'background/background': resolve(projectRoot, 'background/background.js'),
       'content/youtube-content': resolve(projectRoot, 'content/youtube-content.js'),
-      'content/google-content': resolve(projectRoot, 'content/google-content.js'),
       'content/external-content': resolve(projectRoot, 'content/external-content.js'),
       'content/hider': resolve(projectRoot, 'content/hider.js'),
       'popup/popup': resolve(projectRoot, 'popup/popup.js'),

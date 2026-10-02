@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Refactor plan largely executed (content/ is now split into modules).
+
+---
+
 # Refactoring Recommendations
 
 ## Overview

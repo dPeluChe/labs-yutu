@@ -6,7 +6,7 @@ This directory contains archived documentation from earlier phases of the Yutu L
 
 ### TASK_COMPLETED_2025.md
 **Purpose**: Historical completed work log from earlier sessions
-**Status**: Archived (superseded by current `docs/TASK_COMPLETED.md`)
+**Status**: Archived (superseded by current `docs/TASK_COMPLETED/README.md`)
 **Content**: 2025 session-level completion notes and refactoring history
 
 ### BUILD_VERIFICATION.md

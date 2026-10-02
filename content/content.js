@@ -41,7 +41,8 @@ export class YutuPiPManager {
   observe() {
     this.observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
-        if (mutation.addedNodes.length > 0) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
           this.scheduleInject();
           this.scheduleMutationSubscribers();
           return;

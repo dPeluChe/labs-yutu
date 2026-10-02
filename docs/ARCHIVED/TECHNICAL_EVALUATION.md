@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Evaluation of embed techniques, all discarded. Kept as historical context.
+
+---
+
 # Evaluación Técnica de Alternativas - Yutu Labs
 ## Análisis de Viabilidad y Propuesta de Implementación
 

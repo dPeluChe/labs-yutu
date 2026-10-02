@@ -5,6 +5,7 @@
  */
 
 import { loadSettings, saveSettings } from './config.js';
+import { resetInjectedButtons } from './button-factory.js';
 
 let active = false;
 let overlay = null;
@@ -154,7 +155,7 @@ export function setupPickerListener() {
           await saveSettings(settings);
 
           // Re-inject buttons with new selector
-          document.querySelectorAll('.yutu-pip-btn').forEach(btn => btn.remove());
+          resetInjectedButtons();
         }
 
         chrome.runtime.sendMessage({

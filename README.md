@@ -58,17 +58,17 @@ npm run watch
 *   `/content`: Scripts y estilos inyectados por contexto.
     *   `content.js`: Núcleo compartido (YutuPiPManager)
     *   `youtube-content.js`: Inyección para cards de YouTube + speed control messages
-    *   `google-content.js`: Inyección optimizada para resultados de Google
-    *   `external-content.js`: Inyección para otras webs con enlaces YouTube/Vimeo
+    *   `external-content.js`: Inyección en Google (alcance `google`) y sitios opt-in con enlaces YouTube/Vimeo
     *   `content.css`: Estilos del botón PiP
 *   `/background`: Service worker de la extensión.
 *   `/popup`: Interfaz del popup de la extensión (icono en la barra).
 *   `/scripts`: Scripts de construcción (esbuild).
-*   `/dist`: Carpeta de salida del build (generada automáticamente).
+*   `/icons`: Iconos PNG (`npm run icons` los regenera)
+*   `/dist`: Carpeta de salida (cargar esta carpeta en `chrome://extensions`) del build (generada automáticamente).
 
 ## Tecnología
 
-*   **window.open()**: Solución pragmática que abre videos en ventanas nativas del navegador
+*   **chrome.windows.create()**: Abre videos en ventanas popup nativas desde el service worker
 *   **Vanilla JavaScript**: Sin frameworks, bundle mínimo
 *   **esbuild**: Build system ultra-rápido
 *   **Chrome Manifest V3**: Última versión del sistema de extensiones
@@ -100,10 +100,14 @@ npm run watch
 3. Revisa la consola (F12) para errores
 4. Si YouTube cambió su estructura, los selectores pueden necesitar actualización
 
+## Calidad
+
+```bash
+npm run lint    # eslint + stylelint
+npm test        # node:test (url-utils, manifest)
+npm run check   # lint + test + build
+```
+
 ## Documentación
 
-Ver carpeta `docs/` para documentación técnica completa:
-- **TECHNICAL_EVALUATION.md**: Análisis de soluciones
-- **TESTING.md**: Guía de pruebas (12+ escenarios)
-- **ERROR_153_DEBUGGING.md**: Troubleshooting del error de embed
-- **REFACTOR_SUMMARY.md**: Historial de cambios
+Ver `docs/README.md` (índice), `CHANGELOG.md` y `docs/ARCHIVED/` (historial: por qué se descartaron los embeds).

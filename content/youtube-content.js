@@ -1,6 +1,7 @@
 import { isYutuPopupWindow, loadSettings } from './config.js';
 import { YutuPiPManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
+import { resetInjectedButtons } from './button-factory.js';
 import { setupPickerListener } from './element-picker.js';
 
 async function initYouTube() {
@@ -32,7 +33,7 @@ async function initYouTube() {
     if (message.action === 'updateCustomSelector') {
       manager.customButtonSelector = message.customButtonSelector || '';
       // Remove existing buttons and re-inject with new selector
-      document.querySelectorAll('.yutu-pip-btn').forEach(btn => btn.remove());
+      resetInjectedButtons();
       manager.injectButtons();
     }
   });

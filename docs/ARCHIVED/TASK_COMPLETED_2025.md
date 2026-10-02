@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Superseded by docs/TASK_COMPLETED/.
+
+---
+
 # Task Completed Log
 
 This document tracks completed tasks and phases of the Yutu Labs project refactoring.

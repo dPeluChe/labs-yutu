@@ -72,7 +72,6 @@ export async function loadSettings() {
 export async function saveSettings(settings) {
   try {
     await chrome.storage.local.set({ [STORAGE_KEY]: settings });
-    console.log('✅ Settings saved to storage:', settings);
   } catch (error) {
     console.error('❌ Error saving settings to storage:', error);
     throw error;

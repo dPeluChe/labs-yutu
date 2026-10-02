@@ -16,6 +16,9 @@ const THUMB_SELECTORS = [
   '.shortsLockupViewModelHostThumbnailParentContainer'
 ];
 
+const CARD_QUERY = CARD_SELECTORS.join(',');
+const INJECTED_ATTR = 'data-yutu-injected';
+
 const META_SELECTORS = [
   'yt-lockup-metadata-view-model',
   '.shortsLockupViewModelHostOutsideMetadata',
@@ -23,20 +26,29 @@ const META_SELECTORS = [
   '#meta'
 ];
 
+/** Remove injected card buttons and markers so cards can be re-processed. */
+export function resetInjectedButtons() {
+  document.querySelectorAll('.yutu-pip-btn').forEach((btn) => btn.remove());
+  document.querySelectorAll(`[${INJECTED_ATTR}]`).forEach((el) => el.removeAttribute(INJECTED_ATTR));
+}
+
 /**
  * Scan YouTube video cards and inject buttons.
  */
 export function injectYouTubeCardButtons(onOpen, { customSelector = '' } = {}) {
-  const cards = document.querySelectorAll(CARD_SELECTORS.join(','));
+  const cards = document.querySelectorAll(`:is(${CARD_QUERY}):not([${INJECTED_ATTR}])`);
 
   cards.forEach((card) => {
-    if (card.querySelector('.yutu-pip-btn')) return;
+    // Nested cards (rich-item > lockup): only the outermost gets buttons
+    if (card.closest(`[${INJECTED_ATTR}]`) || card.querySelector(`[${INJECTED_ATTR}]`)) return;
 
     const link = card.querySelector(VIDEO_LINK_SELECTOR);
     if (!link) return;
 
     const target = extractVideoTarget(link.href);
     if (!target) return;
+
+    card.setAttribute(INJECTED_ATTR, '');
 
     // 1. Thumbnail button (always visible icon)
     const thumb = findContainer(card, customSelector, THUMB_SELECTORS, link);
@@ -73,7 +85,7 @@ export function injectExternalVideoLinkButtons(onOpen, { scope = 'all' } = {}) {
       link.dataset.yutuInlineInjected = '1';
       return;
     }
-    if (link.closest(CARD_SELECTORS.join(','))) return;
+    if (link.closest(CARD_QUERY)) return;
 
     link.dataset.yutuInlineInjected = '1';
     const btn = createInlineButton(target.url, onOpen);
@@ -185,5 +197,5 @@ function findContainer(card, customSelector, selectors, link) {
 }
 
 function isGoogleLinkContext(link) {
-  return Boolean(link.closest('[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search'));
+  return Boolean(link.closest(GOOGLE_CONTEXT_SELECTOR));
 }

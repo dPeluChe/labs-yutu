@@ -1,3 +1,8 @@
+> **ARCHIVED**: 2026-10-01
+> Summary of the window.open() implementation, no longer current.
+
+---
+
 # Resumen de Refactorización - Yutu Labs
 
 **Fecha**: 21 de Enero, 2026
