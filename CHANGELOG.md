@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [Unreleased]
+
+### Added
+- `npm run package`: build + `builds/yutu-labs-v<version>.zip` for the Chrome Web Store
+- `docs/STORE/`: listing texts, permission justifications and the updated privacy policy
+- `.doctos.yml` declaring the docs structure
+
+### Changed
+- `PRIVACY_POLICY.md` moved from the repo root to `docs/STORE/`; `docs/ARCHIVED/README.md` condensed
+
+---
+
 ## [1.3.1] - 2026-10-02
 
 ### Changed

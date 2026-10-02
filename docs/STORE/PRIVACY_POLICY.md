@@ -1,10 +1,10 @@
 # Privacy Policy - Yutu Labs
 
-**Last updated:** March 24, 2026
+**Last updated:** October 2, 2026
 
 ## Overview
 
-Yutu Labs is a Chrome extension that opens YouTube videos in floating windows with playback speed controls. This policy explains how the extension handles user data.
+Yutu Labs is a Chrome extension that opens YouTube and Vimeo videos in floating windows, with playback speed controls. This policy explains how the extension handles user data.
 
 ## Data Collection
 
@@ -20,29 +20,32 @@ The extension does not:
 
 ## Local Storage
 
-The extension uses `chrome.storage.local` exclusively to save your preferences (such as hide/show settings and playback speed options). This data:
+The extension uses `chrome.storage.local` only to save your preferences: which elements to hide in the floating window, the "close on finish" option, the custom button selector, and the list of extra websites you chose to enable. This data:
 - Never leaves your device
 - Is stored entirely within Chrome's local extension storage
 - Is deleted when you uninstall the extension
 - Can be cleared at any time via Chrome's extension settings
 
+The extension also keeps the id of the open floating window in `chrome.storage.session`, which Chrome clears when the browser closes.
+
 ## Permissions Explained
 
 | Permission | Why it's needed |
 |------------|----------------|
-| `storage` | Save your extension preferences locally |
-| `system.display` | Position floating windows correctly on your screen |
-| Host: `*.youtube.com` | Inject buttons on YouTube pages and control playback |
+| `storage` | Save your preferences locally |
+| `system.display` | Position the floating window in the corner of your screen |
+| `scripting` | Register the content script on the extra websites you enable |
+| Host: `*.youtube.com` | Add buttons on YouTube pages and control playback speed |
 | Host: `*.google.com` | Detect YouTube links in Google search results |
-| Host: all websites | Detect YouTube/Vimeo links on external websites (optional feature) |
+| Optional hosts | Requested one site at a time, only when you add a website in the popup. You can remove it at any time |
 
 ## Content Scripts
 
-The extension injects content scripts on YouTube, Google, and optionally other websites to:
-- Add "Open" buttons on video thumbnails
-- Add "View" buttons next to video links
+The extension injects content scripts on YouTube, Google, and only the extra websites you enable, in order to:
+- Add an "Open" button on video thumbnails
+- Add a "View" button next to YouTube/Vimeo links
 - Control playback speed in floating windows
-- Apply visual preferences in floating windows
+- Apply your visual preferences in floating windows
 
 These scripts run locally in your browser and do not communicate with any external service.
 
@@ -60,4 +63,4 @@ If this policy changes, the updated version will be published in the extension's
 
 ## Contact
 
-For questions or concerns about this privacy policy, please open an issue at the project's GitHub repository.
+For questions or concerns about this privacy policy, please open an issue at https://github.com/dPeluChe/labs-yutu/issues.

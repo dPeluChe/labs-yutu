@@ -6,6 +6,7 @@
   "scripts": {
     "icons": "node scripts/generate-icons.mjs",
     "build": "node scripts/build.mjs",
+    "package": "node scripts/package.mjs",
     "watch": "node scripts/build.mjs --watch",
     "lint": "eslint . && stylelint \"**/*.css\" --ignore-path .gitignore",
     "test": "node --test \"test/*.test.js\"",

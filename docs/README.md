@@ -1,12 +1,14 @@
 # Documentation - Yutu Labs
 
 Index of `docs/`. Project overview lives in the root `README.md`, release notes in the root `CHANGELOG.md`.
+Structure declared in [`.doctos.yml`](../.doctos.yml) (the table below derives from it).
 
 | Path | Purpose |
 |------|---------|
 | `TASK_TODO.md` | Prioritized backlog |
 | `TASK_COMPLETED/` | Monthly logs of finished work (`YYMM.md`, index in its `README.md`) |
-| `ARCHIVED/` | Obsolete docs with an archival note. Start with `FINAL_SOLUTION.md`, `ERROR_153_DEBUGGING.md` and `ATTEMPTS_AND_ALTERNATIVES.md` to see why embeds were abandoned |
+| `STORE/` | Chrome Web Store: `LISTING.md` (texts to paste), `PRIVACY_POLICY.md`. Package with `npm run package` |
+| `ARCHIVED/` | Obsolete docs with an archival note. Index in its `README.md` |
 
 ## Writing rules
 
