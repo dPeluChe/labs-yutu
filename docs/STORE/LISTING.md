@@ -23,9 +23,10 @@ Yutu Labs adds a small button to every video card on YouTube (Home, Search, side
 
 WHAT YOU GET
 - One-click floating player: opens in a compact 854x480 window in the bottom-right corner. Move and resize it freely.
-- Speed controls: 1x, 1.25x, 1.5x and 2x buttons, plus Alt/Option + 1..4 shortcuts. Also available on regular watch pages and Shorts.
+- Speed controls: 1x, 1.15x, 1.25x, 1.5x and 2x buttons, plus Alt/Option + 1..5 shortcuts. Also available on regular watch pages and Shorts.
 - Close on finish: the floating window closes itself when the video ends.
-- Distraction-free window: hide the description, recommendations, header, action buttons and merch shelf inside the floating window.
+- Distraction-free viewing: hide the description, recommendations, header, action buttons and merch shelf, separately for the floating window and for regular watch pages.
+- Calm Home feed: optionally blur (or hide) old videos that YouTube resurfaces as reminders. Blurred cards clear on hover.
 - Works beyond YouTube: a "View" button appears next to YouTube and Vimeo links in Google results and on websites you choose to enable.
 - Button position picker: if YouTube changes its layout, point at the thumbnail area with the visual picker and the button follows.
 

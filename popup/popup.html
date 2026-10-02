@@ -20,6 +20,7 @@
 
     <nav class="tab-bar">
       <button class="tab-btn tab-btn--active" data-tab="settings">Settings</button>
+      <button class="tab-btn" data-tab="feed">Feed</button>
       <button class="tab-btn" data-tab="selector">Selector</button>
       <button class="tab-btn" data-tab="sites">Sites</button>
     </nav>
@@ -41,6 +42,7 @@
 
         <div class="speed-buttons">
           <button class="speed-btn" data-speed="1">1x</button>
+          <button class="speed-btn" data-speed="1.15">1.15x</button>
           <button class="speed-btn" data-speed="1.25">1.25x</button>
           <button class="speed-btn" data-speed="1.5">1.5x</button>
           <button class="speed-btn" data-speed="2">2x</button>
@@ -50,79 +52,60 @@
       </section>
 
       <section class="settings-section">
-        <h2>Hide elements in window</h2>
-        <p class="help-text">Settings only apply to <strong>floating windows</strong> (when clicking "Open"). Does not affect your normal YouTube view.</p>
-
-        <div class="toggle-group">
-          <label class="toggle-label toggle-label--master">
-            <input type="checkbox" id="hide-all" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Hide all (default)</span>
-              <span class="toggle-description">Enable all hide rules in popup window</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-reels" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Reels / Shorts</span>
-              <span class="toggle-description">Hide short videos section</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-sidebar" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Related videos</span>
-              <span class="toggle-description">Hide recommendations sidebar</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-description" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Description</span>
-              <span class="toggle-description">Hide video description</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-header" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Header</span>
-              <span class="toggle-description">Hide top navigation bar</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-actions" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Like/More actions</span>
-              <span class="toggle-description">Hide like-dislike and more-actions buttons</span>
-            </div>
-          </label>
-
-          <label class="toggle-label">
-            <input type="checkbox" id="hide-merch-shelf" class="toggle-input">
-  
-            <div class="toggle-text">
-              <span class="toggle-title">Merch shelf</span>
-              <span class="toggle-description">Hide products/store section below video</span>
-            </div>
-          </label>
+        <h2>Hide elements</h2>
+        <div class="segment" id="hide-segment">
+          <button class="segment-btn segment-btn--active" data-group="popup">Floating window</button>
+          <button class="segment-btn" data-group="watch">Watch page</button>
         </div>
+        <p class="help-text" id="hide-help"></p>
+
+        <div class="toggle-group" id="hide-group-popup"></div>
+        <div class="toggle-group toggle-group--hidden" id="hide-group-watch"></div>
       </section>
 
       <footer>
         <button id="save-btn" class="btn-primary">Save changes</button>
         <div id="save-status" class="save-status"></div>
       </footer>
+    </div>
+
+    <!-- Tab: Feed -->
+    <div class="tab-panel tab-panel--hidden" id="tab-feed">
+      <section class="feed-section">
+        <h2>Old videos on Home</h2>
+        <p class="help-text">YouTube resurfaces old videos on Home as reminders. Dim them so they stop grabbing attention.</p>
+
+        <label class="toggle-label toggle-label--master">
+          <input type="checkbox" id="old-enabled" class="toggle-input">
+
+          <div class="toggle-text">
+            <span class="toggle-title">Filter old videos</span>
+            <span class="toggle-description">Only affects the Home feed</span>
+          </div>
+        </label>
+
+        <div class="field-row">
+          <label for="old-months" class="selector-input-label">Older than</label>
+          <select id="old-months" class="select-input">
+            <option value="1">1 month</option>
+            <option value="3">3 months</option>
+            <option value="6">6 months</option>
+            <option value="12">1 year</option>
+            <option value="24">2 years</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label for="old-mode" class="selector-input-label">Effect</label>
+          <select id="old-mode" class="select-input">
+            <option value="blur">Blur (clears on hover)</option>
+            <option value="hide">Hide</option>
+          </select>
+        </div>
+
+        <p class="selector-hint">Dates are read from YouTube in English or Spanish. Other languages are left untouched.</p>
+        <div id="feed-status" class="save-status"></div>
+      </section>
     </div>
 
     <!-- Tab: Selector -->

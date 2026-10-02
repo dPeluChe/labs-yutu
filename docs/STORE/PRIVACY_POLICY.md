@@ -20,7 +20,7 @@ The extension does not:
 
 ## Local Storage
 
-The extension uses `chrome.storage.local` only to save your preferences: which elements to hide in the floating window, the "close on finish" option, the custom button selector, and the list of extra websites you chose to enable. This data:
+The extension uses `chrome.storage.local` only to save your preferences: which elements to hide in the floating window and on watch pages, the old-video filter options, the "close on finish" option, the custom button selector, and the list of extra websites you chose to enable. This data:
 - Never leaves your device
 - Is stored entirely within Chrome's local extension storage
 - Is deleted when you uninstall the extension
@@ -45,7 +45,7 @@ The extension injects content scripts on YouTube, Google, and only the extra web
 - Add an "Open" button on video thumbnails
 - Add a "View" button next to YouTube/Vimeo links
 - Control playback speed in floating windows
-- Apply your visual preferences in floating windows
+- Apply your visual preferences (hidden elements, dimmed old videos on Home)
 
 These scripts run locally in your browser and do not communicate with any external service.
 

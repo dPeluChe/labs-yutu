@@ -10,7 +10,7 @@ export default [
   },
   {
     files: ['scripts/**', 'test/**', 'eslint.config.js'],
-    languageOptions: { globals: { ...globals.node, document: 'readonly' } }
+    languageOptions: { globals: { ...globals.node, document: 'readonly', chrome: 'readonly' } }
   },
   { rules: { 'no-unused-vars': ['error', { caughtErrors: 'none' }] } }
 ];

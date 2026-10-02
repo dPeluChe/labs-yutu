@@ -259,8 +259,8 @@ footer {
 
 .speed-buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
   margin-bottom: 12px;
 }
 
@@ -578,4 +578,59 @@ footer {
   border-color: var(--yutu-danger);
   color: var(--yutu-danger);
   background: #fef2f2;
+}
+
+/* Hide groups */
+.segment {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 10px;
+  background: #f3f4f6;
+  border-radius: var(--yutu-radius-md);
+}
+
+.segment-btn {
+  flex: 1;
+  padding: 6px 0;
+  border: none;
+  border-radius: var(--yutu-radius-sm);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--yutu-text-muted);
+  cursor: pointer;
+}
+
+.segment-btn--active {
+  background: #fff;
+  color: var(--yutu-brand);
+  box-shadow: 0 1px 3px rgb(0, 0, 0, 0.12);
+}
+
+.toggle-group--hidden {
+  display: none;
+}
+
+/* Feed tab */
+.feed-section {
+  padding: 20px;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.select-input {
+  min-width: 170px;
+  padding: 7px 8px;
+  border: 1px solid var(--yutu-border);
+  border-radius: var(--yutu-radius-md);
+  background: #fff;
+  font: inherit;
+  color: var(--yutu-text);
 }

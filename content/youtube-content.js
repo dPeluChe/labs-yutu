@@ -1,6 +1,7 @@
 import { isYutuPopupWindow, loadSettings, STORAGE_KEY } from './config.js';
 import { YutuPiPManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
+import { OldVideoFilter } from './old-video-filter.js';
 import { setupPickerListener } from './element-picker.js';
 
 async function initYouTube() {
@@ -23,6 +24,8 @@ async function initYouTube() {
     manager
   });
   floatingSpeedControls.init();
+
+  if (!isPopup) new OldVideoFilter({ manager }).init();
 
   window.addEventListener('yt-navigate-finish', () => {
     setTimeout(() => manager.injectButtons(), 250);

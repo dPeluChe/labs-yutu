@@ -1,128 +1,139 @@
-// Yutu Labs - Popup hide-element settings
+// Yutu Labs - Popup hide-element settings (floating window + regular watch page)
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
+import { HIDE_OPTIONS } from '../content/hide-rules.js';
 import { flashStatus } from './status.js';
 
 const $ = (id) => document.getElementById(id);
-const elements = {
-  hideAll: $('hide-all'),
-  hideReels: $('hide-reels'),
-  hideSidebar: $('hide-sidebar'),
-  hideDescription: $('hide-description'),
-  hideHeader: $('hide-header'),
-  hideActions: $('hide-actions'),
-  hideMerchShelf: $('hide-merch-shelf'),
-  closeOnFinish: $('close-on-finish'),
-  saveBtn: $('save-btn'),
-  saveStatus: $('save-status')
+const AUTO_SAVE_DELAY = 400;
+
+const GROUPS = {
+  popup: {
+    help: 'Applies to <strong>floating windows</strong> (when clicking "Open"). Your normal YouTube view is not affected.',
+    read: (settings) => settings,
+    write: (settings, flags) => Object.assign(settings, flags)
+  },
+  watch: {
+    help: 'Applies to <strong>regular watch pages</strong>. Hiding the header also hides search while watching.',
+    read: (settings) => settings.watchPage,
+    write: (settings, flags) => { settings.watchPage = flags; }
+  }
 };
 
-const hideFields = [
-  'hideReels', 'hideSidebar', 'hideDescription',
-  'hideHeader', 'hideActions', 'hideMerchShelf'
-];
-
 let autoSaveTimer = null;
-const AUTO_SAVE_DELAY = 400;
+
+const inputId = (group, key) => `hide-${group}-${key}`;
+
+function toggleRow(id, title, description, extraClass = '') {
+  const label = document.createElement('label');
+  label.className = `toggle-label ${extraClass}`.trim();
+  const input = document.createElement('input');
+  input.type = 'checkbox';
+  input.id = id;
+  input.className = 'toggle-input';
+  const text = document.createElement('div');
+  text.className = 'toggle-text';
+  const titleEl = document.createElement('span');
+  titleEl.className = 'toggle-title';
+  titleEl.textContent = title;
+  const descEl = document.createElement('span');
+  descEl.className = 'toggle-description';
+  descEl.textContent = description;
+  text.append(titleEl, descEl);
+  label.append(input, text);
+  return label;
+}
+
+function renderGroups() {
+  for (const group of Object.keys(GROUPS)) {
+    const container = $(`hide-group-${group}`);
+    container.append(toggleRow(inputId(group, 'all'), 'Hide all', 'Enable every rule in this group', 'toggle-label--master'));
+    for (const option of HIDE_OPTIONS) {
+      container.append(toggleRow(inputId(group, option.key), option.title, option.description));
+    }
+  }
+}
+
+function readGroupFlags(group) {
+  return Object.fromEntries(HIDE_OPTIONS.map((o) => [o.key, $(inputId(group, o.key)).checked]));
+}
+
+function syncMaster(group) {
+  $(inputId(group, 'all')).checked = HIDE_OPTIONS.every((o) => $(inputId(group, o.key)).checked);
+}
 
 export async function loadSettings() {
   try {
     const settings = await loadConfig();
-
-    elements.hideReels.checked = settings.hideReels;
-    elements.hideSidebar.checked = settings.hideSidebar;
-    elements.hideDescription.checked = settings.hideDescription;
-    elements.hideHeader.checked = settings.hideHeader;
-    elements.hideActions.checked = settings.hideActions;
-    elements.hideMerchShelf.checked = settings.hideMerchShelf;
-    elements.closeOnFinish.checked = settings.closeOnFinish;
-    syncHideAllCheckbox();
-
-
+    for (const [group, spec] of Object.entries(GROUPS)) {
+      const flags = spec.read(settings);
+      for (const o of HIDE_OPTIONS) $(inputId(group, o.key)).checked = Boolean(flags[o.key]);
+      syncMaster(group);
+    }
+    $('close-on-finish').checked = settings.closeOnFinish;
   } catch (error) {
     console.error('Error loading settings:', error);
   }
 }
 
 async function saveSettings() {
+  const saveBtn = $('save-btn');
+  const status = $('save-status');
   try {
-    // Load existing settings to preserve externalSites and other keys
-    const existing = await loadConfig();
-    const settings = {
-      ...existing,
-      hideReels: elements.hideReels.checked,
-      hideSidebar: elements.hideSidebar.checked,
-      hideDescription: elements.hideDescription.checked,
-      hideHeader: elements.hideHeader.checked,
-      hideActions: elements.hideActions.checked,
-      hideMerchShelf: elements.hideMerchShelf.checked,
-      closeOnFinish: elements.closeOnFinish.checked
-    };
+    const settings = await loadConfig();
+    for (const [group, spec] of Object.entries(GROUPS)) spec.write(settings, readGroupFlags(group));
+    settings.closeOnFinish = $('close-on-finish').checked;
 
-    showSaveStatus('Saving...', 'saving');
-    elements.saveBtn.disabled = true;
-
+    flashStatus(status, 'Saving...', 'saving');
+    saveBtn.disabled = true;
     await saveConfig(settings);
-
-    showSaveStatus('Changes saved', 'success');
-
-    const tabs = await chrome.tabs.query({ url: '*://*.youtube.com/*' });
-    tabs.forEach(tab => {
-      chrome.tabs.sendMessage(tab.id, {
-        action: 'updateHiddenElements',
-        settings
-      }).catch(() => {});
-    });
-
-    setTimeout(() => {
-      elements.saveBtn.disabled = false;
-      hideSaveStatus();
-    }, 2000);
+    flashStatus(status, 'Changes saved', 'success');
   } catch (error) {
     console.error('Error saving settings:', error);
-    showSaveStatus('Error saving', 'error');
-    elements.saveBtn.disabled = false;
-    setTimeout(hideSaveStatus, 3000);
+    flashStatus(status, 'Error saving', 'error', 3000);
+  } finally {
+    setTimeout(() => { saveBtn.disabled = false; }, 2000);
   }
 }
 
-function showSaveStatus(message, type) {
-  flashStatus(elements.saveStatus, message, type);
+function scheduleSave() {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(saveSettings, AUTO_SAVE_DELAY);
 }
 
-function hideSaveStatus() {
-  flashStatus(elements.saveStatus, '', '', 0);
-  elements.saveStatus.style.opacity = '0';
+function setupSegment() {
+  const buttons = document.querySelectorAll('.segment-btn');
+  const select = (group) => {
+    buttons.forEach((b) => b.classList.toggle('segment-btn--active', b.dataset.group === group));
+    for (const name of Object.keys(GROUPS)) {
+      $(`hide-group-${name}`).classList.toggle('toggle-group--hidden', name !== group);
+    }
+    $('hide-help').innerHTML = GROUPS[group].help;
+  };
+  buttons.forEach((b) => b.addEventListener('click', () => select(b.dataset.group)));
+  select('popup');
 }
 
 export function setupAutoSave() {
-  const checkboxes = hideFields.map((key) => elements[key]);
+  renderGroups();
+  setupSegment();
 
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-      syncHideAllCheckbox();
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(saveSettings, AUTO_SAVE_DELAY);
+  for (const group of Object.keys(GROUPS)) {
+    for (const o of HIDE_OPTIONS) {
+      $(inputId(group, o.key)).addEventListener('change', () => {
+        syncMaster(group);
+        scheduleSave();
+      });
+    }
+    $(inputId(group, 'all')).addEventListener('change', (event) => {
+      for (const o of HIDE_OPTIONS) $(inputId(group, o.key)).checked = event.target.checked;
+      scheduleSave();
     });
-  });
+  }
 
-  elements.hideAll.addEventListener('change', () => {
-    const checked = elements.hideAll.checked;
-    hideFields.forEach((key) => { elements[key].checked = checked; });
-    clearTimeout(autoSaveTimer);
-    autoSaveTimer = setTimeout(saveSettings, AUTO_SAVE_DELAY);
-  });
-
-  elements.closeOnFinish.addEventListener('change', () => {
-    clearTimeout(autoSaveTimer);
-    autoSaveTimer = setTimeout(saveSettings, AUTO_SAVE_DELAY);
-  });
-}
-
-function syncHideAllCheckbox() {
-  elements.hideAll.checked = hideFields.every((key) => elements[key].checked);
+  $('close-on-finish').addEventListener('change', scheduleSave);
 }
 
 export function setupSaveButton() {
-  elements.saveBtn.addEventListener('click', saveSettings);
+  $('save-btn').addEventListener('click', saveSettings);
 }

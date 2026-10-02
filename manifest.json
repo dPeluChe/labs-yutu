@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Yutu Labs",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Open YouTube videos in floating windows. Speed controls, auto-close, and distraction-free viewing.",
   "permissions": [
     "storage",
