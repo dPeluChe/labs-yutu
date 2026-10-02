@@ -105,8 +105,9 @@ npm run watch
 npm run lint    # eslint + stylelint
 npm test        # node:test (url-utils, manifest)
 npm run check   # lint + test + build
+npm run package # build + builds/yutu-labs-v<version>.zip (Chrome Web Store)
 ```
 
 ## Documentación
 
-Ver `docs/README.md` (índice), `CHANGELOG.md` y `docs/ARCHIVED/` (historial: por qué se descartaron los embeds).
+Estructura declarada en [`.doctos.yml`](./.doctos.yml), índice en [docs/README.md](./docs/README.md). Textos del Chrome Web Store en `docs/STORE/`, historial de embeds descartados en `docs/ARCHIVED/`.

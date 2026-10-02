@@ -1,0 +1,7 @@
+docs_root: docs
+naming: UPPERCASE_SNAKE
+folders:
+  STORE: Chrome Web Store listing texts, privacy policy, publishing checklist
+  TASK_COMPLETED: monthly logs of finished work (managed by pm-tasks)
+  ARCHIVED: obsolete docs, each with an archival note
+root_allowed: [CHANGELOG.md]
