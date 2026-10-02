@@ -71,15 +71,19 @@ Open YouTube and Vimeo videos in a small floating window with playback speed con
 | Asset | Tamano | Estado |
 |-------|--------|--------|
 | Icon | 128x128 | Listo: `icons/icon128.png` |
-| Screenshots | 1280x800 (o 640x400), 1 a 5 | Pendiente |
+| Screenshots | 1280x800, PNG 24 bits sin alfa, 1 a 5 | 4 listas en `screenshots/`; falta la 5 (Selector y Sites) |
 | Small promo tile | 440x280 | Pendiente (opcional) |
 
-Capturas sugeridas, en orden:
-1. Home de YouTube con el icono visible sobre las miniaturas.
-2. Ventana flotante abierta en la esquina con los controles de velocidad.
-3. Popup de la extension (pestana de ocultar elementos).
-4. Resultados de Google con el boton "View".
-5. Selector visual de posicion del boton.
+Capturas listas (subir en este orden):
+
+1. `screenshots/1-floating-window.png`: ventana flotante con los controles de velocidad.
+2. `screenshots/2-open-button.png`: boton en cada tarjeta del Home.
+3. `screenshots/3-calm-feed.png`: filtro de videos viejos (miniatura difuminada, canal y fecha legibles).
+4. `screenshots/4-settings-feed.png`: popup, pestanas Settings y Feed.
+
+Pendiente: `5-selector-sites.png` con las pestanas Selector y Sites (recapturar despues del ajuste del boton "Pick element on page" de v1.6.1; las capturas actuales muestran el boton viejo).
+
+Cada imagen es una composicion con titulo sobre el degradado de marca; los originales no se versionan.
 
 ## Antes de subir
 

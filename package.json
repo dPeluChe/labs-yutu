@@ -1,6 +1,6 @@
 {
   "name": "yush",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Chrome extension for YouTube enhancements",
   "scripts": {

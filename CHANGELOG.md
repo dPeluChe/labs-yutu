@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [1.6.1] - 2026-10-02
+
+### Fixed
+- Selector tab: "Pick element on page" now has its own full-width row with the light theme instead of a cramped dark button
+
+### Added
+- Chrome Web Store screenshots (`docs/STORE/screenshots/`, 1280x800)
+
 ## [1.6.0] - 2026-10-02
 
 ### Changed
