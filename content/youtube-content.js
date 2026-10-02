@@ -1,14 +1,14 @@
-import { isYutuPopupWindow, loadSettings, STORAGE_KEY } from './config.js';
-import { YutuPiPManager, attachPlaybackMessageListener } from './content.js';
+import { isFloatingWindow, loadSettings, STORAGE_KEY } from './config.js';
+import { YushManager, attachPlaybackMessageListener } from './content.js';
 import { FloatingSpeedControls } from './floating-speed-controls.js';
 import { OldVideoFilter } from './old-video-filter.js';
 import { setupPickerListener } from './element-picker.js';
 
 async function initYouTube() {
-  const isPopup = isYutuPopupWindow();
+  const isPopup = isFloatingWindow();
   const settings = await loadSettings();
 
-  const manager = new YutuPiPManager({
+  const manager = new YushManager({
     enableYouTubeCards: !isPopup,
     enableExternalLinks: false,
     customButtonSelector: settings.customButtonSelector || '',

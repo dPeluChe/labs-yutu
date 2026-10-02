@@ -1,4 +1,4 @@
-// Yutu Labs - Popup custom button selector
+// Yush - Popup custom button selector
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { flashStatus } from './status.js';

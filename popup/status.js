@@ -1,4 +1,4 @@
-// Yutu Labs - Popup status messages
+// Yush - Popup status messages
 
 let statusTimer = null;
 

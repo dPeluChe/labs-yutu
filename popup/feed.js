@@ -1,4 +1,4 @@
-// Yutu Labs - Popup old-video filter (Feed tab)
+// Yush - Popup old-video filter (Feed tab)
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { flashStatus } from './status.js';

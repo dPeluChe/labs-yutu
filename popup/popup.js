@@ -1,4 +1,4 @@
-// Yutu Labs - Popup entry point
+// Yush - Popup entry point
 
 import { setupTabs } from './tabs.js';
 import { loadSettings, setupAutoSave, setupSaveButton } from './settings.js';

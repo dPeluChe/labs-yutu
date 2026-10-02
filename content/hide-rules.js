@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Hide rules
+ * Yush - Hide rules
  * Builds the CSS that hides YouTube elements from a set of hide flags.
  */
 

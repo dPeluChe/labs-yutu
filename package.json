@@ -1,6 +1,6 @@
 {
-  "name": "yutu-extension",
-  "version": "1.5.0",
+  "name": "yush",
+  "version": "1.6.0",
   "private": true,
   "description": "Chrome extension for YouTube enhancements",
   "scripts": {

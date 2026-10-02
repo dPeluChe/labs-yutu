@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-**Yutu Labs** (provisional name, see `docs/STORE/NAMING.md`) is a Chrome extension (Manifest V3, vanilla JavaScript, esbuild) by peluche (dpeluche.dev). It opens YouTube and Vimeo videos in a floating window, adds speed controls, hides clutter, and calms the Home feed (old-video blur, Shorts shelf toggle).
+**Yush** (formerly Yutu Labs; see `docs/STORE/NAMING.md`) is a Chrome extension (Manifest V3, vanilla JavaScript, esbuild) by peluche (dpeluche.dev). It opens YouTube and Vimeo videos in a floating window, adds speed controls, hides clutter, and calms the Home feed (old-video blur, Shorts shelf toggle).
 
 Read `docs/ARCHITECTURE/HOW_IT_WORKS.md` before changing behavior: it covers the pieces, the settings schema (`yutuSettings`) and which code depends on YouTube's markup. Build, load, debug and release steps are in `docs/GUIDES/DEVELOPMENT.md`.
 
@@ -15,7 +15,7 @@ Read `docs/ARCHITECTURE/HOW_IT_WORKS.md` before changing behavior: it covers the
 - Settings flow through `chrome.storage.local`. The popup and the element picker only save; content scripts react via `chrome.storage.onChanged`. Do not add popup-to-page messages for settings.
 - Defaults and merging of stored settings live in `content/config.js`; new settings need a default there.
 - YouTube selectors are centralized in `content/selectors.js`, plus `THUMB_SELECTORS`/`META_SELECTORS` in `content/button-factory.js` and `DATE_CANDIDATES` in `content/old-video-filter.js`.
-- The CSS prefix `yutu-`, the `data-yutu-*` attributes and the `yutuSettings` key are internal and stay even if the product is renamed (renaming them would wipe users' settings).
+- The CSS prefix `yutu-`, the `data-yutu-*` attributes, the `yutu_popup` URL parameter and the `yutuSettings` key are legacy internals from the previous name and stay as they are (renaming them would wipe users' settings).
 - CSS tokens (`--yutu-*`) are defined in both `content/content.css` and `popup/popup.css`; keep them in sync.
 - Code and comments in English; README.es.md and `docs/` are in Spanish.
 - Task tracking lives in `docs/TASK_TODO.md` and `docs/TASK_COMPLETED/`, never in this file or the READMEs.

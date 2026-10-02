@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Button Factory
+ * Yush - Button Factory
  *
  * Two buttons per card:
  *   1. Thumbnail icon — always visible, top-left of preview image

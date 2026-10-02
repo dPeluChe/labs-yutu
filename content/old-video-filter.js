@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Old video filter
+ * Yush - Old video filter
  * Marks Home cards older than N months so CSS can blur them (clears on hover) or hide them.
  */
 

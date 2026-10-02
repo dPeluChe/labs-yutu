@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Configuration Management
+ * Yush - Configuration Management
  * Centralized settings and storage utilities
  */
 
@@ -39,10 +39,10 @@ const POPUP_SESSION_KEY = 'yutu_popup';
 let _isPopupCached = null;
 
 /**
- * Check if the current page is a Yutu popup window.
+ * Check if the current page is a Yush popup window.
  * Result is cached since the URL does not change during page lifetime.
  */
-export function isYutuPopupWindow() {
+export function isFloatingWindow() {
   if (_isPopupCached === null) {
     const params = new URLSearchParams(window.location.search);
     const popupFromQuery = params.get('yutu_popup') === 'true';

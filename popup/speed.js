@@ -1,4 +1,4 @@
-// Yutu Labs - Popup playback speed controls
+// Yush - Popup playback speed controls
 
 const speedButtons = document.querySelectorAll('.speed-btn');
 const speedStatus = document.getElementById('speed-status');

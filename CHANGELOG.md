@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [1.6.0] - 2026-10-02
+
+### Changed
+- Product renamed from "Yutu Labs" to **Yush** (manifest name `Yush: Calm Video Feed & Floating Player`, popup, READMEs, docs, log prefixes, zip name `yush-v<version>.zip`). Legacy internals (`yutu-` CSS prefix, `data-yutu-*`, `yutu_popup`, `yutuSettings`) are unchanged so saved settings survive
+- Manifest description now mentions the calm-feed features
+- `YutuPiPManager` renamed `YushManager`, `isYutuPopupWindow` renamed `isFloatingWindow`
+- `docs/STORE/NAMING.md` rewritten as the naming decision record
+
 ## [1.5.0] - 2026-10-02
 
 ### Added

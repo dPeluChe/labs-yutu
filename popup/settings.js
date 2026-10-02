@@ -1,4 +1,4 @@
-// Yutu Labs - Popup hide-element settings (floating window + regular watch page)
+// Yush - Popup hide-element settings (floating window + regular watch page)
 
 import { loadSettings as loadConfig, saveSettings as saveConfig } from '../content/config.js';
 import { HIDE_OPTIONS } from '../content/hide-rules.js';

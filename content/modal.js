@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Modal System
+ * Yush - Modal System
  * Custom modal dialogs to replace native browser alerts
  * Better UX with auto-dismiss, icons, and consistent styling
  */
@@ -18,7 +18,7 @@ export class Modal {
    */
   static show(options) {
     const {
-      title = 'Yutu Labs',
+      title = 'Yush',
       message,
       type = 'info', // 'info', 'error', 'success'
       duration = 3000

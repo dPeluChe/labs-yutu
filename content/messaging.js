@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Messaging
+ * Yush - Messaging
  * Communication with the background service worker and playback control listener.
  */
 
@@ -57,7 +57,7 @@ export async function openFloatingWindow(targetUrl) {
     }
   } catch {
     Modal.showError(
-      'Could not connect to the extension. Try reloading the page or reinstalling Yutu Labs.'
+      'Could not connect to the extension. Try reloading the page or reinstalling Yush.'
     );
   }
 }

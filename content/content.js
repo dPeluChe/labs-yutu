@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Core Manager
+ * Yush - Core Manager
  * Orchestrates button injection and DOM observation.
  * Delegates URL parsing, button creation, and messaging to dedicated modules.
  */
@@ -11,7 +11,7 @@ export { attachPlaybackMessageListener } from './messaging.js';
 
 const DEFAULT_DEBOUNCE_MS = 150;
 
-export class YutuPiPManager {
+export class YushManager {
   constructor(options = {}) {
     this.observer = null;
     this.injectTimer = null;

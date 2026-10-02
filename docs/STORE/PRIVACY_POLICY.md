@@ -1,14 +1,14 @@
-# Privacy Policy - Yutu Labs
+# Privacy Policy - Yush
 
 **Last updated:** October 2, 2026
 
 ## Overview
 
-Yutu Labs is a Chrome extension that opens YouTube and Vimeo videos in floating windows, with playback speed controls. This policy explains how the extension handles user data.
+Yush is a Chrome extension that opens YouTube and Vimeo videos in floating windows, with playback speed controls. This policy explains how the extension handles user data.
 
 ## Data Collection
 
-**Yutu Labs does not collect, store, or transmit any personal data.**
+**Yush does not collect, store, or transmit any personal data.**
 
 The extension does not:
 - Track browsing history or activity
@@ -51,11 +51,11 @@ These scripts run locally in your browser and do not communicate with any extern
 
 ## Third-Party Services
 
-Yutu Labs does not use any third-party services, APIs, or analytics platforms. The only external communication is between your browser and YouTube/Vimeo when you open a video (standard browser behavior).
+Yush does not use any third-party services, APIs, or analytics platforms. The only external communication is between your browser and YouTube/Vimeo when you open a video (standard browser behavior).
 
 ## Children's Privacy
 
-Yutu Labs does not knowingly collect any data from users of any age, as it does not collect data at all.
+Yush does not knowingly collect any data from users of any age, as it does not collect data at all.
 
 ## Changes to This Policy
 

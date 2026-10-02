@@ -1,10 +1,10 @@
 /**
- * Yutu Labs - Element Hider
+ * Yush - Element Hider
  * Floating windows (yutu_popup=true) use the top-level hide flags and get a custom title bar.
  * Regular tabs use `watchPage` flags, scoped to /watch via html[data-yutu-watch].
  */
 
-import { loadSettings, STORAGE_KEY, isYutuPopupWindow } from './config.js';
+import { loadSettings, STORAGE_KEY, isFloatingWindow } from './config.js';
 import { buildHideCss, buildHomeShortsCss } from './hide-rules.js';
 
 const HIDER_STYLE_ID = 'yutu-hider-styles';
@@ -13,7 +13,7 @@ const WATCH_SCOPE = 'html[data-yutu-watch]';
 const HOME_SCOPE = 'html[data-yutu-home]';
 const POPUP_ONLY_CSS = 'ytd-watch-metadata #title { display: none !important; }';
 
-const isPopup = isYutuPopupWindow();
+const isPopup = isFloatingWindow();
 let currentSettings = null;
 
 function setStyle(css) {
@@ -68,7 +68,7 @@ async function reload() {
   try {
     applySettings(await loadSettings());
   } catch (error) {
-    console.error('Yutu Labs: error loading settings', error);
+    console.error('Yush: error loading settings', error);
   }
 }
 

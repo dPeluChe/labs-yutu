@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - URL Utilities
+ * Yush - URL Utilities
  * Detection and parsing of YouTube/Vimeo video URLs.
  */
 

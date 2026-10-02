@@ -1,4 +1,4 @@
-// Background service worker for Yutu Labs
+// Background service worker for Yush
 
 const STORAGE_KEY = 'yutuSettings';
 const EXTERNAL_SCRIPT_ID = 'yutu-external-sites';

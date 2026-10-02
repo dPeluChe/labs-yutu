@@ -1,45 +1,41 @@
-# Naming: propuesta
+# Naming: decision
 
-El nombre actual, "Yutu Labs", es provisional. Esta decision conviene tomarla **antes de la primera publicacion**: despues de publicar, cambiar el nombre implica reescribir el listing y las capturas, y pierde la reputacion acumulada en la tienda.
+**Nombre elegido: Yush** (antes "Yutu Labs"). Viene de "YouTube" + "hush". Eslogan: "Hush the algorithm". Titulo del listing: `Yush: Calm Video Feed & Floating Player`.
 
-## Por que cambiarlo
+## Por que se cambio
 
-- **Riesgo de rechazo.** "Yutu" se parece a YouTube. La politica de la Chrome Web Store prohibe nombres e iconos que puedan confundirse con una marca ajena, y el titulo propuesto antes ("... Floating YouTube Player") pone YouTube en el nombre, un patron que suele marcarse. Lo seguro es un nombre neutro y mencionar YouTube solo en la descripcion.
-- **Alcance mayor que YouTube.** La extension tambien abre Vimeo y ya no es solo un reproductor: oculta distracciones y calma el feed.
+- "Yutu" se parece demasiado a YouTube. La politica de la Chrome Web Store prohibe nombres e iconos que puedan confundirse con una marca ajena, y poner YouTube en el nombre del item suele marcarse. YouTube se menciona solo en la descripcion.
+- La extension ya no es solo un reproductor flotante: tambien abre Vimeo, oculta distracciones y calma el feed.
 
-## Criterios
+## Por que Yush
 
-1. No contiene "YouTube" ni variantes parecidas.
-2. Corto, facil de decir y de escribir.
-3. Sugiere lo que hace (ventana flotante, calma) sin describir la plataforma.
-4. Libre en la tienda (busqueda del nombre exacto) y como handle o subdominio de dpeluche.dev.
+- Corto, facil de escribir y sin otra extension con ese nombre en la tienda (busqueda de octubre de 2026).
+- Conserva la idea de bajar el ruido del feed sin caer en la familia "Hush" ya ocupada.
+- Buscar "yush" en la tienda llevaria a esta extension; en GitHub solo hay proyectos personales sin relacion.
 
-## Candidatos
+Contras conocidos: la conexion con YouTube y hush solo se entiende si se explica (el subtitulo del listing lo hace), la pronunciacion es ambigua, y queda ligado a YouTube si algun dia se amplia a otras plataformas.
 
-| Nombre | Titulo del listing | Por que |
-|--------|--------------------|---------|
-| **Perch** (recomendado) | Perch - Floating Video Player & Calm Feed | El video se "posa" en la esquina. Una palabra, encaja con el icono (ventana en la esquina) |
-| Nook | Nook - Floating Video Player & Calm Feed | Un rincon tranquilo para el video |
-| Hush | Hush - Calm Video Feed & Floating Player | Enfatiza el filtro de ruido del feed |
-| Cornerview | Cornerview - Floating Video Player | Descriptivo, menos memorable |
-| Floatly | Floatly - Floating Video Player | Directo, pero muy generico |
+## Que se descarto (octubre de 2026)
 
-Antes de decidir hay que buscar cada nombre en la Chrome Web Store (puede haber extensiones con el mismo nombre) y comprobar el dominio o subdominio.
+| Nombre | Motivo |
+|--------|--------|
+| Hush | 10 o mas extensiones con ese nombre, dos de YouTube: Hush Feed (filtro por duracion, vistas, fecha y palabras clave) y Hush - Clean Video (oculta controles del reproductor) |
+| Perch, Nook | Varias extensiones con el mismo nombre (dashboard de agentes, new tabs) |
+| Quell, Lull, Shush | Ya existen en la tienda; Quell y Shush en el mismo tema de silenciar ruido |
+| Lowkey | Casi igual a "Lownkey", extension de YouTube |
+| Stillpane, Quietpane | Ya son productos (herramienta para Claude Code, new tab de Chrome) |
+| Muffle | Libre en la tienda, pero suena a herramienta de audio. Era el segundo candidato |
+| Calmpane, Glance | Libres, pero blandos o genericos |
 
-## Que cambia al renombrar
+## Pendiente de verificar
 
-| Donde | Cambio |
-|-------|--------|
-| `manifest.json` | `name` (y `description` si cambia el mensaje) |
-| `popup/popup.html` | `<title>` y `<h1>` |
-| `docs/STORE/LISTING.md` | Name, descripcion, single purpose, URLs |
-| `docs/STORE/PRIVACY_POLICY.md` | Titulo y nombre en el texto |
-| `README.md`, `README.es.md`, `CLAUDE.md`, `CHANGELOG.md` | Titulo y menciones |
-| `package.json`, `scripts/package.mjs` | `name` y nombre del zip (`yutu-labs-v<version>.zip`) |
-| Repositorio de GitHub | Renombrar es opcional; GitHub redirige las URLs viejas |
+Estas comprobaciones no se pueden hacer desde el repositorio:
 
-**No se renombra** el prefijo interno `yutu-` (clases CSS, atributos `data-yutu-*`, claves `yutuSettings`): el usuario no lo ve y cambiarlo borraria los ajustes guardados.
+- Buscar "Yush" en el buscador de la Chrome Web Store antes de subir el item.
+- Busqueda de marca (USPTO y EUIPO) para "Yush".
+- Dominio: `yush.so` parece libre; `yush.com` y `yush.app` estan a la venta; `yush.dev` y `yush.io` estan ocupados. Opcional, no bloquea la publicacion.
+- Renombrar el repositorio de GitHub `labs-yutu` a `yush` (GitHub redirige las URLs viejas). Al hacerlo, actualizar las URLs en `docs/STORE/LISTING.md` y `docs/STORE/PRIVACY_POLICY.md`.
 
-## Siguiente paso
+## Que se mantiene con el nombre viejo
 
-Elegir un nombre. Con el nombre elegido, el renombrado es un solo PR con la tabla anterior.
+El prefijo `yutu-` (clases CSS), los atributos `data-yutu-*`, el parametro `yutu_popup` y la clave `yutuSettings` son internos y se quedan: cambiarlos borraria los ajustes guardados de quien ya tenga la extension y no aportan nada al usuario. Los documentos de `docs/ARCHIVED/` y `docs/TASK_COMPLETED/` conservan el nombre de su epoca.

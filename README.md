@@ -1,10 +1,10 @@
-# Yutu Labs
+# Yush
 
 [Español](./README.es.md)
 
-A Chrome extension that opens YouTube and Vimeo videos in a small floating window, adds playback speed controls, and calms down your YouTube feed. Made by [peluche](https://dpeluche.dev).
+Hush the algorithm. Yush is a Chrome extension that opens YouTube and Vimeo videos in a small floating window, adds playback speed controls, and quiets your YouTube feed. Made by [peluche](https://dpeluche.dev).
 
-> The name is provisional. The naming proposal lives in [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
+The name comes from "YouTube" plus "hush". How it was chosen is in [docs/STORE/NAMING.md](./docs/STORE/NAMING.md).
 
 ## What it does
 

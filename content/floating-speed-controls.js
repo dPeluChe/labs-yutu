@@ -1,9 +1,9 @@
 /**
- * Yutu Labs - Floating Window Speed Controls
+ * Yush - Floating Window Speed Controls
  * Injects quick playback controls inside yutu popup windows.
  */
 
-import { loadSettings, saveSettings, isYutuPopupWindow, STORAGE_KEY } from './config.js';
+import { loadSettings, saveSettings, isFloatingWindow, STORAGE_KEY } from './config.js';
 import { SHORTCUTS_BY_CODE, isTypingContext } from './speed-shortcuts.js';
 import { CONTROL_ID, CLOSE_INPUT_ID, buildSpeedControls } from './speed-controls-ui.js';
 import { POPUP_ROW_SLOT_ID, getControlsAnchor } from './speed-anchor.js';
@@ -21,7 +21,7 @@ export class FloatingSpeedControls {
   }
 
   init() {
-    this.isPopupWindow = isYutuPopupWindow();
+    this.isPopupWindow = isFloatingWindow();
     if (!this.isPopupWindow && !this.enableOnRegularPages) return;
 
     this.loadPreferences();
@@ -201,7 +201,7 @@ export class FloatingSpeedControls {
       this.closeOnFinish = settings.closeOnFinish !== false;
       this.syncCloseToggle();
     } catch (error) {
-      console.warn('Yutu Labs: failed loading close-on-finish preference', error);
+      console.warn('Yush: failed loading close-on-finish preference', error);
     }
   }
 
@@ -218,7 +218,7 @@ export class FloatingSpeedControls {
         closeOnFinish: value
       });
     } catch (error) {
-      console.warn('Yutu Labs: failed saving close-on-finish preference', error);
+      console.warn('Yush: failed saving close-on-finish preference', error);
     }
   }
 

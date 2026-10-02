@@ -1,5 +1,5 @@
 /**
- * Yutu Labs - Speed controls anchor lookup
+ * Yush - Speed controls anchor lookup
  * Finds where the speed widget mounts for popup windows, watch pages and Shorts.
  */
 
