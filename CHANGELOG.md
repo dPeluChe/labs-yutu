@@ -10,6 +10,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [1.6.2] - 2026-10-02
 
 ### Added
+- Small promo tile for the store (`docs/STORE/screenshots/promo-tile-440x280.png`)
 - "Report a bug" link in the popup footer, opening the GitHub bug report form (`.github/ISSUE_TEMPLATE/`); READMEs and the listing point to the public issue tracker
 
 ### Changed

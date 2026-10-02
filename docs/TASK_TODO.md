@@ -49,10 +49,8 @@ El resto del trabajo de publicacion esta en la tarea 5.
 - [ ] Research base documentado en `docs/ARCHIVED/YOUTUBE_API_INVESTIGATION.md`
 
 ### 5) Preparacion Chrome Web Store `added: 2026-03-24`
-- [ ] Busqueda de marca (USPTO/EUIPO) para "Yush", opcional antes de publicar (ver `docs/ARCHIVED/NAMING_DECISION.md`)
 - [ ] Subir `builds/yush-v<version>.zip` (`npm run package`) y completar el listing con `docs/STORE/LISTING.md` (la politica de privacidad ya tiene URL en el repo publico)
 - [ ] Capturas de la tienda: 4 de 5 listas (`docs/STORE/screenshots/`); falta recapturar Selector y Sites tras el ajuste de v1.6.1
-- [ ] Crear promotional tile (440x280)
 - [ ] Considerar pagina de bienvenida/onboarding (`chrome.runtime.onInstalled`)
 
 ### 6) Ideas Futuras `added: 2026-03-24`

@@ -5,11 +5,19 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const { version } = JSON.parse(await readFile(resolve(root, 'manifest.json'), 'utf8'));
+const manifest = JSON.parse(await readFile(resolve(root, 'manifest.json'), 'utf8'));
+const { version } = manifest;
 const pkg = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
+const listing = await readFile(resolve(root, 'docs/STORE/LISTING.md'), 'utf8');
 
-if (pkg.version !== version) {
-  console.error(`Version mismatch: package.json ${pkg.version} vs manifest.json ${version}`);
+const problems = [];
+if (pkg.version !== version) problems.push(`version mismatch: package.json ${pkg.version} vs manifest.json ${version}`);
+if (manifest.name.length > 75) problems.push(`manifest name is ${manifest.name.length} chars (store limit 75)`);
+if (manifest.description.length > 132) problems.push(`manifest description is ${manifest.description.length} chars (store limit 132)`);
+if (!listing.includes(manifest.name)) problems.push('manifest name differs from docs/STORE/LISTING.md');
+if (!listing.includes(manifest.description)) problems.push('manifest description differs from docs/STORE/LISTING.md');
+if (problems.length) {
+  console.error(`Package aborted:\n- ${problems.join('\n- ')}`);
   process.exit(1);
 }
 
