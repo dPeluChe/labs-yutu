@@ -27,14 +27,12 @@ Contras conocidos: la conexion con YouTube y hush solo se entiende si se explica
 | Muffle | Libre en la tienda, pero suena a herramienta de audio. Era el segundo candidato |
 | Calmpane, Glance | Libres, pero blandos o genericos |
 
-## Pendiente de verificar
+## Estado de la verificacion
 
-Estas comprobaciones no se pueden hacer desde el repositorio:
-
-- Buscar "Yush" en el buscador de la Chrome Web Store antes de subir el item.
-- Busqueda de marca (USPTO y EUIPO) para "Yush".
-- Dominio: `yush.so` parece libre; `yush.com` y `yush.app` estan a la venta; `yush.dev` y `yush.io` estan ocupados. Opcional, no bloquea la publicacion.
-- Renombrar el repositorio de GitHub `labs-yutu` a `yush` (GitHub redirige las URLs viejas). Al hacerlo, actualizar las URLs en `docs/STORE/LISTING.md` y `docs/STORE/PRIVACY_POLICY.md`.
+- Busqueda de "Yush" en el buscador de la Chrome Web Store: sin resultados (octubre de 2026). Nombre confirmado.
+- Dominio: se decidio no comprar ninguno por ahora (`yush.so` parece libre; `yush.com` y `yush.app` estan a la venta).
+- Repositorio de GitHub renombrado de `labs-yutu` a `yush`; GitHub redirige las URLs viejas. Carpeta local renombrada a `yush`.
+- Pendiente: busqueda de marca (USPTO y EUIPO) para "Yush", opcional antes de publicar.
 
 ## Que se mantiene con el nombre viejo
 

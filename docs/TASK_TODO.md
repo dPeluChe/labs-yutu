@@ -49,7 +49,7 @@ El resto del trabajo de publicacion esta en la tarea 5.
 - [ ] Research base documentado en `docs/ARCHIVED/YOUTUBE_API_INVESTIGATION.md`
 
 ### 5) Preparacion Chrome Web Store `added: 2026-03-24`
-- [ ] Verificar "Yush" en el buscador de la tienda y en USPTO/EUIPO; opcional: dominio `yush.so` y renombrar el repo `labs-yutu` a `yush` (ver `docs/STORE/NAMING.md`)
+- [ ] Busqueda de marca (USPTO/EUIPO) para "Yush", opcional antes de publicar (ver `docs/STORE/NAMING.md`)
 - [ ] Subir `builds/yush-v<version>.zip` (`npm run package`) y completar el listing con `docs/STORE/LISTING.md` (la politica de privacidad ya tiene URL en el repo publico)
 - [ ] Crear screenshots para la tienda (al menos 1)
 - [ ] Crear promotional tile (440x280)
