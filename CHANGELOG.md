@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [1.3.1] - 2026-10-02
+
+### Changed
+- Observer scoped to `ytd-page-manager` on YouTube (falls back to `body`)
+- Custom selector changes (popup or element picker) apply live via `chrome.storage.onChanged`; fixes picked selector not applying until reload
+- `popup/popup.js` split into modules; `floating-speed-controls.js` split into anchor, UI and shortcuts modules
+- Specific CSS transitions instead of `transition: all`
+- Explicit `content_security_policy` in manifest; removed stale popup-blocker message
+
+### Added
+- jsdom tests for button injection, shortcuts and domain normalization (20 tests)
+
 ## [1.3.0] - 2026-10-01
 
 ### Added

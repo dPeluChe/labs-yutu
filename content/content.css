@@ -103,7 +103,7 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   z-index: 99998;
   pointer-events: none;
   border-radius: var(--yutu-radius-sm);
-  transition: all 0.1s ease;
+  transition: top 0.1s ease, left 0.1s ease, width 0.1s ease, height 0.1s ease;
 }
 
 .yutu-picker-label {
@@ -154,7 +154,7 @@ ytm-shorts-lockup-view-model-v2:hover .yutu-pip-btn--meta {
   max-width: max-content;
   opacity: 0.9;
   box-shadow: 0 1px 4px rgb(0, 0, 0, 0.2);
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
   white-space: nowrap;
@@ -368,7 +368,7 @@ ytd-shorts-player-controls #right-controls .yutu-floating-speed {
   line-height: 1;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .yutu-floating-speed__btn:hover {

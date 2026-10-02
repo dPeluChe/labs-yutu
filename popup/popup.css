@@ -103,7 +103,7 @@ header {
   padding: 12px;
   border: 1px solid var(--yutu-border);
   border-radius: var(--yutu-radius-md);
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .toggle-label:hover {
@@ -135,7 +135,7 @@ header {
   height: 20px;
   border: 2px solid var(--yutu-text-muted);
   border-radius: var(--yutu-radius-sm);
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
   background: white;
 }
 
@@ -192,7 +192,7 @@ footer {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .btn-primary:hover {
@@ -207,7 +207,7 @@ footer {
 .save-status {
   font-size: 12px;
   min-height: 16px;
-  transition: all 0.3s ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .save-status.success {
@@ -273,7 +273,7 @@ footer {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
   text-align: center;
 }
 
@@ -296,7 +296,7 @@ footer {
 .speed-status {
   font-size: 12px;
   min-height: 16px;
-  transition: all 0.3s ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .speed-status--loading {
@@ -330,7 +330,7 @@ footer {
   color: var(--yutu-text-muted);
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .tab-btn:hover {
@@ -387,7 +387,7 @@ footer {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .btn-add:hover {
@@ -554,7 +554,7 @@ footer {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .btn-picker:hover {
@@ -571,7 +571,7 @@ footer {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--yutu-duration) ease;
+  transition: background var(--yutu-duration) ease, border-color var(--yutu-duration) ease, color var(--yutu-duration) ease, opacity var(--yutu-duration) ease, transform var(--yutu-duration) ease, box-shadow var(--yutu-duration) ease;
 }
 
 .btn-secondary:hover {

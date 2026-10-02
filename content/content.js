@@ -4,7 +4,7 @@
  * Delegates URL parsing, button creation, and messaging to dedicated modules.
  */
 
-import { injectYouTubeCardButtons, injectExternalVideoLinkButtons } from './button-factory.js';
+import { injectYouTubeCardButtons, injectExternalVideoLinkButtons, resetInjectedButtons } from './button-factory.js';
 import { openFloatingWindow } from './messaging.js';
 
 export { attachPlaybackMessageListener } from './messaging.js';
@@ -21,6 +21,7 @@ export class YutuPiPManager {
     this.enableExternalLinks = options.enableExternalLinks ?? false;
     this.externalScope = options.externalScope ?? 'all';
     this.customButtonSelector = options.customButtonSelector ?? '';
+    this.observeSelector = options.observeSelector ?? null;
     this.mutationSubscribers = [];
 
     this.handleOpen = (targetUrl) => openFloatingWindow(targetUrl);
@@ -50,7 +51,8 @@ export class YutuPiPManager {
       }
     });
 
-    this.observer.observe(document.body, {
+    const root = (this.observeSelector && document.querySelector(this.observeSelector)) || document.body;
+    this.observer.observe(root, {
       childList: true,
       subtree: true
     });
@@ -74,6 +76,14 @@ export class YutuPiPManager {
   }
 
   // --- Injection ---
+
+  setCustomSelector(selector) {
+    const next = selector || '';
+    if (next === this.customButtonSelector) return;
+    this.customButtonSelector = next;
+    resetInjectedButtons();
+    this.injectButtons();
+  }
 
   injectButtons() {
     if (this.enableYouTubeCards) {

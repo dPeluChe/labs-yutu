@@ -4,16 +4,9 @@
  */
 
 import { loadSettings, saveSettings, isYutuPopupWindow, STORAGE_KEY } from './config.js';
-
-const CONTROL_ID = 'yutu-floating-speed-controls';
-const POPUP_ROW_SLOT_ID = 'yutu-popup-speed-slot';
-const PRESET_SPEEDS = [1, 1.25, 1.5, 2];
-const SHORTCUTS_BY_CODE = {
-  Digit1: 1,
-  Digit2: 1.25,
-  Digit3: 1.5,
-  Digit4: 2
-};
+import { SHORTCUTS_BY_CODE, isTypingContext } from './speed-shortcuts.js';
+import { CONTROL_ID, CLOSE_INPUT_ID, buildSpeedControls } from './speed-controls-ui.js';
+import { POPUP_ROW_SLOT_ID, getControlsAnchor } from './speed-anchor.js';
 
 export class FloatingSpeedControls {
   constructor(options = {}) {
@@ -48,7 +41,7 @@ export class FloatingSpeedControls {
 
   ensureControlsMounted() {
     const existing = document.getElementById(CONTROL_ID);
-    const anchor = this.getControlsAnchor();
+    const anchor = getControlsAnchor(this.isPopupWindow);
     if (!anchor) return;
 
     if (existing?.isConnected && existing.parentElement === anchor) {
@@ -62,119 +55,17 @@ export class FloatingSpeedControls {
       return;
     }
 
-    const root = document.createElement('div');
-    root.id = CONTROL_ID;
-    root.className = 'yutu-floating-speed';
-    if (!this.isPopupWindow) {
-      root.classList.add('yutu-floating-speed--regular');
-    }
-
-    const label = document.createElement('div');
-    label.className = 'yutu-floating-speed__label';
-    const kbdIcon = document.createElement('span');
-    kbdIcon.className = 'yutu-floating-speed__kbd-icon';
-    kbdIcon.setAttribute('aria-hidden', 'true');
-    kbdIcon.textContent = '\u2328';
-    const kbdText = document.createElement('span');
-    kbdText.className = 'yutu-floating-speed__kbd-text';
-    kbdText.textContent = this.getShortcutHintText();
-    label.appendChild(kbdIcon);
-    label.appendChild(kbdText);
-
-    const buttons = document.createElement('div');
-    buttons.className = 'yutu-floating-speed__buttons';
-
-    PRESET_SPEEDS.forEach((speed) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'yutu-floating-speed__btn';
-      btn.dataset.speed = String(speed);
-      btn.textContent = `${speed}x`;
-      btn.title = this.getShortcutLabel(speed);
-      btn.addEventListener('click', () => this.setSpeed(speed));
-      buttons.appendChild(btn);
+    const root = buildSpeedControls({
+      isPopupWindow: this.isPopupWindow,
+      closeOnFinish: this.closeOnFinish,
+      onSpeed: (speed) => this.setSpeed(speed),
+      onCloseChange: (value) => this.updateCloseOnFinish(value, { persist: true })
     });
-
-    const closeToggle = document.createElement('label');
-    closeToggle.className = 'yutu-floating-speed__close-wrap';
-    const closeInput = document.createElement('input');
-    closeInput.type = 'checkbox';
-    closeInput.id = 'yutu-close-on-finish';
-    closeInput.className = 'yutu-floating-speed__close-input';
-    closeInput.checked = this.closeOnFinish;
-    closeInput.addEventListener('change', (event) => {
-      this.updateCloseOnFinish(Boolean(event.target.checked), { persist: true });
-    });
-    const closeText = document.createElement('span');
-    closeText.className = 'yutu-floating-speed__close-text';
-    closeText.textContent = 'Close on finish';
-    closeToggle.appendChild(closeInput);
-    closeToggle.appendChild(closeText);
-
-    // "Close on finish" only makes sense for extension-created popup windows.
-    if (!this.isPopupWindow) {
-      closeToggle.style.display = 'none';
-    }
-
-    root.appendChild(label);
-    root.appendChild(buttons);
-    root.appendChild(closeToggle);
     anchor.appendChild(root);
     this.syncLayoutMode(root, anchor);
 
     this.syncActiveSpeed();
     this.syncCloseToggle();
-  }
-
-  getControlsAnchor() {
-    if (this.isPopupWindow) {
-      const topRow = document.querySelector('ytd-watch-metadata #top-row');
-      if (topRow) {
-        let slot = document.getElementById(POPUP_ROW_SLOT_ID);
-        if (!slot || slot.parentElement !== topRow) {
-          slot = document.createElement('div');
-          slot.id = POPUP_ROW_SLOT_ID;
-          slot.className = 'yutu-popup-speed-slot item style-scope ytd-watch-metadata';
-
-          const actionsItem = topRow.querySelector(':scope > #actions');
-          if (actionsItem) {
-            topRow.insertBefore(slot, actionsItem);
-          } else {
-            topRow.appendChild(slot);
-          }
-        }
-        return slot;
-      }
-    }
-
-    // Only mount speed controls on watch and shorts pages (not home/browse/search)
-    const isWatchPage = location.pathname === '/watch';
-    const isShortsPage = location.pathname.startsWith('/shorts/');
-    if (!isWatchPage && !isShortsPage) return null;
-
-    // Shorts player: place controls near the player controls at the bottom
-    if (isShortsPage) {
-      return document.querySelector('ytd-shorts-player-controls #right-controls') ||
-        document.querySelector('ytd-shorts-player-controls') ||
-        document.querySelector('ytd-reel-video-renderer .player-controls');
-    }
-
-    // Prefer metadata area below the video (where Share/Save buttons live)
-    const metadataAnchor =
-      document.querySelector('ytd-watch-metadata ytd-menu-renderer') ||
-      document.querySelector('ytd-watch-flexy #menu ytd-menu-renderer') ||
-      document.querySelector('ytd-watch-metadata ytd-menu-renderer #top-level-buttons-computed') ||
-      document.querySelector('ytd-watch-flexy #menu ytd-menu-renderer #top-level-buttons-computed');
-
-    if (metadataAnchor) return metadataAnchor;
-
-    // Only fall back to player container on regular pages (not popup windows)
-    // to avoid overlaying controls on the video in the compact popup layout.
-    if (this.isPopupWindow) return null;
-
-    return document.querySelector('#movie_player') ||
-      document.querySelector('.html5-video-player') ||
-      document.querySelector('#player');
   }
 
   syncLayoutMode(root, anchor) {
@@ -275,7 +166,7 @@ export class FloatingSpeedControls {
     window.addEventListener('keydown', (event) => {
       // Works on macOS Option (Alt) regardless of keyboard layout symbols.
       if (!event.altKey || event.ctrlKey || event.metaKey) return;
-      if (this.isTypingContext(event.target)) return;
+      if (isTypingContext(event.target)) return;
 
       const speed = SHORTCUTS_BY_CODE[event.code];
       if (!speed) return;
@@ -283,33 +174,6 @@ export class FloatingSpeedControls {
       event.preventDefault();
       this.setSpeed(speed);
     });
-  }
-
-  isTypingContext(target) {
-    if (!target) return false;
-    const tagName = target.tagName?.toLowerCase();
-    if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') return true;
-    return Boolean(target.isContentEditable);
-  }
-
-  getShortcutLabel(speed) {
-    const entry = Object.entries(SHORTCUTS_BY_CODE).find(([, value]) => value === speed);
-    if (!entry) return `${speed}x`;
-    const digit = entry[0].replace('Digit', '');
-    return `${speed}x (${this.getShortcutModifierLabel()}+${digit})`;
-  }
-
-  getShortcutHintText() {
-    return `${this.getShortcutModifierLabel()}+1..4`;
-  }
-
-  getShortcutModifierLabel() {
-    return this.isMacPlatform() ? '⌥' : 'Alt';
-  }
-
-  isMacPlatform() {
-    const platform = navigator.platform || navigator.userAgentData?.platform || '';
-    return /mac/i.test(platform);
   }
 
   syncActiveSpeed() {
@@ -326,7 +190,7 @@ export class FloatingSpeedControls {
   }
 
   syncCloseToggle() {
-    const input = document.getElementById('yutu-close-on-finish');
+    const input = document.getElementById(CLOSE_INPUT_ID);
     if (!input) return;
     input.checked = this.closeOnFinish;
   }
