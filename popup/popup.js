@@ -3,6 +3,7 @@
 import { setupTabs } from './tabs.js';
 import { loadSettings, setupAutoSave, setupSaveButton } from './settings.js';
 import { setupSpeedControls, syncCurrentSpeed } from './speed.js';
+import { setupFeed } from './feed.js';
 import { setupExternalSites } from './sites.js';
 import { setupCustomSelector } from './selector.js';
 
@@ -13,6 +14,7 @@ function init() {
   setupSaveButton();
   setupSpeedControls();
   syncCurrentSpeed();
+  setupFeed();
   setupExternalSites();
   setupCustomSelector();
 }

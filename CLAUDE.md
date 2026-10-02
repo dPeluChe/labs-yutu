@@ -172,8 +172,9 @@ background/   service worker (window lifecycle, dynamic external scripts)
 content/      youtube-content.js (entry), external-content.js (entry), hider.js (entry),
               content.js (manager), button-factory.js, selectors.js, url-utils.js,
               messaging.js, config.js, element-picker.js, floating-speed-controls.js
-              (+ speed-anchor/speed-controls-ui/speed-shortcuts), modal.js, content.css
-popup/        toolbar popup: popup.js (entry) + tabs, settings, speed, sites, selector, status, domain
+              (+ speed-anchor/speed-controls-ui/speed-shortcuts), hide-rules.js,
+              old-video-filter.js, video-age.js, modal.js, content.css
+popup/        toolbar popup: popup.js (entry) + tabs, settings, feed, speed, sites, selector, status, domain
 icons/        PNGs from scripts/generate-icons.mjs
 scripts/      build.mjs, generate-icons.mjs
 test/         node:test + jsdom unit tests (npm test)

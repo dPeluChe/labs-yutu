@@ -23,9 +23,9 @@ export const EXTERNAL_LINK_SELECTOR =
 /** Google SERP context wrappers — used to scope injection to search results only */
 export const GOOGLE_CONTEXT_SELECTOR = '[jscontroller="rTuANe"], .WVV5ke, .g, .MjjYud, #search';
 
-/** YouTube element-hider selectors (used by hider.js) */
+/** YouTube element-hider selectors, one list per setting (used by hide-rules.js) */
 export const HIDER_SELECTORS = {
-  reels: 'ytd-reel-shelf-renderer',
+  reels: ['ytd-reel-shelf-renderer'],
   sidebar: [
     '#secondary',
     '#secondary-inner',
@@ -34,7 +34,7 @@ export const HIDER_SELECTORS = {
     'ytd-watch-next-secondary-results-renderer',
     'ytd-watch-flexy #secondary ytd-engagement-panel-section-list-renderer',
     'ytd-watch-flexy #secondary yt-lockup-view-model'
-  ].join(', '),
+  ],
   description: [
     '#bottom-row',
     'ytd-watch-metadata #description',
@@ -44,6 +44,11 @@ export const HIDER_SELECTORS = {
     'ytd-watch-metadata #description-wrapper',
     'ytd-watch-metadata ytd-structured-description-content-renderer',
     'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-structured-description"]'
-  ].join(', '),
-  header: 'ytd-masthead'
+  ],
+  header: ['ytd-masthead'],
+  actions: [
+    'segmented-like-dislike-button-view-model',
+    'ytd-menu-renderer yt-button-shape#button-shape'
+  ],
+  merch: ['ytd-merch-shelf-renderer', '#merch-shelf', '#below ytd-merch-shelf-renderer']
 };

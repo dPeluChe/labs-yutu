@@ -1,126 +1,45 @@
 /**
  * Yutu Labs - Element Hider
- * Dynamically hides YouTube elements based on extension settings
- * Only applies to windows opened by the extension (yutu_popup=true parameter)
+ * Floating windows (yutu_popup=true) use the top-level hide flags and get a custom title bar.
+ * Regular tabs use `watchPage` flags, scoped to /watch via html[data-yutu-watch].
  */
 
-import { DEFAULT_SETTINGS, STORAGE_KEY, loadSettings as loadConfig, isYutuPopupWindow } from './config.js';
-import { HIDER_SELECTORS } from './selectors.js';
+import { loadSettings, STORAGE_KEY, isYutuPopupWindow } from './config.js';
+import { buildHideCss } from './hide-rules.js';
 
-let currentSettings = { ...DEFAULT_SETTINGS };
-const POPUP_LAYOUT_STYLE_ID = 'yutu-popup-layout-styles';
-const POPUP_TITLE_ID = 'yutu-popup-floating-title';
 const HIDER_STYLE_ID = 'yutu-hider-styles';
+const POPUP_TITLE_ID = 'yutu-popup-floating-title';
+const WATCH_SCOPE = 'html[data-yutu-watch]';
+const POPUP_ONLY_CSS = 'ytd-watch-metadata #title { display: none !important; }';
 
+const isPopup = isYutuPopupWindow();
+let currentSettings = null;
 
-/**
- * Apply CSS to hide/show elements based on settings (only in Yutu popup windows)
- */
-function applySettings(settings) {
-  // Only apply in Yutu popup windows
-  if (!isYutuPopupWindow()) {
+function setStyle(css) {
+  let style = document.getElementById(HIDER_STYLE_ID);
+  if (!css) {
+    style?.remove();
     return;
   }
-
-  // Store current settings
-  currentSettings = { ...settings };
-  applyPopupLayoutStyles();
-
-  // Remove old style tag if exists
-  const oldStyle = document.getElementById(HIDER_STYLE_ID);
-  if (oldStyle) {
-    oldStyle.remove();
-  }
-
-  // Build CSS rules
-  const cssRules = [];
-
-  if (settings.hideReels) {
-    cssRules.push(`${HIDER_SELECTORS.reels} { display: none !important; }`);
-  }
-
-  if (settings.hideSidebar) {
-    cssRules.push(`${HIDER_SELECTORS.sidebar} { display: none !important; }`);
-  }
-
-  if (settings.hideDescription) {
-    cssRules.push(`${HIDER_SELECTORS.description} { display: none !important; }`);
-  }
-
-  if (settings.hideHeader) {
-    cssRules.push(`${HIDER_SELECTORS.header} { display: none !important; }`);
-  }
-
-  // Apply new styles if there are rules
-  if (cssRules.length > 0) {
-    const style = document.createElement('style');
-    style.id = HIDER_STYLE_ID;
-    style.textContent = cssRules.join('\n');
-    document.head.appendChild(style);
-  }
-}
-
-/**
- * Load settings from chrome.storage
- */
-async function loadSettings() {
-  try {
-    const settings = await loadConfig();
-
-    applySettings(settings);
-  } catch (error) {
-    console.error('❌ Error loading settings:', error);
-  }
-}
-
-/**
- * Setup message listener for settings updates from popup
- */
-function setupMessageListener() {
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'updateHiddenElements') {
-      applySettings(request.settings);
-      sendResponse({ success: true });
-    }
-  });
-}
-
-/**
- * Setup storage change listener
- */
-function setupStorageListener() {
-  chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === 'local' && changes[STORAGE_KEY]) {
-      applySettings(changes[STORAGE_KEY].newValue);
-    }
-  });
-}
-
-function applyPopupLayoutStyles() {
-  let style = document.getElementById(POPUP_LAYOUT_STYLE_ID);
   if (!style) {
     style = document.createElement('style');
-    style.id = POPUP_LAYOUT_STYLE_ID;
+    style.id = HIDER_STYLE_ID;
     document.head.appendChild(style);
   }
+  style.textContent = css;
+}
 
-  const popupRules = [
-    // We render our own title bar above ytd-app.
-    'ytd-watch-metadata #title { display: none !important; }'
-  ];
-
-  if (currentSettings.hideActions) {
-    popupRules.push('segmented-like-dislike-button-view-model { display: none !important; }');
-    popupRules.push('ytd-menu-renderer yt-button-shape#button-shape { display: none !important; }');
+function applySettings(settings) {
+  currentSettings = settings;
+  if (isPopup) {
+    setStyle([buildHideCss(settings), POPUP_ONLY_CSS].join('\n'));
+  } else {
+    setStyle(buildHideCss(settings.watchPage, WATCH_SCOPE));
   }
+}
 
-  if (currentSettings.hideMerchShelf) {
-    popupRules.push('ytd-merch-shelf-renderer { display: none !important; }');
-    popupRules.push('#merch-shelf { display: none !important; }');
-    popupRules.push('#below ytd-merch-shelf-renderer { display: none !important; }');
-  }
-
-  style.textContent = popupRules.join('\n');
+function syncWatchFlag() {
+  document.documentElement.toggleAttribute('data-yutu-watch', location.pathname === '/watch');
 }
 
 function syncPopupTopTitle() {
@@ -136,44 +55,40 @@ function syncPopupTopTitle() {
 
   const titleNode = document.querySelector('ytd-watch-metadata h1 yt-formatted-string');
   const fallbackTitle = (document.title || '').replace(/\s*-\s*YouTube\s*$/i, '').trim();
-  const titleText = titleNode?.textContent?.trim() || fallbackTitle || 'YouTube';
-  titleBar.textContent = titleText;
+  titleBar.textContent = titleNode?.textContent?.trim() || fallbackTitle || 'YouTube';
 }
 
-function setupPopupLayoutObserver() {
-  const reapplyPopupState = () => {
-    applyPopupLayoutStyles();
-    syncPopupTopTitle();
-    void loadSettings();
-  };
-
-  window.addEventListener('yt-navigate-finish', () => {
-    setTimeout(reapplyPopupState, 250);
-    setTimeout(reapplyPopupState, 1200);
-  });
-}
-
-/**
- * Initialize hider
- */
-function init() {
-
-  // Only load settings and setup listeners if it's a popup window
-  if (isYutuPopupWindow()) {
-    // Load initial settings
-    loadSettings();
-
-    // Setup listeners
-    setupMessageListener();
-    setupStorageListener();
-    applyPopupLayoutStyles();
-    syncPopupTopTitle();
-    setupPopupLayoutObserver();
+async function reload() {
+  try {
+    applySettings(await loadSettings());
+  } catch (error) {
+    console.error('Yutu Labs: error loading settings', error);
   }
-
 }
 
-// Initialize when DOM is ready
+function onNavigate() {
+  syncWatchFlag();
+  if (!isPopup) return;
+  // YouTube re-renders the watch page late after SPA navigation
+  for (const delay of [250, 1200]) {
+    setTimeout(() => {
+      if (currentSettings) applySettings(currentSettings);
+      syncPopupTopTitle();
+    }, delay);
+  }
+}
+
+function init() {
+  syncWatchFlag();
+  reload();
+  if (isPopup) syncPopupTopTitle();
+
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes[STORAGE_KEY]) reload();
+  });
+  window.addEventListener('yt-navigate-finish', onNavigate);
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {

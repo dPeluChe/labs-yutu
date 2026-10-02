@@ -16,12 +16,14 @@ Una extensión de Chrome para abrir videos de YouTube y Vimeo en ventanas flotan
     *   Soporta URLs de YouTube y Vimeo.
     *   Puedes redimensionar y mover la ventana libremente.
 *   **Controles Inline de Velocidad (Popup):**
-    *   Incluye botones rápidos `1x`, `1.25x`, `1.5x`, `2x` dentro de la ventana flotante.
+    *   Incluye botones rápidos `1x`, `1.15x`, `1.25x`, `1.5x`, `2x` dentro de la ventana flotante.
     *   El widget se centra en la fila superior del popup y se adapta al espacio disponible.
-    *   Soporta hotkeys (`⌥/Alt + 1..4`).
+    *   Soporta hotkeys (`⌥/Alt + 1..5`).
     *   Incluye opción `Close on finish` para cerrar automáticamente al terminar el video.
 *   **Controles de velocidad en Shorts:** también disponibles en la página del reproductor de Shorts.
 *   **Sitios externos (opt-in):** el popup permite activar la extensión en dominios concretos; los permisos se piden solo para esos dominios.
+*   **Filtro de videos antiguos (Home):** difumina (se aclara al pasar el cursor) u oculta las tarjetas con más de 1 mes a 2 años (por defecto 6 meses). Desactivado por defecto; pestaña "Feed" del popup. Lee fechas en inglés y español.
+*   **Limpieza Visual:** ocultado independiente para la ventana flotante y para la página de reproducción normal (`Floating window` / `Watch page` en el popup).
 *   **Limpieza Visual del Popup:**
     *   Permite ocultar descripción, recomendaciones, header, acciones y merch shelf.
     *   Los hide rules se reaplican después de navegación SPA dentro del popup.

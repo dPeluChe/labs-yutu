@@ -7,15 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
-## [Unreleased]
+## [1.4.0] - 2026-10-02
 
 ### Added
-- `npm run package`: build + `builds/yutu-labs-v<version>.zip` for the Chrome Web Store
-- `docs/STORE/`: listing texts, permission justifications and the updated privacy policy
-- `.doctos.yml` declaring the docs structure
+- 1.15x speed preset (buttons, popup and shortcuts are now Alt/Option + 1..5: 1, 1.15, 1.25, 1.5, 2)
+- Hide controls for regular watch pages (`watchPage` settings, off by default), alongside the floating-window ones; the popup has a "Floating window / Watch page" switch
+- Old video filter for the Home feed: blur (clears on hover) or hide cards older than 1 month to 2 years, from the new Feed tab (off by default; English and Spanish dates)
 
 ### Changed
-- `PRIVACY_POLICY.md` moved from the repo root to `docs/STORE/`; `docs/ARCHIVED/README.md` condensed
+- `content/hider.js` rewritten on top of `content/hide-rules.js`; settings changes propagate through `chrome.storage.onChanged` (no more `updateHiddenElements` message)
+- Popup hide toggles are rendered from a single option list
+- 35 tests (age parsing, hide rules, old-video filter)
+- Tooling and docs: `npm run package` (zip for the Chrome Web Store), `docs/STORE/` listing texts and privacy policy (moved from the repo root), `.doctos.yml`
 
 ---
 

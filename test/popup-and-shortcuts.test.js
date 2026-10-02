@@ -16,14 +16,19 @@ test('normalizeDomain strips protocol, path and www', () => {
   assert.equal(normalizeDomain(undefined), '');
 });
 
+test('1.15x is a preset with its own shortcut', () => {
+  assert.ok(PRESET_SPEEDS.includes(1.15));
+  assert.equal(getShortcutLabel(1.15, false), '1.15x (Alt+2)');
+});
+
 test('every shortcut maps to a preset speed', () => {
   for (const speed of Object.values(SHORTCUTS_BY_CODE)) assert.ok(PRESET_SPEEDS.includes(speed));
 });
 
 test('shortcut labels follow the platform modifier', () => {
-  assert.equal(getShortcutHintText(true), '⌥+1..4');
-  assert.equal(getShortcutHintText(false), 'Alt+1..4');
-  assert.equal(getShortcutLabel(1.5, false), '1.5x (Alt+3)');
+  assert.equal(getShortcutHintText(true), '⌥+1..5');
+  assert.equal(getShortcutHintText(false), 'Alt+1..5');
+  assert.equal(getShortcutLabel(1.5, false), '1.5x (Alt+4)');
   assert.equal(getShortcutLabel(3, true), '3x');
 });
 

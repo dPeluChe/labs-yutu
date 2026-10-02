@@ -1,14 +1,15 @@
 /**
- * Yutu Labs - Speed presets and keyboard shortcuts (Alt/Option + 1..4)
+ * Yutu Labs - Speed presets and keyboard shortcuts (Alt/Option + 1..5)
  */
 
-export const PRESET_SPEEDS = [1, 1.25, 1.5, 2];
+export const PRESET_SPEEDS = [1, 1.15, 1.25, 1.5, 2];
 
 export const SHORTCUTS_BY_CODE = {
   Digit1: 1,
-  Digit2: 1.25,
-  Digit3: 1.5,
-  Digit4: 2
+  Digit2: 1.15,
+  Digit3: 1.25,
+  Digit4: 1.5,
+  Digit5: 2
 };
 
 export function isMacPlatform() {
@@ -21,7 +22,7 @@ export function getShortcutModifierLabel(isMac = isMacPlatform()) {
 }
 
 export function getShortcutHintText(isMac = isMacPlatform()) {
-  return `${getShortcutModifierLabel(isMac)}+1..4`;
+  return `${getShortcutModifierLabel(isMac)}+1..5`;
 }
 
 export function getShortcutLabel(speed, isMac = isMacPlatform()) {

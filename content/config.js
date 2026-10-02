@@ -3,6 +3,15 @@
  * Centralized settings and storage utilities
  */
 
+const HIDE_FLAGS_OFF = {
+  hideReels: false,
+  hideSidebar: false,
+  hideDescription: false,
+  hideHeader: false,
+  hideActions: false,
+  hideMerchShelf: false
+};
+
 export const DEFAULT_SETTINGS = {
   hideReels: true,
   hideSidebar: true,
@@ -15,7 +24,11 @@ export const DEFAULT_SETTINGS = {
     enabled: false,
     domains: []
   },
-  customButtonSelector: ''
+  customButtonSelector: '',
+  // Same hide flags as the floating window, applied on regular /watch pages
+  watchPage: { ...HIDE_FLAGS_OFF },
+  // Dim or hide Home cards older than `months` (YouTube resurfaces old videos)
+  oldVideoFilter: { enabled: false, months: 6, mode: 'blur' }
 };
 
 export const STORAGE_KEY = 'yutuSettings';
@@ -56,7 +69,9 @@ export async function loadSettings() {
       externalSites: {
         ...DEFAULT_SETTINGS.externalSites,
         ...(stored.externalSites || {})
-      }
+      },
+      watchPage: { ...DEFAULT_SETTINGS.watchPage, ...(stored.watchPage || {}) },
+      oldVideoFilter: { ...DEFAULT_SETTINGS.oldVideoFilter, ...(stored.oldVideoFilter || {}) }
     };
   } catch (error) {
     console.error('Error loading settings from storage:', error);
