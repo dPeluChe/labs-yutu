@@ -53,15 +53,7 @@ export async function openFloatingWindow(targetUrl) {
     });
 
     if (!response.success) {
-      const msg = response.error || 'Unknown error';
-      if (msg.includes('popup') || msg.includes('blocked')) {
-        Modal.showError(
-          'Floating window was blocked. Go to chrome://settings/content/popups and allow popups for youtube.com.',
-          6000
-        );
-      } else {
-        Modal.showError(`Could not open floating window: ${msg}`);
-      }
+      Modal.showError(`Could not open floating window: ${response.error || 'Unknown error'}`);
     }
   } catch {
     Modal.showError(

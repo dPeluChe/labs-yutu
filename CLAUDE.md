@@ -171,12 +171,12 @@ Player state tracked via DOM:
 background/   service worker (window lifecycle, dynamic external scripts)
 content/      youtube-content.js (entry), external-content.js (entry), hider.js (entry),
               content.js (manager), button-factory.js, selectors.js, url-utils.js,
-              messaging.js, config.js, element-picker.js, floating-speed-controls.js,
-              modal.js, content.css
-popup/        toolbar popup (html/css/js)
+              messaging.js, config.js, element-picker.js, floating-speed-controls.js
+              (+ speed-anchor/speed-controls-ui/speed-shortcuts), modal.js, content.css
+popup/        toolbar popup: popup.js (entry) + tabs, settings, speed, sites, selector, status, domain
 icons/        PNGs from scripts/generate-icons.mjs
 scripts/      build.mjs, generate-icons.mjs
-test/         node:test unit tests (npm test)
+test/         node:test + jsdom unit tests (npm test)
 docs/         README index, TASK_TODO, TASK_COMPLETED/, ARCHIVED/
 ```
 

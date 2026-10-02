@@ -5,7 +5,6 @@
  */
 
 import { loadSettings, saveSettings } from './config.js';
-import { resetInjectedButtons } from './button-factory.js';
 
 let active = false;
 let overlay = null;
@@ -153,15 +152,7 @@ export function setupPickerListener() {
           const settings = await loadSettings();
           settings.customButtonSelector = selector;
           await saveSettings(settings);
-
-          // Re-inject buttons with new selector
-          resetInjectedButtons();
         }
-
-        chrome.runtime.sendMessage({
-          action: 'pickerResult',
-          selector: selector
-        }).catch(() => {});
       });
       sendResponse({ started: true });
     }
