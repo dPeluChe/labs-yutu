@@ -7,6 +7,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [Unreleased]
+
+### Added
+- Feed tab shows a "Reload YouTube tab to apply" button after any option is saved
+
 ## [1.4.0] - 2026-10-02
 
 ### Added
