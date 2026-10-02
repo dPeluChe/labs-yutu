@@ -10,6 +10,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [Unreleased]
 
 ### Fixed
+- Old video filter blur now covers only the thumbnail; title and date stay readable (muted) and everything clears on hover
 - Old video filter no longer depends on YouTube's `ytd-browse[page-subtype="home"]` attribute: Home is detected by path (`/`), the effect is cleared when leaving Home and restored on return
 
 ### Added
