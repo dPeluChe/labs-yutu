@@ -37,7 +37,7 @@ Contras conocidos: la conexion con YouTube y hush solo se entiende si se explica
 - Busqueda de "Yush" en el buscador de la Chrome Web Store: sin resultados (octubre de 2026). Nombre confirmado.
 - Dominio: se decidio no comprar ninguno por ahora (`yush.so` parece libre; `yush.com` y `yush.app` estan a la venta).
 - Repositorio de GitHub renombrado de `labs-yutu` a `yush`; GitHub redirige las URLs viejas. Carpeta local renombrada a `yush`.
-- Pendiente: busqueda de marca (USPTO y EUIPO) para "Yush", opcional antes de publicar.
+- Busqueda de "Yush" en la tienda hecha por el autor el 2026-10-02: sin resultados. No se hizo busqueda en registros de marca (USPTO/EUIPO); es opcional y se deja de lado.
 
 ## Que se mantiene con el nombre viejo
 

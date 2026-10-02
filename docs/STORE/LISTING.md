@@ -73,7 +73,7 @@ Open YouTube and Vimeo videos in a small floating window with playback speed con
 |-------|--------|--------|
 | Icon | 128x128 | Listo: `icons/icon128.png` |
 | Screenshots | 1280x800, PNG 24 bits sin alfa, 1 a 5 | 4 listas en `screenshots/`; falta la 5 (Selector y Sites) |
-| Small promo tile | 440x280 | Pendiente (opcional) |
+| Small promo tile | 440x280 | Listo: `screenshots/promo-tile-440x280.png` |
 
 Capturas listas (subir en este orden):
 
