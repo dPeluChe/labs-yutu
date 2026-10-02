@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-**Yush** (formerly Yutu Labs; see `docs/STORE/NAMING.md`) is a Chrome extension (Manifest V3, vanilla JavaScript, esbuild) by peluche (dpeluche.dev). It opens YouTube and Vimeo videos in a floating window, adds speed controls, hides clutter, and calms the Home feed (old-video blur, Shorts shelf toggle).
+**Yush** (formerly Yutu Labs; see `docs/ARCHIVED/NAMING_DECISION.md`) is a Chrome extension (Manifest V3, vanilla JavaScript, esbuild) by peluche (dpeluche.dev). It opens YouTube and Vimeo videos in a floating window, adds speed controls, hides clutter, and calms the Home feed (old-video blur, Shorts shelf toggle).
 
 Read `docs/ARCHITECTURE/HOW_IT_WORKS.md` before changing behavior: it covers the pieces, the settings schema (`yutuSettings`) and which code depends on YouTube's markup. Build, load, debug and release steps are in `docs/GUIDES/DEVELOPMENT.md`.
 

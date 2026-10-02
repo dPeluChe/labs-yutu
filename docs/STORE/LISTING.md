@@ -12,7 +12,8 @@ Los limites son los del dashboard (verificar al subir, pueden cambiar).
 | Category | Productivity | |
 | Language | English | |
 | Privacy policy URL | https://github.com/dPeluChe/yush/blob/main/docs/STORE/PRIVACY_POLICY.md | |
-| Homepage / support URL | https://github.com/dPeluChe/yush | |
+| Homepage URL | https://github.com/dPeluChe/yush | |
+| Support URL | https://github.com/dPeluChe/yush/issues | |
 | Developer / publisher site | https://dpeluche.dev (peluche) | |
 
 ## Detailed description

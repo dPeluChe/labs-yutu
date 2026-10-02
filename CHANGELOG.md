@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ---
 
+## [1.6.2] - 2026-10-02
+
+### Added
+- "Report a bug" link in the popup footer, opening the GitHub bug report form (`.github/ISSUE_TEMPLATE/`); READMEs and the listing point to the public issue tracker
+
+### Changed
+- Docs cleanup: naming decision archived (`docs/ARCHIVED/NAMING_DECISION.md`), six obsolete docs about the old `window.open()` flow removed (still in git history), `docs/ARCHIVED/README.md` condensed
+
 ## [1.6.1] - 2026-10-02
 
 ### Fixed

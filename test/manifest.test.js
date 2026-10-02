@@ -21,3 +21,9 @@ test('every content script entry has a source file', () => {
   }
   assert.ok(existsSync(new URL(manifest.background.service_worker, root)));
 });
+
+test('popup footer links to the GitHub bug report form', () => {
+  const html = readFileSync(new URL('../popup/popup.html', import.meta.url), 'utf8');
+  assert.match(html, /href="https:\/\/github\.com\/dPeluChe\/yush\/issues\/new\?template=bug_report\.yml"/);
+  assert.ok(existsSync(new URL('../.github/ISSUE_TEMPLATE/bug_report.yml', import.meta.url)));
+});
